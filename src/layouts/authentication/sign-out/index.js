@@ -11,7 +11,8 @@ function SignOut() {
     if (user) {
       setUser(null);
     } else {
-      navigate("/authentication/sign-in");
+      //navigate("/authentication/sign-in");
+      window.location.reload(false);
     }
   }, [user]);
 

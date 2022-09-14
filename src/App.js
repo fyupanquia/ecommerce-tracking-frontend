@@ -53,6 +53,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
+import { useLocalStorage } from "providers/useLocalStorage";
 import { AuthProvider } from "./providers/AuthProvider";
 
 export default function App() {
@@ -111,31 +112,21 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const useauth = AuthProvider();
+  const [useauth, setUser] = useLocalStorage("user", null);
 
-  const getRoutes = (allRoutes) => {
-    if (!useauth.user) {
-      return [
-        ...allRoutes.map((route) => route.route.include("authentication")),
-        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />,
-      ];
-    }
-    return [
-      ...allRoutes.map((route) => {
-        if (route.collapse) {
-          return getRoutes(route.collapse);
-        }
+  const getRoutes = (allRoutes) => [
+    ...allRoutes.map((route) => {
+      if (route.collapse) {
+        return getRoutes(route.collapse);
+      }
 
-        if (route.route) {
-          return <Route exact path={route.route} element={route.component} key={route.key} />;
-        }
+      if (route.route) {
+        return <Route exact path={route.route} element={route.component} key={route.key} />;
+      }
 
-        return null;
-      }),
-      <Route path="*" element={<Navigate to="/dashboard" />} />,
-    ];
-  };
-
+      return null;
+    }),
+  ];
   const configsButton = (
     <MDBox
       display="flex"
@@ -163,7 +154,7 @@ export default function App() {
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
+      {layout === "dashboard" && useauth && (
         <>
           <Sidenav
             color={sidenavColor}
@@ -178,7 +169,17 @@ export default function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
-      <Routes>{getRoutes([...routes.auth, ...routes.authenticated])}</Routes>
+      {/* <Routes>{getRoutes([...routes.auth, ...routes.authenticated])}</Routes> */}
+      <Routes>
+        {[
+          ...getRoutes(useauth ? routes.authenticated : routes.auth),
+          useauth ? (
+            <Route path="*" element={<Navigate to="/dashboard" />} key="all" />
+          ) : (
+            <Route path="*" element={<Navigate to="/authentication/sign-in" />} key="all" />
+          ),
+        ]}
+      </Routes>
     </ThemeProvider>
   );
   /*

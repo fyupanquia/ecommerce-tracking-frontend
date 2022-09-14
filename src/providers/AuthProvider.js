@@ -7,28 +7,10 @@ const AuthContext = createContext();
 
 function AuthProviderF() {
   const [user, setUser] = useLocalStorage("user", null);
-  const navigate = useNavigate();
-  // call this function when you want to authenticate the user
-  const login = async (data) => {
-    setUser(data);
-    navigate("/profile");
-  };
 
-  // call this function to sign out logged in user
-  const logout = () => {
-    setUser(null);
-    navigate("/", { replace: true });
+  return {
+    user
   };
-
-  const value = useMemo(
-    () => ({
-      user,
-      login,
-      logout,
-    }),
-    [user]
-  );
-  return value; /* <AuthContext.Provider value={value}>{children}</AuthContext.Provider>; */
 }
 
 AuthProviderF.defaultProps = {

@@ -42,6 +42,8 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useLocalStorage } from "providers/useLocalStorage";
 
+import axios from "axios";
+
 function Basic() {
   const formEl = useRef();
   const [rememberMe, setRememberMe] = useState(false);
@@ -52,21 +54,26 @@ function Basic() {
     const iEmail = [...formEl.current.elements].find((e) => e.name === "email");
     const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
     const iRememberme = [...formEl.current.elements].find((e) => e.name === "rememberme");
-    console.log({
-      username: iEmail.value,
+
+    const userData = {
+      email: iEmail.value,
       password: iPassword.value,
-      rememberme: iRememberme.value,
-    });
-    setUser({
-      username: iEmail.value,
-      password: iPassword.value,
-      rememberme: iRememberme.value,
+      /* rememberme: iRememberme.value, */
+    };
+
+    const baseURL = "http://localhost:3001/auth/signin";
+    axios.post(baseURL, userData).then((response) => {
+      if (response.status == 200) {
+        userData.token = response.data.access_token;
+        setUser(userData);
+      }
     });
   };
 
   useEffect(() => {
     if (user) {
-      navigate("/dashboard");
+      //navigate("/dashboard");
+      window.location.reload(false);
     }
   }, [user]);
 

@@ -79,6 +79,7 @@ const routes = {
           key: "usuarios",
           icon: <Icon fontSize="small">people</Icon>,
           route: "/usuarios",
+          dropdown: true,
           component: <Users />,
         },
         {

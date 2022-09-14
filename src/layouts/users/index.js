@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -32,19 +33,43 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
+import usersTableData from "layouts/tables/data/usersTableData";
+
+import axios from "axios";
+import { useLocalStorage } from "providers/useLocalStorage";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const [users, setUsers] = useState(null);
+  const [columns, setColumns] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
 
   const onAddUser = () => {
     navigate("/usuarios/agregar");
   };
 
-  return (
+  useEffect(() => {
+    if (users === null) {
+      const baseURL = "http://localhost:3001/users";
+
+      axios
+        .get(baseURL, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            setUsers(response.data);
+          }
+        });
+    } else {
+      const data = usersTableData(users);
+      setColumns(data.columns)
+      setRows(data.rows)
+    }
+  }, [users]);
+
+  const body = (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
@@ -88,6 +113,10 @@ function Tables() {
       <Footer />
     </DashboardLayout>
   );
+
+  const loading = <span />;
+
+  return users ? body : loading;
 }
 
 export default Tables;

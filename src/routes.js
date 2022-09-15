@@ -90,6 +90,14 @@ const routes = {
           route: "/usuarios/agregar",
           component: <UsersNew />,
         },
+        {
+          type: "collapse",
+          name: "Editar",
+          key: "users-edit",
+          icon: <Icon fontSize="small">people</Icon>,
+          route: "/usuarios/editar/:id",
+          component: <UsersNew />,
+        },
       ],
     },
     {

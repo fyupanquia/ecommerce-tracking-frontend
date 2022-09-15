@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 // react-router-dom components
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -21,6 +21,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDAlert from "components/MDAlert";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
@@ -33,22 +34,97 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
+import axios from "axios";
+import data from "layouts/tables/data/authorsTableData";
+
 function UsersNew() {
   const formEl = useRef();
+  const params = useParams();
   const [rememberMe, setRememberMe] = useState(false);
   const [user, setUser] = useLocalStorage("user", null);
+  const [usuario, setUsuario] = useState({});
   const navigate = useNavigate();
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-  const onSubmit = () => {
+  const [alert, setAlert] = useState(null);
+
+  const getInputs = () => {
     const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
     const iEmail = [...formEl.current.elements].find((e) => e.name === "email");
     const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
-    console.log({
-      name: iFullname.value,
-      email: iEmail.value,
-      password: iPassword.value,
-    });
+    return { iFullname, iEmail, iPassword };
   };
+  const onSubmit = () => {
+    const { iFullname, iEmail, iPassword } = getInputs();
+
+    const baseURL = "http://localhost:3001/users";
+    axios
+      .post(
+        baseURL,
+        {
+          fullname: iFullname.value,
+          email: iEmail.value,
+          password: iPassword.value,
+        },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      )
+      .then((response) => {
+        if (response.status == 201) {
+          iFullname.value = "";
+          iEmail.value = "";
+          iPassword.value = "";
+
+          setAlert(
+            <Grid item xs={12} spacing={1}>
+              <MDAlert color="success" dismissible>
+                <MDTypography variant="body2" color="white">
+                  ¡Usuario {iEmail.value} fue registrado{" "}
+                  <MDTypography
+                    component="a"
+                    href="#"
+                    variant="body2"
+                    fontWeight="medium"
+                    color="white"
+                  >
+                    correctamente
+                  </MDTypography>
+                  !
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+        }
+      });
+  };
+
+  useEffect(() => {
+    if (alert) {
+      window.setTimeout(() => {
+        setAlert(null);
+      }, 3000);
+    }
+  }, [alert]);
+
+  useEffect(() => {
+    console.log({ params })
+    if (params && params.id) {
+      console.log({ params });
+      const baseURL = `http://localhost:3001/users/${params.id}`;
+      axios
+        .get(baseURL, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            const { iFullname, iEmail } = getInputs();
+            const { data } = response;
+            iFullname.value = data.fullname;
+            iEmail.value = data.email;
+          }
+        });
+    }
+  }, []);
 
   const onGoBack = () => {
     navigate("/usuarios");
@@ -59,6 +135,7 @@ function UsersNew() {
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
+          {alert}
           <Grid item xs={12}>
             <Card>
               <MDBox

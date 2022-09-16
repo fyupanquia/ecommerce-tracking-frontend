@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -32,19 +33,43 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
+
+import axios from "axios";
+import { useLocalStorage } from "providers/useLocalStorage";
+import tableData from "./tables/data/tableData";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const [modules, setModules] = useState(null);
+  const [columns, setColumns] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
 
   const onAddUser = () => {
     navigate("/modulos/agregar");
   };
 
-  return (
+  useEffect(() => {
+    if (modules === null) {
+      const baseURL = "http://localhost:3001/modules";
+
+      axios
+        .get(baseURL, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            setModules(response.data);
+          }
+        });
+    } else {
+      const data = tableData(modules);
+      setColumns(data.columns);
+      setRows(data.rows);
+    }
+  }, [modules]);
+
+  const body = (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
@@ -88,6 +113,10 @@ function Tables() {
       <Footer />
     </DashboardLayout>
   );
+
+  const loading = <span />;
+
+  return modules ? body : loading;
 }
 
 export default Tables;

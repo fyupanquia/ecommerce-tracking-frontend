@@ -13,6 +13,7 @@ function UserAction({ user }) {
 
   const onDelete = (u) => {
     console.log("delete!", u);
+    navigate(`/usuarios/eliminar/${u.id}`);
   };
 
   const onEdit = (u) => {

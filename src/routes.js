@@ -43,6 +43,7 @@ import TasksNew from "layouts/tasks/new";
 import Modules from "layouts/modules";
 import ModulesNew from "layouts/modules/new";
 import UsersNew from "layouts/users/new";
+import UserDelete from "layouts/users/delete";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
@@ -98,6 +99,14 @@ const routes = {
           route: "/usuarios/editar/:id",
           component: <UsersNew />,
         },
+        {
+          type: "collapse",
+          name: "Eliminar",
+          key: "users-delete",
+          icon: <Icon fontSize="small">people</Icon>,
+          route: "/usuarios/eliminar/:id",
+          component: <UserDelete />,
+        }
       ],
     },
     {

@@ -33,10 +33,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import usersTableData from "layouts/tables/data/usersTableData";
 
 import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
+import usersTableData from "./tables/data/usersTableData";
 
 function Tables() {
   const [users, setUsers] = useState(null);
@@ -64,8 +64,8 @@ function Tables() {
         });
     } else {
       const data = usersTableData(users);
-      setColumns(data.columns)
-      setRows(data.rows)
+      setColumns(data.columns);
+      setRows(data.rows);
     }
   }, [users]);
 

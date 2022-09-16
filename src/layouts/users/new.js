@@ -11,11 +11,6 @@ import Icon from "@mui/material/Icon";
 import MuiLink from "@mui/material/Link";
 import Checkbox from "@mui/material/Checkbox";
 
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -23,29 +18,25 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import MDAlert from "components/MDAlert";
 
-// Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
-
 // Images
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useLocalStorage } from "providers/useLocalStorage";
 
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
+import Tooltip from "@mui/material/Tooltip";
+
 import axios from "axios";
-import data from "layouts/tables/data/authorsTableData";
+import DeleteCard from "./cards/deleteCard";
 
 function UsersNew() {
   const formEl = useRef();
   const params = useParams();
-  const [rememberMe, setRememberMe] = useState(false);
   const [user, setUser] = useLocalStorage("user", null);
-  const [usuario, setUsuario] = useState({});
   const navigate = useNavigate();
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const [alert, setAlert] = useState(null);
+  const [question, setQuestion] = useState(null);
 
   const getInputs = () => {
     const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
@@ -53,9 +44,12 @@ function UsersNew() {
     const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
     return { iFullname, iEmail, iPassword };
   };
-  const onSubmit = () => {
-    const { iFullname, iEmail, iPassword } = getInputs();
 
+  const onGoBack = () => {
+    navigate("/usuarios");
+  };
+
+  const onSave = ({ iFullname, iEmail, iPassword }) => {
     const baseURL = "http://localhost:3001/users";
     axios
       .post(
@@ -98,18 +92,64 @@ function UsersNew() {
       });
   };
 
+  const onEdit = ({ id, iFullname, iEmail, iPassword }) => {
+    const baseURL = `http://localhost:3001/users/${id}`;
+    axios
+      .patch(
+        baseURL,
+        {
+          fullname: iFullname.value,
+          email: iEmail.value,
+          password: iPassword.value || undefined,
+        },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      )
+      .then((response) => {
+        if (response.status == 200) {
+          setAlert(
+            <Grid item xs={12} spacing={1}>
+              <MDAlert color="success" dismissible>
+                <MDTypography variant="body2" color="white">
+                  ¡Usuario {iEmail.value} fue actualizado{" "}
+                  <MDTypography
+                    component="a"
+                    href="#"
+                    variant="body2"
+                    fontWeight="medium"
+                    color="white"
+                  >
+                    correctamente
+                  </MDTypography>
+                  !
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+        }
+      });
+  };
+
+  const onSubmit = () => {
+    const { iFullname, iEmail, iPassword } = getInputs();
+    if (params && params.id) {
+      onEdit({ id: params.id, iFullname, iEmail, iPassword });
+    } else {
+      onSave({ iFullname, iEmail, iPassword });
+    }
+  };
+
   useEffect(() => {
     if (alert) {
       window.setTimeout(() => {
         setAlert(null);
-      }, 3000);
+      }, 5000);
     }
   }, [alert]);
 
   useEffect(() => {
-    console.log({ params })
     if (params && params.id) {
-      console.log({ params });
       const baseURL = `http://localhost:3001/users/${params.id}`;
       axios
         .get(baseURL, {
@@ -122,13 +162,13 @@ function UsersNew() {
             iFullname.value = data.fullname;
             iEmail.value = data.email;
           }
+        })
+        .catch((e) => {
+          console.log(e);
+          onGoBack();
         });
     }
   }, []);
-
-  const onGoBack = () => {
-    navigate("/usuarios");
-  };
 
   return (
     <DashboardLayout>
@@ -152,7 +192,7 @@ function UsersNew() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  Registrar usuario
+                  {params && params.id ? "Editar" : "Registrar"} usuario
                 </MDTypography>
                 <MDButton variant="gradient" color="dark" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
@@ -182,7 +222,7 @@ function UsersNew() {
                       fullWidth
                     />
                   </MDBox>
-                  <MDBox mt={4} mb={1}>
+                  <MDBox mt={2} mb={1}>
                     <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
                       Guardar
                     </MDButton>

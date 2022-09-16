@@ -35,8 +35,6 @@ import team4 from "assets/images/team-4.jpg";
 import UserAction from "./UserAction"
 
 export default function data(users) {
-
-
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -57,8 +55,6 @@ export default function data(users) {
       <MDTypography variant="caption">{description}</MDTypography>
     </MDBox>
   );
-
-
 
   return {
     columns: [

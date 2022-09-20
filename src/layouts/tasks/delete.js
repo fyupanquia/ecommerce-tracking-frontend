@@ -30,18 +30,18 @@ import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
 
-function UsersNew() {
+function TaskNew() {
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
 
   const onGoBack = () => {
-    navigate("/modulos");
+    navigate("/tareas");
   };
 
   const onRemove = () => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/modules/${params.id}`;
+      const baseURL = `http://localhost:3001/tasks/${params.id}`;
       axios
         .delete(baseURL, {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -76,7 +76,7 @@ function UsersNew() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  Eliminar módulo
+                  Eliminar tarea
                 </MDTypography>
                 <MDButton variant="gradient" color="dark" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
@@ -85,7 +85,7 @@ function UsersNew() {
               </MDBox>
               <Grid item xs={12}>
                 <DeleteCard
-                  title="¿ESTÁS SEGURO DE ELIMINAR ESTE MÓDULO?"
+                  title="¿ESTÁS SEGURO DE ELIMINAR ESTA TAREA?"
                   description="Luego de dar clic en ACEPTAR no se podrá revertir"
                   onRemove={onRemove}
                   onCancel={onGoBack}
@@ -100,4 +100,4 @@ function UsersNew() {
   );
 }
 
-export default UsersNew;
+export default TaskNew;

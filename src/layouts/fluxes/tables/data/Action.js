@@ -8,30 +8,29 @@ import Icon from "@mui/material/Icon";
 
 import { useNavigate } from "react-router-dom";
 
-function UserAction({ user }) {
+function Action({ row }) {
   const navigate = useNavigate();
 
   const onDelete = (u) => {
-    console.log("delete!", u);
-    navigate(`/usuarios/eliminar/${u.id}`);
+    navigate(`/tareas/eliminar/${u.id}`);
   };
 
   const onEdit = (u) => {
     console.log("edit!", u);
-    navigate(`/usuarios/editar/${u.id}`);
+    navigate(`/tareas/editar/${u.id}`);
   };
 
   return (
     <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
       <MDBox variant="gradient" display="flex" justifyContent="space-between" alignItems="center">
-        <MDBox ml="auto" lineHeight={0} color="dark" onClick={() => onEdit(user)}>
+        <MDBox ml="auto" lineHeight={0} color="dark" onClick={() => onEdit(row)}>
           <Tooltip title="Editar" placement="top">
             <Icon sx={{ cursor: "pointer" }} fontSize="small">
               edit
             </Icon>
           </Tooltip>
         </MDBox>
-        <MDBox ml="auto" lineHeight={0} color="error" onClick={() => onDelete(user)}>
+        <MDBox ml="auto" lineHeight={0} color="error" onClick={() => onDelete(row)}>
           <Tooltip title="Eliminar" placement="top">
             <Icon sx={{ cursor: "pointer" }} fontSize="small">
               delete
@@ -43,4 +42,4 @@ function UserAction({ user }) {
   );
 }
 
-export default UserAction;
+export default Action;

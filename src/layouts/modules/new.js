@@ -30,13 +30,12 @@ import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
 
-function UsersNew() {
+function ModulesNew() {
   const formEl = useRef();
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
-  const [question, setQuestion] = useState(null);
 
   const getInputs = () => {
     const iName = [...formEl.current.elements].find((e) => e.name === "name");
@@ -44,7 +43,7 @@ function UsersNew() {
   };
 
   const onGoBack = () => {
-    navigate("/modules");
+    navigate("/modulos");
   };
 
   const onSave = ({ iName }) => {
@@ -67,7 +66,7 @@ function UsersNew() {
             <Grid item xs={12} spacing={1}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡Módulo {iName.value} fue registrado{" "}
+                  ¡El módulo {iName.value} fue registrado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -92,7 +91,7 @@ function UsersNew() {
       .patch(
         baseURL,
         {
-          fullname: iName.value,
+          name: iName.value,
         },
         {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -104,7 +103,7 @@ function UsersNew() {
             <Grid item xs={12} spacing={1}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡Móduo {iName.value} fue actualizado{" "}
+                  ¡El módulo {iName.value} fue actualizado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -142,17 +141,16 @@ function UsersNew() {
 
   useEffect(() => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/users/${params.id}`;
+      const baseURL = `http://localhost:3001/modules/${params.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
         .then((response) => {
           if (response.status === 200) {
-            const { iName, iEmail } = getInputs();
+            const { iName } = getInputs();
             const { data } = response;
-            iName.value = data.fullname;
-            iEmail.value = data.email;
+            iName.value = data.name;
           }
         })
         .catch((e) => {
@@ -212,4 +210,4 @@ function UsersNew() {
   );
 }
 
-export default UsersNew;
+export default ModulesNew;

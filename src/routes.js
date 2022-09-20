@@ -40,10 +40,17 @@ import Dashboard from "layouts/dashboard";
 import Users from "layouts/users";
 import Tasks from "layouts/tasks";
 import TasksNew from "layouts/tasks/new";
+import TaskDelete from "layouts/tasks/delete";
 import Modules from "layouts/modules";
 import ModulesNew from "layouts/modules/new";
+import ModuleDelete from "layouts/modules/delete";
 import UsersNew from "layouts/users/new";
 import UserDelete from "layouts/users/delete";
+
+import Fluxes from "layouts/fluxes";
+import FluxesNew from "layouts/fluxes/new";
+import FluxDelete from "layouts/fluxes/delete";
+
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
@@ -113,7 +120,7 @@ const routes = {
       type: "collapse",
       name: "Modulos",
       key: "modulos",
-      icon: <Icon fontSize="small">inventory</Icon>,
+      icon: <Icon fontSize="small">all_inbox_icon</Icon>,
       route: "/modulos",
       component: <Modules />,
       collapse: [
@@ -121,7 +128,7 @@ const routes = {
           type: "collapse",
           name: "Modulos",
           key: "modulos",
-          icon: <Icon fontSize="small">inventory</Icon>,
+          icon: <Icon fontSize="small">all_inbox_icon</Icon>,
           route: "/modulos",
           component: <Modules />,
         },
@@ -129,17 +136,33 @@ const routes = {
           type: "collapse",
           name: "Agregar",
           key: "modulos-add",
-          icon: <Icon fontSize="small">inventory</Icon>,
+          icon: <Icon fontSize="small">all_inbox_icon</Icon>,
           route: "/modulos/agregar",
           component: <ModulesNew />,
         },
+        {
+          type: "collapse",
+          name: "Editar",
+          key: "modulos-edit",
+          icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+          route: "/modulos/editar/:id",
+          component: <ModulesNew />,
+        },
+        {
+          type: "collapse",
+          name: "Eliminar",
+          key: "modulos-delete",
+          icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+          route: "/modulos/eliminar/:id",
+          component: <ModuleDelete />,
+        }
       ],
     },
     {
       type: "collapse",
       name: "Tareas",
       key: "tareas",
-      icon: <Icon fontSize="small">task</Icon>,
+      icon: <Icon fontSize="small">inventory</Icon>,
       route: "/tareas",
       component: <Tasks />,
       collapse: [
@@ -147,18 +170,76 @@ const routes = {
           type: "collapse",
           name: "Tareas",
           key: "tareas",
-          icon: <Icon fontSize="small">task</Icon>,
+          icon: <Icon fontSize="small">inventory</Icon>,
           route: "/tareas",
           component: <Tasks />,
         },
         {
           type: "collapse",
-          name: "Tareas",
+          name: "Agregar",
           key: "tareas-add",
-          icon: <Icon fontSize="small">task</Icon>,
+          icon: <Icon fontSize="small">inventory</Icon>,
           route: "/tareas/agregar",
           component: <TasksNew />,
         },
+        {
+          type: "collapse",
+          name: "Editar",
+          key: "tareas-edit",
+          icon: <Icon fontSize="small">inventory</Icon>,
+          route: "/tareas/editar/:id",
+          component: <TasksNew />,
+        },
+        {
+          type: "collapse",
+          name: "Eliminar",
+          key: "tareas-delete",
+          icon: <Icon fontSize="small">inventory</Icon>,
+          route: "/tareas/eliminar/:id",
+          component: <TaskDelete />,
+        }
+      ],
+    },
+    {
+      type: "collapse",
+      name: "Flujos",
+      key: "flujos",
+      icon: <Icon fontSize="small">polyline</Icon>,
+      route: "/flujos",
+      component: <Fluxes />,
+      collapse: [
+        {
+          type: "collapse",
+          name: "Flujos",
+          key: "flujos",
+          icon: <Icon fontSize="small">polyline</Icon>,
+          route: "/flujos",
+          component: <Fluxes />,
+        },
+        {
+          type: "collapse",
+          name: "Agregar",
+          key: "flujos-add",
+          icon: <Icon fontSize="small">polyline</Icon>,
+          route: "/flujos/agregar",
+          component: <FluxesNew />,
+        },
+        {
+          type: "collapse",
+          name: "Editar",
+          key: "flujos-edit",
+          icon: <Icon fontSize="small">polyline</Icon>,
+          route: "/flujos/editar/:id",
+          component: <FluxesNew />,
+        },
+        {
+          type: "collapse",
+          name: "Eliminar",
+          key: "flujos-delete",
+          icon: <Icon fontSize="small">polyline</Icon>,
+          route: "/flujos/eliminar/:id",
+          component: <FluxDelete />,
+        }
       ],
     },
     /*

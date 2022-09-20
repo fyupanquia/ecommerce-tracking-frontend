@@ -56,7 +56,7 @@ export default function data(data) {
 
   return {
     columns: [
-      { Header: "Módulo", accessor: "module", width: "60%", align: "left" },
+      { Header: "Tarea", accessor: "module", width: "60%", align: "left" },
       { Header: "Registrado", accessor: "registrado", align: "center" },
       { Header: "Acción", accessor: "action", width: "20%", align: "center" },
     ],

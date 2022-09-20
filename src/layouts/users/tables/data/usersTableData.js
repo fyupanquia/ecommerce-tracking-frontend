@@ -58,11 +58,11 @@ export default function data(users) {
 
   return {
     columns: [
-      { Header: "usuario", accessor: "usuario", width: "30%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
-      { Header: "estado", accessor: "estado", align: "center" },
-      { Header: "registrado", accessor: "registrado", align: "center" },
-      { Header: "action", accessor: "action", width: "20%", align: "center" },
+      { Header: "Usuario", accessor: "usuario", width: "30%", align: "left" },
+      { Header: "Función", accessor: "function", align: "left" },
+      { Header: "Estado", accessor: "estado", align: "center" },
+      { Header: "Registrado", accessor: "registrado", align: "center" },
+      { Header: "Acción", accessor: "action", width: "20%", align: "center" },
     ],
 
     rows: users.map((user) => ({

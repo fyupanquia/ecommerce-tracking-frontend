@@ -28,14 +28,76 @@ import Footer from "examples/Footer";
 import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  RadioGroup,
+  Select,
+} from "@mui/material";
+import DataTable from "examples/Tables/DataTable";
+import RadioGroupContext from "@mui/material/RadioGroup/RadioGroupContext";
 import DeleteCard from "./cards/deleteCard";
+import MultipleSelectChip from "./select/chip";
+import ModuleTable from "./tables/data/moduleTable";
+import ModuleData from "./tables/data/moduleData";
+import TaskData from "./tables/data/taskData";
 
-function TasksNew() {
+const getTasks = ({ token }) => {
+  const baseURL = `http://localhost:3001/tasks`;
+  return axios
+    .get(baseURL, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      }
+    });
+};
+const getModules = ({ token }) => {
+  const baseURL = `http://localhost:3001/modules`;
+  return axios
+    .get(baseURL, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      }
+    });
+};
+
+function FluxesNew() {
+  const navigate = useNavigate();
   const formEl = useRef();
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
-  const navigate = useNavigate();
+
+  const [tasks, setTasks] = useState([]);
+  const [modules, setModules] = useState([]);
+
+  const [moduleColumns, setModuleColumns] = useState([
+    { Header: "", accessor: "id", align: "center" },
+    { Header: "Módulo", accessor: "module", width: "60%", align: "left" },
+    { Header: "Acciones", accessor: "actions", width: "30%", align: "right" },
+  ]);
+
+  const [taskColumns, setTaskColumns] = useState([
+    { Header: "Tarea", accessor: "module", align: "left" },
+    { Header: "Acciones", accessor: "actions", width: "30%", align: "right" },
+  ]);
+
   const [alert, setAlert] = useState(null);
+  // const [disabledTaskButton, setDisabledTaskButton] = useState(true);
+  const [body, setBody] = useState([]);
+
+  const [moduleRows, setModuleRows] = useState([]);
+
+  const [taskRows, setTaskRows] = useState([]);
+  const [selectedModule, setSelectedModule] = useState(null);
 
   const getInputs = () => {
     const iName = [...formEl.current.elements].find((e) => e.name === "name");
@@ -43,7 +105,7 @@ function TasksNew() {
   };
 
   const onGoBack = () => {
-    navigate("/tareas");
+    navigate("/flujos");
   };
 
   const onSave = ({ iName }) => {
@@ -139,9 +201,15 @@ function TasksNew() {
     }
   }, [alert]);
 
-  useEffect(() => {
+  useEffect(async () => {
+    const tasksFromAPI = await getTasks({ token: user.token });
+    setTasks(tasksFromAPI);
+
+    const modulesFromAPI = await getModules({ token: user.token });
+    setModules(modulesFromAPI);
+
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/tasks/${params.id}`;
+      const baseURL = `http://localhost:3001/fluxes/${params.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -160,6 +228,102 @@ function TasksNew() {
     }
   }, []);
 
+  const move = (arr, from, to) => {
+    const clone = JSON.parse(JSON.stringify(arr));
+    clone.splice(to, 0, clone.splice(from, 1)[0]);
+    return clone;
+  };
+  const onUp = (data, item) => {
+    const index = data.findIndex((d) => d.id === item.id);
+    const newarr = move(data, index, index - 1 < 0 ? 0 : index - 1);
+    return newarr;
+  };
+  const onDown = (data, item) => {
+    const index = data.findIndex((d) => d.id === item.id);
+    const newarr = move(data, index, index + 1 > data.length ? data.length : index + 1);
+    return newarr;
+  };
+  const onDelete = (data, item) => data.filter((d) => d.id !== item.id);
+
+  const taskSelectOnSubmit = (data) => {
+    console.log({ taskSelectOnSubmit: body });
+    const newBody = JSON.parse(JSON.stringify(body));
+    const foundModule = newBody.find((m) => m.selected);
+    if (foundModule.tasks.length) {
+      const mergedTasks = [...foundModule.tasks, ...data];
+      const uniqueArray = mergedTasks.filter(
+        (value, index) => index === mergedTasks.findIndex((obj) => obj.id === value.id)
+      );
+      foundModule.tasks = uniqueArray;
+    } else {
+      foundModule.tasks = data;
+    }
+    setBody(newBody);
+  };
+
+  const moduleSelectOnSubmit = (data) => {
+    const newBody = data.map((d) => ({ id: d.id, name: d.name, tasks: [] }));
+    setBody(newBody);
+  };
+
+  useEffect(() => {
+    /*
+    if (body.length) {
+      const newSelectedModule = body.find((m) => m.selected);
+      setSelectedModule(newSelectedModule);
+      //taskSelectOnSubmit(newSelectedModule.tasks);
+    } else {
+      setSelectedModule(null);
+      //taskSelectOnSubmit([]);
+    }
+    */
+    let newSelectedModule = null;
+    if (body.length) {
+      newSelectedModule = body.find((m) => m.selected);
+    }
+    const moduleData = ModuleData(body, {
+      onUp: (item) => {
+        moduleSelectOnSubmit(onUp(body, item));
+      },
+      onDown: (item) => {
+        moduleSelectOnSubmit(onDown(body, item));
+      },
+      onDelete: (item) => {
+        moduleSelectOnSubmit(onDelete(body, item));
+      },
+      onSelect: (item) => {
+        const newBody = JSON.parse(JSON.stringify(body));
+        newBody.map((m) => {
+          m.selected = m.id === item.id;
+          return m;
+        });
+        /*
+        const foundModule = newBody.find((m) => {
+          m.selected = false;
+          return m.id === item.id;
+        });
+        foundModule.selected = true;
+        */
+        setBody(newBody);
+        // taskSelectOnSubmit(foundModule.tasks);
+      },
+    });
+    setModuleRows(moduleData.rows);
+
+    if (newSelectedModule) {
+      // const foundModule = body.find((m) => m.id === newSelectedModule.id);
+      // if (foundModule) {
+      const taskData = TaskData(newSelectedModule.tasks, {
+        onUp: () => {},
+        onDown: () => {},
+        onDelete: () => {},
+      });
+      setTaskRows(taskData.rows);
+      // }
+    }
+  }, [body]);
+
+  console.log({ body });
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -182,7 +346,7 @@ function TasksNew() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  {params && params.id ? "Editar" : "Registrar"} tarea
+                  {params && params.id ? "Editar" : "Registrar"} flujo
                 </MDTypography>
                 <MDButton variant="gradient" color="dark" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
@@ -194,6 +358,40 @@ function TasksNew() {
                   <MDBox mb={2}>
                     <MDInput type="text" label="Nombre" name="name" variant="standard" fullWidth />
                   </MDBox>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <MultipleSelectChip
+                        label="Módulos"
+                        submitLabel="AGREGAR MÓDULOS"
+                        rows={modules}
+                        disabledSubmit={false}
+                        onSubmit={moduleSelectOnSubmit}
+                      />
+                      <DataTable
+                        table={{ columns: moduleColumns, rows: moduleRows }}
+                        isSorted={false}
+                        entriesPerPage={false}
+                        showTotalEntries={false}
+                        noEndBorder
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <MultipleSelectChip
+                        label="Tareas"
+                        submitLabel="AGREGAR TAREAS"
+                        rows={tasks}
+                        disabledSubmit={!body.length || body.find((m) => m.selected) === undefined}
+                        onSubmit={taskSelectOnSubmit}
+                      />
+                      <DataTable
+                        table={{ columns: taskColumns, rows: taskRows }}
+                        isSorted={false}
+                        entriesPerPage={false}
+                        showTotalEntries={false}
+                        noEndBorder
+                      />
+                    </Grid>
+                  </Grid>
                   <MDBox mt={2} mb={1}>
                     <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
                       Guardar
@@ -210,4 +408,4 @@ function TasksNew() {
   );
 }
 
-export default TasksNew;
+export default FluxesNew;

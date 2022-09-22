@@ -46,12 +46,12 @@ function Tables() {
   const navigate = useNavigate();
 
   const onAddUser = () => {
-    navigate("/tareas/agregar");
+    navigate("/flujos/agregar");
   };
 
   useEffect(() => {
     if (taks === null) {
-      const baseURL = "http://localhost:3001/tasks";
+      const baseURL = "http://localhost:3001/fluxes";
 
       axios
         .get(baseURL, {
@@ -90,7 +90,7 @@ function Tables() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  Tabla de tareas
+                  Tabla de flujos
                 </MDTypography>
                 <MDButton variant="gradient" color="dark" onClick={onAddUser}>
                   <Icon sx={{ fontWeight: "bold" }}>add</Icon>

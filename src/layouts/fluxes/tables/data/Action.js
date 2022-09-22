@@ -12,12 +12,12 @@ function Action({ row }) {
   const navigate = useNavigate();
 
   const onDelete = (u) => {
-    navigate(`/tareas/eliminar/${u.id}`);
+    navigate(`/flujos/eliminar/${u.id}`);
   };
 
   const onEdit = (u) => {
     console.log("edit!", u);
-    navigate(`/tareas/editar/${u.id}`);
+    navigate(`/flujos/editar/${u.id}`);
   };
 
   return (

@@ -29,6 +29,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import Loading from "components/Loading";
 import DeleteCard from "./cards/deleteCard";
 
 function UsersProfile() {
@@ -38,6 +39,7 @@ function UsersProfile() {
   const [alert, setAlert] = useState(null);
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
+  const [loaded, setLoaded] = useState(false);
 
   const getInputs = () => {
     const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
@@ -112,10 +114,10 @@ function UsersProfile() {
         })
         .then((response) => {
           if (response.status === 200) {
-            const { iFullname, iEmail, iProfile } = getInputs();
             const { data } = response;
             setFullname(data.fullname);
             setEmail(data.email);
+            setLoaded(true);
           }
         })
         .catch((e) => {
@@ -151,48 +153,52 @@ function UsersProfile() {
                 </MDTypography>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
-                <MDBox component="form" role="form" ref={formEl}>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="text"
-                      label="Nombres Completos"
-                      name="fullname"
-                      variant="standard"
-                      value={fullname}
-                      onChange={(e) => {
-                        setFullname(e.target.value);
-                      }}
-                      fullWidth
-                    />
+                {loaded ? (
+                  <MDBox component="form" role="form" ref={formEl}>
+                    <MDBox mb={2}>
+                      <MDInput
+                        type="text"
+                        label="Nombres Completos"
+                        name="fullname"
+                        variant="standard"
+                        value={fullname}
+                        onChange={(e) => {
+                          setFullname(e.target.value);
+                        }}
+                        fullWidth
+                      />
+                    </MDBox>
+                    <MDBox mb={2}>
+                      <MDInput
+                        type="email"
+                        label="Email"
+                        name="email"
+                        variant="standard"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                        }}
+                        fullWidth
+                      />
+                    </MDBox>
+                    <MDBox mb={2}>
+                      <MDInput
+                        type="password"
+                        label="Contraseña"
+                        name="password"
+                        variant="standard"
+                        fullWidth
+                      />
+                    </MDBox>
+                    <MDBox mt={2} mb={1}>
+                      <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
+                        Guardar
+                      </MDButton>
+                    </MDBox>
                   </MDBox>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="email"
-                      label="Email"
-                      name="email"
-                      variant="standard"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                      }}
-                      fullWidth
-                    />
-                  </MDBox>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="password"
-                      label="Contraseña"
-                      name="password"
-                      variant="standard"
-                      fullWidth
-                    />
-                  </MDBox>
-                  <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
-                      Guardar
-                    </MDButton>
-                  </MDBox>
-                </MDBox>
+                ) : (
+                  <Loading />
+                )}
               </MDBox>
             </Card>
           </Grid>

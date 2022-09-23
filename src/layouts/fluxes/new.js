@@ -75,6 +75,7 @@ function FluxesNew() {
   const formEl = useRef();
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
+  const [name, setName] = useState("");
 
   const [tasks, setTasks] = useState([]);
   const [modules, setModules] = useState([]);
@@ -127,7 +128,7 @@ function FluxesNew() {
       .then((response) => {
         if (response.status == 201) {
           setAlert(
-            <Grid item xs={12} spacing={1}>
+            <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
                   ¡El flujo {bodyRequest.name} fue registrado{" "}
@@ -157,6 +158,8 @@ function FluxesNew() {
       })
       .then((response) => {
         if (response.status == 200) {
+          setName("");
+          setBody([]);
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
@@ -191,10 +194,6 @@ function FluxesNew() {
 
   useEffect(() => {
     if (alert) {
-      if (!params.id) {
-        getNameInput().value = "";
-        setBody([]);
-      }
       window.setTimeout(() => {
         setAlert(null);
       }, 5000);
@@ -217,7 +216,7 @@ function FluxesNew() {
         .then((response) => {
           if (response.status === 200) {
             const { data: rsp } = response;
-            getNameInput().value = rsp.name;
+            setName(rsp.name);
             const editBody = rsp.modules.map((m, i) => ({
               id: m.module_id.id,
               name: m.module_id.name,
@@ -370,7 +369,17 @@ function FluxesNew() {
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>
                   <MDBox mb={2}>
-                    <MDInput type="text" label="Nombre" name="name" variant="standard" fullWidth />
+                    <MDInput
+                      type="text"
+                      label="Nombre"
+                      name="name"
+                      variant="standard"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                      fullWidth
+                    />
                   </MDBox>
                   <Grid container spacing={2}>
                     <Grid item xs={6}>

@@ -38,6 +38,7 @@ import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
 import tableData from "./tables/data/tableData";
 
+import Loading from "components/Loading";
 function Tables() {
   const [taks, setTaks] = useState(null);
   const [columns, setColumns] = useState([]);
@@ -98,13 +99,17 @@ function Tables() {
                 </MDButton>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
+                {rows.length ? (
+                  <DataTable
+                    table={{ columns, rows }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                ) : (
+                  <Loading />
+                )}
               </MDBox>
             </Card>
           </Grid>

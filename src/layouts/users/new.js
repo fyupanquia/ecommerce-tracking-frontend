@@ -31,6 +31,8 @@ import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import DeleteCard from "./cards/deleteCard";
 
+import Loading from "components/Loading";
+
 function UsersNew() {
   const formEl = useRef();
   const params = useParams();
@@ -44,6 +46,7 @@ function UsersNew() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSetIsActive = () => setIsActive(!isActive);
+  const [loaded, setLoaded] = useState(false);
 
   const getInputs = () => {
     const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
@@ -172,18 +175,20 @@ function UsersNew() {
         })
         .then((response) => {
           if (response.status === 200) {
-            const { iFullname, iEmail, iProfile } = getInputs();
             const { data } = response;
             setFullname(data.fullname);
             setEmail(data.email);
             setIsActive(data.is_active);
             setProfile(data.profile);
+            setLoaded(true);
           }
         })
         .catch((e) => {
           console.log(e);
           onGoBack();
         });
+    } else {
+      setLoaded(true);
     }
   }, []);
 
@@ -217,7 +222,7 @@ function UsersNew() {
                 </MDButton>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
-                <MDBox component="form" role="form" ref={formEl}>
+                {loaded ? (<MDBox component="form" role="form" ref={formEl}>
                   <MDBox mb={2}>
                     <MDInput
                       type="text"
@@ -306,7 +311,7 @@ function UsersNew() {
                       Guardar
                     </MDButton>
                   </MDBox>
-                </MDBox>
+                </MDBox>) : <Loading/>}
               </MDBox>
             </Card>
           </Grid>

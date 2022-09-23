@@ -36,6 +36,7 @@ function ModulesNew() {
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
+  const [name, setName] = useState("");
 
   const getInputs = () => {
     const iName = [...formEl.current.elements].find((e) => e.name === "name");
@@ -60,10 +61,9 @@ function ModulesNew() {
       )
       .then((response) => {
         if (response.status == 201) {
-          iName.value = "";
-
+          setName("")
           setAlert(
-            <Grid item xs={12} spacing={1}>
+            <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
                   ¡El módulo {iName.value} fue registrado{" "}
@@ -100,7 +100,7 @@ function ModulesNew() {
       .then((response) => {
         if (response.status == 200) {
           setAlert(
-            <Grid item xs={12} spacing={1}>
+            <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
                   ¡El módulo {iName.value} fue actualizado{" "}
@@ -150,7 +150,7 @@ function ModulesNew() {
           if (response.status === 200) {
             const { iName } = getInputs();
             const { data } = response;
-            iName.value = data.name;
+            setName(data.name)
           }
         })
         .catch((e) => {
@@ -192,7 +192,17 @@ function ModulesNew() {
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>
                   <MDBox mb={2}>
-                    <MDInput type="text" label="Nombre" name="name" variant="standard" fullWidth />
+                    <MDInput
+                      type="text"
+                      label="Nombre"
+                      name="name"
+                      variant="standard"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                      fullWidth
+                    />
                   </MDBox>
                   <MDBox mt={2} mb={1}>
                     <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>

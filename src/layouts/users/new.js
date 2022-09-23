@@ -28,6 +28,7 @@ import Footer from "examples/Footer";
 import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import DeleteCard from "./cards/deleteCard";
 
 function UsersNew() {
@@ -37,20 +38,29 @@ function UsersNew() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
   const [question, setQuestion] = useState(null);
+  const [isActive, setIsActive] = useState(false);
+  const [profile, setProfile] = useState("CLIENTE");
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSetIsActive = () => setIsActive(!isActive);
 
   const getInputs = () => {
     const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
     const iEmail = [...formEl.current.elements].find((e) => e.name === "email");
     const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
-    return { iFullname, iEmail, iPassword };
+    const iIsActive = [...formEl.current.elements].find((e) => e.name === "is_active");
+    const iProfile = [...formEl.current.elements].find((e) => e.name === "profile");
+    return { iFullname, iEmail, iPassword, iIsActive, iProfile };
   };
 
   const onGoBack = () => {
     navigate("/usuarios");
   };
 
-  const onSave = ({ iFullname, iEmail, iPassword }) => {
+  const onSave = ({ iFullname, iEmail, iPassword, iIsActive, iProfile }) => {
     const baseURL = "http://localhost:3001/users";
+
     axios
       .post(
         baseURL,
@@ -58,19 +68,21 @@ function UsersNew() {
           fullname: iFullname.value,
           email: iEmail.value,
           password: iPassword.value,
+          is_active: iIsActive.checked,
+          profile: iProfile.value,
         },
         {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         }
       )
       .then((response) => {
         if (response.status == 201) {
-          iFullname.value = "";
-          iEmail.value = "";
-          iPassword.value = "";
+          setFullname("");
+          setEmail("");
+          setPassword("");
 
           setAlert(
-            <Grid item xs={12} spacing={1}>
+            <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
                   ¡Usuario {iEmail.value} fue registrado{" "}
@@ -92,7 +104,7 @@ function UsersNew() {
       });
   };
 
-  const onEdit = ({ id, iFullname, iEmail, iPassword }) => {
+  const onEdit = ({ id, iFullname, iEmail, iPassword, iIsActive, iProfile }) => {
     const baseURL = `http://localhost:3001/users/${id}`;
     axios
       .patch(
@@ -101,15 +113,17 @@ function UsersNew() {
           fullname: iFullname.value,
           email: iEmail.value,
           password: iPassword.value || undefined,
+          is_active: iIsActive.checked,
+          profile: iProfile.value,
         },
         {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         }
       )
       .then((response) => {
         if (response.status == 200) {
           setAlert(
-            <Grid item xs={12} spacing={1}>
+            <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
                   ¡Usuario {iEmail.value} fue actualizado{" "}
@@ -132,11 +146,12 @@ function UsersNew() {
   };
 
   const onSubmit = () => {
-    const { iFullname, iEmail, iPassword } = getInputs();
+    const { iFullname, iEmail, iPassword, iIsActive, iProfile } = getInputs();
+
     if (params && params.id) {
-      onEdit({ id: params.id, iFullname, iEmail, iPassword });
+      onEdit({ id: params.id, iFullname, iEmail, iPassword, iIsActive, iProfile });
     } else {
-      onSave({ iFullname, iEmail, iPassword });
+      onSave({ iFullname, iEmail, iPassword, iIsActive, iProfile });
     }
   };
 
@@ -153,14 +168,16 @@ function UsersNew() {
       const baseURL = `http://localhost:3001/users/${params.id}`;
       axios
         .get(baseURL, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status === 200) {
-            const { iFullname, iEmail } = getInputs();
+            const { iFullname, iEmail, iProfile } = getInputs();
             const { data } = response;
-            iFullname.value = data.fullname;
-            iEmail.value = data.email;
+            setFullname(data.fullname);
+            setEmail(data.email);
+            setIsActive(data.is_active);
+            setProfile(data.profile);
           }
         })
         .catch((e) => {
@@ -207,11 +224,69 @@ function UsersNew() {
                       label="Nombres Completos"
                       name="fullname"
                       variant="standard"
+                      value={fullname}
+                      onChange={(e) => {
+                        setFullname(e.target.value);
+                      }}
                       fullWidth
                     />
                   </MDBox>
                   <MDBox mb={2}>
-                    <MDInput type="email" label="Email" name="email" variant="standard" fullWidth />
+                    <MDInput
+                      type="email"
+                      label="Email"
+                      name="email"
+                      variant="standard"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                      fullWidth
+                    />
+                  </MDBox>
+                  <MDBox p={2}>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} md={6}>
+                        <MDBox mb={2}>
+                          <FormControl fullWidth>
+                            <InputLabel id="profile">Perfil</InputLabel>
+                            <Select
+                              labelId="profile"
+                              id="profile"
+                              label="Perfil"
+                              name="profile"
+                              defaultValue="CLIENTE"
+                              value={profile}
+                              onChange={(event) => {
+                                setProfile(event.target.value);
+                              }}
+                            >
+                              <MenuItem value="CLIENTE">CLIENTE</MenuItem>
+                              <MenuItem value="ADMIN">ADMIN</MenuItem>
+                              <MenuItem value="MASTER">MASTER</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </MDBox>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <MDBox display="flex" alignItems="center" ml={-1}>
+                          <Switch
+                            checked={isActive}
+                            onChange={handleSetIsActive}
+                            name="is_active"
+                          />
+                          <MDTypography
+                            variant="button"
+                            fontWeight="regular"
+                            color="text"
+                            onClick={handleSetIsActive}
+                            sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
+                          >
+                            &nbsp;&nbsp;Activo
+                          </MDTypography>
+                        </MDBox>
+                      </Grid>
+                    </Grid>
                   </MDBox>
                   <MDBox mb={2}>
                     <MDInput
@@ -219,6 +294,10 @@ function UsersNew() {
                       label="Contraseña"
                       name="password"
                       variant="standard"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
                       fullWidth
                     />
                   </MDBox>

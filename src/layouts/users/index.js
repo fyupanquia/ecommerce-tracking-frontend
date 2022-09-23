@@ -36,6 +36,7 @@ import DataTable from "examples/Tables/DataTable";
 
 import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
+import Loading from "components/Loading";
 import usersTableData from "./tables/data/usersTableData";
 
 function Tables() {
@@ -55,7 +56,7 @@ function Tables() {
 
       axios
         .get(baseURL, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status == 200) {
@@ -69,7 +70,7 @@ function Tables() {
     }
   }, [users]);
 
-  const body = (
+  return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
@@ -98,13 +99,17 @@ function Tables() {
                 </MDButton>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
+                {rows.length ? (
+                  <DataTable
+                    table={{ columns, rows }}
+                    isSorted={false}
+                    entriesPerPage={false}
+                    showTotalEntries={false}
+                    noEndBorder
+                  />
+                ) : (
+                  <Loading />
+                )}
               </MDBox>
             </Card>
           </Grid>
@@ -113,10 +118,6 @@ function Tables() {
       <Footer />
     </DashboardLayout>
   );
-
-  const loading = <span />;
-
-  return users ? body : loading;
 }
 
 export default Tables;

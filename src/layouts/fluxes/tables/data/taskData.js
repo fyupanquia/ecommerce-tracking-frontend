@@ -20,8 +20,9 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 import Action from "./Action";
+import ModuleAction from "./moduleAction";
 
-export default function TaskData(data) {
+export default function TaskData(data, { onUp, onDown, onDelete }) {
   const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>
@@ -32,19 +33,18 @@ export default function TaskData(data) {
     </MDBox>
   );
 
-  const Job = ({ title, description }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
-      </MDTypography>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
 
   return {
-    rows: data.map((r) => ({
+    rows: data.map((r,i) => ({
       module: <Author name={r.name} />,
-      actions: <Action row={r} />,
+      actions: (
+        <ModuleAction
+          row={r}
+          onUp={i == 0 ? null : onUp}
+          onDown={i === data.length - 1 ? null : onDown}
+          onDelete={onDelete}
+        />
+      ),
     })),
   };
 }

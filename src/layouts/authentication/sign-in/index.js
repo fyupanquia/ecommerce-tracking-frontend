@@ -26,8 +26,8 @@ import MuiLink from "@mui/material/Link";
 
 // @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -43,11 +43,13 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useLocalStorage } from "providers/useLocalStorage";
 
 import axios from "axios";
+import MDAlert from "components/MDAlert";
 
 function Basic() {
   const formEl = useRef();
   const [rememberMe, setRememberMe] = useState(false);
   const [user, setUser] = useLocalStorage("user", null);
+  const [alert, setAlert] = useState(null);
   const navigate = useNavigate();
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const onLogin = () => {
@@ -58,21 +60,43 @@ function Basic() {
     const userData = {
       email: iEmail.value,
       password: iPassword.value,
-      /* rememberme: iRememberme.value, */
     };
 
     const baseURL = "http://localhost:3001/auth/signin";
-    axios.post(baseURL, userData).then((response) => {
-      if (response.status == 200) {
-        userData.token = response.data.access_token;
-        setUser(userData);
-      }
-    });
+    axios
+      .post(baseURL, userData)
+      .then((response) => {
+        if (response.status == 200) {
+          // userData.token = response.data.access_token;
+          setUser(response.data);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        if (e.response && e.response.data) {
+          setAlert(
+            <Grid item xs={12}>
+              <MDAlert color="error" dismissible>
+                <MDTypography variant="body2" color="white">
+                  {e.response.data.message}
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+        }
+      });
   };
 
   useEffect(() => {
+    if (alert) {
+      window.setTimeout(() => {
+        setAlert(null);
+      }, 5000);
+    }
+  }, [alert]);
+
+  useEffect(() => {
     if (user) {
-      //navigate("/dashboard");
       window.location.reload(false);
     }
   }, [user]);
@@ -94,26 +118,45 @@ function Basic() {
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Login
           </MDTypography>
-          {/* <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
+          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+              <MDTypography
+                component={MuiLink}
+                href="https://www.facebook.com/RipleyPeru"
+                target="_blank"
+                variant="body1"
+                color="white"
+              >
                 <FacebookIcon color="inherit" />
               </MDTypography>
             </Grid>
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
+              <MDTypography
+                component={MuiLink}
+                href="https://www.instagram.com/ripleyperu"
+                target="_blank"
+                variant="body1"
+                color="white"
+              >
+                <InstagramIcon color="inherit" />
               </MDTypography>
             </Grid>
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GoogleIcon color="inherit" />
+              <MDTypography
+                component={MuiLink}
+                href="https://www.youtube.com/user/TiendasRipleyPeru"
+                target="_blank"
+                variant="body1"
+                color="white"
+              >
+                <YouTubeIcon color="inherit" />
               </MDTypography>
             </Grid>
-          </Grid> */}
+          </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" ref={formEl}>
+            {alert}
             <MDBox mb={2}>
               <MDInput type="email" label="Email" fullWidth name="email" />
             </MDBox>

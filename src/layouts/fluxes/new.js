@@ -99,36 +99,38 @@ function FluxesNew() {
   const [taskRows, setTaskRows] = useState([]);
   const [selectedModule, setSelectedModule] = useState(null);
 
-  const getInputs = () => {
-    const iName = [...formEl.current.elements].find((e) => e.name === "name");
-    return { iName };
+  const getNameInput = () => [...formEl.current.elements].find((e) => e.name === "name");
+  const getBodyRequest = () => {
+    const clone = JSON.parse(JSON.stringify(body));
+    const name = getNameInput().value;
+    return {
+      name,
+      modules: clone.map((m) => ({
+        id: m.id,
+        tasks: m.tasks.map((t) => ({
+          id: t.id,
+        })),
+      })),
+    };
   };
 
   const onGoBack = () => {
     navigate("/flujos");
   };
 
-  const onSave = ({ iName }) => {
-    const baseURL = "http://localhost:3001/tasks";
+  const onSave = (bodyRequest) => {
+    const baseURL = "http://localhost:3001/fluxes";
     axios
-      .post(
-        baseURL,
-        {
-          name: iName.value,
-        },
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      )
+      .post(baseURL, bodyRequest, {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      })
       .then((response) => {
         if (response.status == 201) {
-          iName.value = "";
-
           setAlert(
             <Grid item xs={12} spacing={1}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡La tarea {iName.value} fue registrada{" "}
+                  ¡El flujo {bodyRequest.name} fue registrado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -147,25 +149,19 @@ function FluxesNew() {
       });
   };
 
-  const onEdit = ({ id, iName }) => {
-    const baseURL = `http://localhost:3001/tasks/${id}`;
+  const onEdit = (id, bodyRequest) => {
+    const baseURL = `http://localhost:3001/fluxes/${id}`;
     axios
-      .patch(
-        baseURL,
-        {
-          name: iName.value,
-        },
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      )
+      .patch(baseURL, bodyRequest, {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      })
       .then((response) => {
         if (response.status == 200) {
           setAlert(
-            <Grid item xs={12} spacing={1}>
+            <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡La tarea {iName.value} fue actualizada{" "}
+                  ¡El flujo {bodyRequest.value} fue actualizado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -185,16 +181,20 @@ function FluxesNew() {
   };
 
   const onSubmit = () => {
-    const { iName } = getInputs();
+    const bodyRequest = getBodyRequest();
     if (params && params.id) {
-      onEdit({ id: params.id, iName });
+      onEdit(params.id, bodyRequest);
     } else {
-      onSave({ iName });
+      onSave(bodyRequest);
     }
   };
 
   useEffect(() => {
     if (alert) {
+      if (!params.id) {
+        getNameInput().value = "";
+        setBody([]);
+      }
       window.setTimeout(() => {
         setAlert(null);
       }, 5000);
@@ -202,23 +202,29 @@ function FluxesNew() {
   }, [alert]);
 
   useEffect(async () => {
-    const tasksFromAPI = await getTasks({ token: user.token });
+    const tasksFromAPI = await getTasks({ token: user.access_token });
     setTasks(tasksFromAPI);
 
-    const modulesFromAPI = await getModules({ token: user.token });
+    const modulesFromAPI = await getModules({ token: user.access_token });
     setModules(modulesFromAPI);
 
     if (params && params.id) {
       const baseURL = `http://localhost:3001/fluxes/${params.id}`;
       axios
         .get(baseURL, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status === 200) {
-            const { iName } = getInputs();
-            const { data } = response;
-            iName.value = data.name;
+            const { data: rsp } = response;
+            getNameInput().value = rsp.name;
+            const editBody = rsp.modules.map((m, i) => ({
+              id: m.module_id.id,
+              name: m.module_id.name,
+              selected: i === 0,
+              tasks: m.tasks.map((t) => ({ id: t.task_id.id, name: t.task_id.name })),
+            }));
+            setBody(editBody);
           }
         })
         .catch((e) => {
@@ -243,12 +249,28 @@ function FluxesNew() {
     const newarr = move(data, index, index + 1 > data.length ? data.length : index + 1);
     return newarr;
   };
-  const onDelete = (data, item) => data.filter((d) => d.id !== item.id);
+  const onDelete = (data, item) => {
+    const clone = JSON.parse(JSON.stringify(data));
+    let itWasSelected = false;
+    const filtered = clone.filter((d) => {
+      const found = d.id === item.id;
+      if (found && d.selected) {
+        itWasSelected = true;
+      }
+      return !found;
+    });
+
+    if (itWasSelected && filtered.length) {
+      filtered[0].selected = true;
+    }
+
+    return filtered;
+  };
 
   const taskSelectOnSubmit = (data) => {
-    console.log({ taskSelectOnSubmit: body });
     const newBody = JSON.parse(JSON.stringify(body));
     const foundModule = newBody.find((m) => m.selected);
+    /*
     if (foundModule.tasks.length) {
       const mergedTasks = [...foundModule.tasks, ...data];
       const uniqueArray = mergedTasks.filter(
@@ -256,27 +278,23 @@ function FluxesNew() {
       );
       foundModule.tasks = uniqueArray;
     } else {
-      foundModule.tasks = data;
     }
+    */
+    foundModule.tasks = data;
     setBody(newBody);
   };
 
   const moduleSelectOnSubmit = (data) => {
-    const newBody = data.map((d) => ({ id: d.id, name: d.name, tasks: [] }));
+    const newBody = data.map((d) => ({
+      id: d.id,
+      name: d.name,
+      selected: typeof d.selected === "boolean" ? d.selected : false,
+      tasks: Array.isArray(d.tasks) ? d.tasks : [],
+    }));
     setBody(newBody);
   };
 
   useEffect(() => {
-    /*
-    if (body.length) {
-      const newSelectedModule = body.find((m) => m.selected);
-      setSelectedModule(newSelectedModule);
-      //taskSelectOnSubmit(newSelectedModule.tasks);
-    } else {
-      setSelectedModule(null);
-      //taskSelectOnSubmit([]);
-    }
-    */
     let newSelectedModule = null;
     if (body.length) {
       newSelectedModule = body.find((m) => m.selected);
@@ -297,33 +315,29 @@ function FluxesNew() {
           m.selected = m.id === item.id;
           return m;
         });
-        /*
-        const foundModule = newBody.find((m) => {
-          m.selected = false;
-          return m.id === item.id;
-        });
-        foundModule.selected = true;
-        */
         setBody(newBody);
-        // taskSelectOnSubmit(foundModule.tasks);
       },
     });
     setModuleRows(moduleData.rows);
 
     if (newSelectedModule) {
-      // const foundModule = body.find((m) => m.id === newSelectedModule.id);
-      // if (foundModule) {
       const taskData = TaskData(newSelectedModule.tasks, {
-        onUp: () => {},
-        onDown: () => {},
-        onDelete: () => {},
+        onUp: (item) => {
+          taskSelectOnSubmit(onUp(newSelectedModule.tasks, item));
+        },
+        onDown: (item) => {
+          taskSelectOnSubmit(onDown(newSelectedModule.tasks, item));
+        },
+        onDelete: (item) => {
+          taskSelectOnSubmit(onDelete(newSelectedModule.tasks, item));
+        },
       });
       setTaskRows(taskData.rows);
-      // }
+    } else {
+      setTaskRows([]);
     }
   }, [body]);
 
-  console.log({ body });
   return (
     <DashboardLayout>
       <DashboardNavbar />

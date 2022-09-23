@@ -44,7 +44,7 @@ function TaskNew() {
       const baseURL = `http://localhost:3001/tasks/${params.id}`;
       axios
         .delete(baseURL, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status == 200) {

@@ -12,12 +12,10 @@ function UserAction({ user }) {
   const navigate = useNavigate();
 
   const onDelete = (u) => {
-    console.log("delete!", u);
     navigate(`/usuarios/eliminar/${u.id}`);
   };
 
   const onEdit = (u) => {
-    console.log("edit!", u);
     navigate(`/usuarios/editar/${u.id}`);
   };
 

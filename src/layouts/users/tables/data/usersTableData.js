@@ -15,8 +15,6 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-
-
 // @mui material components
 import Tooltip from "@mui/material/Tooltip";
 import Icon from "@mui/material/Icon";
@@ -32,7 +30,7 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
-import UserAction from "./UserAction"
+import UserAction from "./UserAction";
 
 export default function data(users) {
   const Author = ({ image, name, email }) => (
@@ -46,20 +44,10 @@ export default function data(users) {
       </MDBox>
     </MDBox>
   );
-
-  const Job = ({ title, description }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
-      </MDTypography>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
-
   return {
     columns: [
       { Header: "Usuario", accessor: "usuario", width: "30%", align: "left" },
-      { Header: "Función", accessor: "function", align: "left" },
+      { Header: "Perfil", accessor: "profile", align: "left" },
       { Header: "Estado", accessor: "estado", align: "center" },
       { Header: "Registrado", accessor: "registrado", align: "center" },
       { Header: "Acción", accessor: "action", width: "20%", align: "center" },
@@ -67,10 +55,19 @@ export default function data(users) {
 
     rows: users.map((user) => ({
       usuario: <Author image={team2} name={user.fullname} email={user.email} />,
-      function: <Job title="Manager" description="Organization" />,
+      profile: (
+        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+          {user.profile}
+        </MDTypography>
+      ),
       estado: (
         <MDBox ml={-1}>
-          <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
+          <MDBadge
+            badgeContent={user.is_active ? "activo" : "desactivo"}
+            color={user.is_active ? "success" : "dark"}
+            variant="gradient"
+            size="sm"
+          />
         </MDBox>
       ),
       registrado: (

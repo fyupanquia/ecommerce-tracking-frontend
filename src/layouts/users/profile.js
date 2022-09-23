@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 // react-router-dom components
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -28,70 +28,37 @@ import Footer from "examples/Footer";
 import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import DeleteCard from "./cards/deleteCard";
 
-function ModulesNew() {
+function UsersProfile() {
   const formEl = useRef();
-  const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
 
   const getInputs = () => {
-    const iName = [...formEl.current.elements].find((e) => e.name === "name");
-    return { iName };
+    const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
+    const iEmail = [...formEl.current.elements].find((e) => e.name === "email");
+    const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
+    return { iFullname, iEmail, iPassword };
   };
 
   const onGoBack = () => {
-    navigate("/modulos");
+    navigate("/usuarios");
   };
 
-  const onSave = ({ iName }) => {
-    const baseURL = "http://localhost:3001/modules";
-    axios
-      .post(
-        baseURL,
-        {
-          name: iName.value,
-        },
-        {
-          headers: { Authorization: `Bearer ${user.access_token}` },
-        }
-      )
-      .then((response) => {
-        if (response.status == 201) {
-          iName.value = "";
-
-          setAlert(
-            <Grid item xs={12} spacing={1}>
-              <MDAlert color="success" dismissible>
-                <MDTypography variant="body2" color="white">
-                  ¡El módulo {iName.value} fue registrado{" "}
-                  <MDTypography
-                    component="a"
-                    href="#"
-                    variant="body2"
-                    fontWeight="medium"
-                    color="white"
-                  >
-                    correctamente
-                  </MDTypography>
-                  !
-                </MDTypography>
-              </MDAlert>
-            </Grid>
-          );
-        }
-      });
-  };
-
-  const onEdit = ({ id, iName }) => {
-    const baseURL = `http://localhost:3001/modules/${id}`;
+  const onEdit = ({ id, iFullname, iEmail, iPassword }) => {
+    const baseURL = `http://localhost:3001/users/${id}`;
     axios
       .patch(
         baseURL,
         {
-          name: iName.value,
+          fullname: iFullname.value,
+          email: iEmail.value,
+          password: iPassword.value || undefined,
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -100,10 +67,10 @@ function ModulesNew() {
       .then((response) => {
         if (response.status == 200) {
           setAlert(
-            <Grid item xs={12} spacing={1}>
+            <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡El módulo {iName.value} fue actualizado{" "}
+                  ¡Usuario {iEmail.value} fue actualizado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -123,12 +90,9 @@ function ModulesNew() {
   };
 
   const onSubmit = () => {
-    const { iName } = getInputs();
-    if (params && params.id) {
-      onEdit({ id: params.id, iName });
-    } else {
-      onSave({ iName });
-    }
+    const { iFullname, iEmail, iPassword } = getInputs();
+
+    onEdit({ id: user.id, iFullname, iEmail, iPassword });
   };
 
   useEffect(() => {
@@ -140,17 +104,18 @@ function ModulesNew() {
   }, [alert]);
 
   useEffect(() => {
-    if (params && params.id) {
-      const baseURL = `http://localhost:3001/modules/${params.id}`;
+    if (user && user.id) {
+      const baseURL = `http://localhost:3001/users/${user.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status === 200) {
-            const { iName } = getInputs();
+            const { iFullname, iEmail, iProfile } = getInputs();
             const { data } = response;
-            iName.value = data.name;
+            setFullname(data.fullname);
+            setEmail(data.email);
           }
         })
         .catch((e) => {
@@ -182,17 +147,45 @@ function ModulesNew() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  {params && params.id ? "Editar" : "Registrar"} módulo
+                  Mi perfil
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onGoBack}>
-                  <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
-                  &nbsp;Volver
-                </MDButton>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>
                   <MDBox mb={2}>
-                    <MDInput type="text" label="Nombre" name="name" variant="standard" fullWidth />
+                    <MDInput
+                      type="text"
+                      label="Nombres Completos"
+                      name="fullname"
+                      variant="standard"
+                      value={fullname}
+                      onChange={(e) => {
+                        setFullname(e.target.value);
+                      }}
+                      fullWidth
+                    />
+                  </MDBox>
+                  <MDBox mb={2}>
+                    <MDInput
+                      type="email"
+                      label="Email"
+                      name="email"
+                      variant="standard"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                      fullWidth
+                    />
+                  </MDBox>
+                  <MDBox mb={2}>
+                    <MDInput
+                      type="password"
+                      label="Contraseña"
+                      name="password"
+                      variant="standard"
+                      fullWidth
+                    />
                   </MDBox>
                   <MDBox mt={2} mb={1}>
                     <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
@@ -210,4 +203,4 @@ function ModulesNew() {
   );
 }
 
-export default ModulesNew;
+export default UsersProfile;

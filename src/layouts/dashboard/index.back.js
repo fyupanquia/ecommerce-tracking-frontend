@@ -35,73 +35,25 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
-import { useLocalStorage } from "providers/useLocalStorage";
-
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
-  const [useauth, setUser] = useLocalStorage("user", null);
-  let content = null;
-  if (useauth.profile == "CLIENTE") {
-    content = (
-      <MDBox py={3}>
-        <MDBox mt={4.5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Inicios de sesión"
-                  description="Últimas conexiones"
-                  date="Actualizado hace 5 minutos"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="Compras"
-                  description={
-                    <>
-                      (<strong>+10%</strong>) pedidos realizados
-                    </>
-                  }
-                  date="Actualizado hace 1 hora"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="Flujos"
-                  description="Flujos concretados"
-                  date="Actualizado hace 1 minuto"
-                  chart={tasks}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
-      </MDBox>
-    );
-  } else {
-    content = (
+
+  return (
+    <DashboardLayout>
+      <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="polyline"
-                title="Flujos"
-                count={36}
+                icon="weekend"
+                title="Bookings"
+                count={281}
                 percentage={{
                   color: "success",
-                  amount: "+25%",
-                  label: "recién actualizado",
+                  amount: "+55%",
+                  label: "than lask week",
                 }}
               />
             </MDBox>
@@ -109,13 +61,13 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="people"
-                title="Nuevos usuarios del día"
-                count="20"
+                icon="leaderboard"
+                title="Today's Users"
+                count="2,300"
                 percentage={{
                   color: "success",
-                  amount: "+1.5%",
-                  label: "el último mes",
+                  amount: "+3%",
+                  label: "than last month",
                 }}
               />
             </MDBox>
@@ -124,13 +76,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="all_inbox_icon"
-                title="Módulos de hoy"
-                count="10"
+                icon="store"
+                title="Revenue"
+                count="34k"
                 percentage={{
                   color: "success",
-                  amount: "+1.5%",
-                  label: "ayer",
+                  amount: "+1%",
+                  label: "than yesterday",
                 }}
               />
             </MDBox>
@@ -139,13 +91,13 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="inventory"
-                title="Tareas"
-                count="11"
+                icon="person_add"
+                title="Followers"
+                count="+91"
                 percentage={{
                   color: "success",
-                  amount: "+0.5%",
-                  label: "hoy",
+                  amount: "",
+                  label: "Just updated",
                 }}
               />
             </MDBox>
@@ -157,9 +109,9 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="Inicios de sesión"
-                  description="Últimas conexiones"
-                  date="Actualizado hace 5 minutos"
+                  title="website views"
+                  description="Last Campaign Performance"
+                  date="campaign sent 2 days ago"
                   chart={reportsBarChartData}
                 />
               </MDBox>
@@ -168,13 +120,13 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Ventas"
+                  title="daily sales"
                   description={
                     <>
-                      (<strong>+10%</strong>) ventas realizadas
+                      (<strong>+15%</strong>) increase in today sales.
                     </>
                   }
-                  date="Actualizado hace 1 hora"
+                  date="updated 4 min ago"
                   chart={sales}
                 />
               </MDBox>
@@ -183,22 +135,26 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="Flujos"
-                  description="Flujos concretados"
-                  date="Actualizado hace 1 minuto"
+                  title="completed tasks"
+                  description="Last Campaign Performance"
+                  date="just updated"
                   chart={tasks}
                 />
               </MDBox>
             </Grid>
           </Grid>
         </MDBox>
+        <MDBox>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={8}>
+              <Projects />
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <OrdersOverview />
+            </Grid>
+          </Grid>
+        </MDBox>
       </MDBox>
-    );
-  }
-  return (
-    <DashboardLayout>
-      <DashboardNavbar />
-      {content}
       <Footer />
     </DashboardLayout>
   );

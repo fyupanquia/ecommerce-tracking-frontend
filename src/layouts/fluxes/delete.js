@@ -36,15 +36,15 @@ function TaskNew() {
   const navigate = useNavigate();
 
   const onGoBack = () => {
-    navigate("/tareas");
+    navigate("/flujos");
   };
 
   const onRemove = () => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/tasks/${params.id}`;
+      const baseURL = `http://localhost:3001/fluxes/${params.id}`;
       axios
         .delete(baseURL, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status == 200) {
@@ -76,7 +76,7 @@ function TaskNew() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  Eliminar tarea
+                  Eliminar flujo
                 </MDTypography>
                 <MDButton variant="gradient" color="dark" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
@@ -85,7 +85,7 @@ function TaskNew() {
               </MDBox>
               <Grid item xs={12}>
                 <DeleteCard
-                  title="¿ESTÁS SEGURO DE ELIMINAR ESTA TAREA?"
+                  title="¿ESTÁS SEGURO DE ELIMINAR ESTE FLUJO?"
                   description="Luego de dar clic en ACEPTAR no se podrá revertir"
                   onRemove={onRemove}
                   onCancel={onGoBack}

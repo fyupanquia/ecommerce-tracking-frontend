@@ -55,7 +55,7 @@ function Tables() {
 
       axios
         .get(baseURL, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status == 200) {

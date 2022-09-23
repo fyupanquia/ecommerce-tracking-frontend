@@ -54,7 +54,6 @@ import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
 import { useLocalStorage } from "providers/useLocalStorage";
-import { AuthProvider } from "./providers/AuthProvider";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -150,7 +149,7 @@ export default function App() {
       </Icon>
     </MDBox>
   );
-
+   
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
@@ -160,7 +159,7 @@ export default function App() {
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="Sistema de seguimiento"
-            routes={routes.authenticated}
+            routes={routes.authenticated[useauth.profile]}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
@@ -169,10 +168,9 @@ export default function App() {
         </>
       )}
       {layout === "vr" && <Configurator />}
-      {/* <Routes>{getRoutes([...routes.auth, ...routes.authenticated])}</Routes> */}
       <Routes>
         {[
-          ...getRoutes(useauth ? routes.authenticated : routes.auth),
+          ...getRoutes(useauth ? routes.authenticated[useauth.profile] : routes.auth),
           useauth ? (
             <Route path="*" element={<Navigate to="/dashboard" />} key="all" />
           ) : (

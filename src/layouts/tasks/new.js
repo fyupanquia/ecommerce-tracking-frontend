@@ -55,7 +55,7 @@ function TasksNew() {
           name: iName.value,
         },
         {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         }
       )
       .then((response) => {
@@ -94,7 +94,7 @@ function TasksNew() {
           name: iName.value,
         },
         {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         }
       )
       .then((response) => {
@@ -144,7 +144,7 @@ function TasksNew() {
       const baseURL = `http://localhost:3001/tasks/${params.id}`;
       axios
         .get(baseURL, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
           if (response.status === 200) {

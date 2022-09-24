@@ -46,6 +46,7 @@ import ModulesNew from "layouts/modules/new";
 import ModuleDelete from "layouts/modules/delete";
 import UsersNew from "layouts/users/new";
 import UsersProfile from "layouts/users/profile";
+import Tracking from "layouts/tracking/new";
 import UserDelete from "layouts/users/delete";
 
 import Fluxes from "layouts/fluxes";
@@ -278,6 +279,14 @@ const routes = {
           },
         ],
       },
+      {
+        type: "collapse",
+        name: "Tracking",
+        key: "tracking",
+        icon: <Icon fontSize="small">place</Icon>,
+        route: "/tracking",
+        component: <Tracking />,
+      },,
       {
         type: "collapse",
         name: "Cerrar sesión",

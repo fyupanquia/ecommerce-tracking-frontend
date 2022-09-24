@@ -158,8 +158,6 @@ function FluxesNew() {
       })
       .then((response) => {
         if (response.status == 200) {
-          setName("");
-          setBody([]);
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>

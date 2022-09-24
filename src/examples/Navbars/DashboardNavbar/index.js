@@ -53,12 +53,16 @@ import {
   setOpenConfigurator,
 } from "context";
 
+import { useNavigate } from "react-router-dom";
+
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Setting the navbar type
@@ -123,6 +127,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
     },
   });
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      if (search) {
+        navigate(`/${search}`);
+      }
+    }
+  };
+
   return (
     <AppBar
       position={absolute ? "absolute" : navbarType}
@@ -136,7 +148,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox pr={1}>
-              <MDInput label="Buscar" />
+              <MDInput
+                label="Buscar"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                onKeyDown={handleKeyDown}
+              />
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/perfil">

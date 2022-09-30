@@ -25,7 +25,6 @@ import MDTypography from "components/MDTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 
 function OrdersOverview({ modules }) {
-  console.log(modules)
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox p={2}>
@@ -35,6 +34,7 @@ function OrdersOverview({ modules }) {
             icon="shopping_cart"
             title={m.module_id.name}
             dateTime={m.created_at}
+            key={m.id}
           />
         ))}
       </MDBox>

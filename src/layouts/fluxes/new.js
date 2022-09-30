@@ -100,12 +100,16 @@ function FluxesNew() {
   const [taskRows, setTaskRows] = useState([]);
   const [selectedModule, setSelectedModule] = useState(null);
 
+  const [isPublic, setIsPublic] = useState(false);
+
   const getNameInput = () => [...formEl.current.elements].find((e) => e.name === "name");
   const getBodyRequest = () => {
     const clone = JSON.parse(JSON.stringify(body));
-    const name = getNameInput().value;
+    const fluxname = getNameInput().value;
+    console.log({ isPublic });
     return {
-      name,
+      name: fluxname,
+      public: isPublic,
       modules: clone.map((m) => ({
         id: m.id,
         tasks: m.tasks.map((t) => ({
@@ -189,6 +193,8 @@ function FluxesNew() {
       onSave(bodyRequest);
     }
   };
+
+  const handleSetIsPublic = () => setIsPublic(!isPublic);
 
   useEffect(() => {
     if (alert) {
@@ -366,24 +372,43 @@ function FluxesNew() {
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="text"
-                      label="Nombre"
-                      name="name"
-                      variant="standard"
-                      value={name}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                      }}
-                      fullWidth
-                    />
-                  </MDBox>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <MDBox mb={2}>
+                        <MDInput
+                          type="text"
+                          label="Nombre"
+                          name="name"
+                          variant="standard"
+                          value={name}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                          }}
+                          fullWidth
+                        />
+                      </MDBox>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <MDBox display="flex" alignItems="center" ml={-1}>
+                        <Switch checked={isPublic} onChange={handleSetIsPublic} name="isPublic" />
+                        <MDTypography
+                          variant="button"
+                          fontWeight="regular"
+                          color="text"
+                          onClick={handleSetIsPublic}
+                          sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
+                        >
+                          &nbsp;&nbsp;Habilitar seguimiento
+                        </MDTypography>
+                      </MDBox>
+                    </Grid>
+                  </Grid>
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <MultipleSelectChip
                         label="Módulos"
                         submitLabel="AGREGAR MÓDULOS"
+                        name="select-modules"
                         rows={modules}
                         disabledSubmit={false}
                         onSubmit={moduleSelectOnSubmit}
@@ -400,6 +425,7 @@ function FluxesNew() {
                       <MultipleSelectChip
                         label="Tareas"
                         submitLabel="AGREGAR TAREAS"
+                        name="select-tasks"
                         rows={tasks}
                         disabledSubmit={!body.length || body.find((m) => m.selected) === undefined}
                         onSubmit={taskSelectOnSubmit}
@@ -413,6 +439,7 @@ function FluxesNew() {
                       />
                     </Grid>
                   </Grid>
+
                   <MDBox mt={2} mb={1}>
                     <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
                       Guardar

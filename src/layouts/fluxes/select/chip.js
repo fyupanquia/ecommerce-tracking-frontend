@@ -11,6 +11,8 @@ import { Icon, SvgIcon } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 
+import 'components/MDSelect/select.css'
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -44,7 +46,7 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function MultipleSelectChip({ label, rows, submitLabel, onSubmit, disabledSubmit }) {
+export default function MultipleSelectChip({ label, rows, submitLabel, onSubmit, disabledSubmit, name }) {
   const theme = useTheme();
   const [value, setValue] = useState([]);
   rows = Array.isArray(rows) ? rows : [];
@@ -63,7 +65,7 @@ export default function MultipleSelectChip({ label, rows, submitLabel, onSubmit,
 
   return (
     <div>
-      <FormControl fullWidth>
+      <FormControl fullWidth name={name}>
         <InputLabel id="demo-multiple-chip-label">{label}</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"

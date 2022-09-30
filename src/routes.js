@@ -83,6 +83,13 @@ const routes = {
         icon: <Icon fontSize="small">person</Icon>,
         route: "/perfil",
         component: <UsersProfile />,
+      },{
+        type: "collapse",
+        name: "Tracking",
+        key: "tracking",
+        icon: <Icon fontSize="small">place</Icon>,
+        route: "/tracking",
+        component: <Tracking />,
       },
       {
         type: "collapse",
@@ -286,7 +293,7 @@ const routes = {
         icon: <Icon fontSize="small">place</Icon>,
         route: "/tracking",
         component: <Tracking />,
-      },,
+      },
       {
         type: "collapse",
         name: "Cerrar sesión",

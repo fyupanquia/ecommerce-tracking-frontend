@@ -57,7 +57,7 @@ function TasksNew() {
 
   const onRequest = () => {
     const found = fluxes.find((f) => f.id == flux);
-    console.log({ found} )
+    console.log({ found });
     setTimeLine(<OrdersOverview modules={found.modules} />);
   };
 
@@ -77,7 +77,13 @@ function TasksNew() {
       })
       .then((response) => {
         if (response.status === 200) {
-          setFluxesHTML(response.data.map((f) => <MenuItem value={f.id}>{f.name}</MenuItem>));
+          setFluxesHTML(
+            response.data.map((f) => (
+              <MenuItem key={f.id} value={f.id}>
+                {f.name}
+              </MenuItem>
+            ))
+          );
           setFluxes(response.data);
         }
       })

@@ -29,9 +29,10 @@ import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import Loading from "components/Loading";
 import DeleteCard from "./cards/deleteCard";
 
-import Loading from "components/Loading";
+import 'components/MDSelect/select.css'
 
 function UsersNew() {
   const formEl = useRef();
@@ -222,96 +223,101 @@ function UsersNew() {
                 </MDButton>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
-                {loaded ? (<MDBox component="form" role="form" ref={formEl}>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="text"
-                      label="Nombres Completos"
-                      name="fullname"
-                      variant="standard"
-                      value={fullname}
-                      onChange={(e) => {
-                        setFullname(e.target.value);
-                      }}
-                      fullWidth
-                    />
-                  </MDBox>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="email"
-                      label="Email"
-                      name="email"
-                      variant="standard"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                      }}
-                      fullWidth
-                    />
-                  </MDBox>
-                  <MDBox p={2}>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} md={6}>
-                        <MDBox mb={2}>
-                          <FormControl fullWidth>
-                            <InputLabel id="profile">Perfil</InputLabel>
-                            <Select
-                              labelId="profile"
-                              id="profile"
-                              label="Perfil"
-                              name="profile"
-                              defaultValue="CLIENTE"
-                              value={profile}
-                              onChange={(event) => {
-                                setProfile(event.target.value);
-                              }}
+                {loaded ? (
+                  <MDBox component="form" role="form" ref={formEl}>
+                    <MDBox mb={2}>
+                      <MDInput
+                        type="text"
+                        label="Nombres Completos"
+                        name="fullname"
+                        variant="standard"
+                        value={fullname}
+                        onChange={(e) => {
+                          setFullname(e.target.value);
+                        }}
+                        fullWidth
+                      />
+                    </MDBox>
+                    <MDBox mb={2}>
+                      <MDInput
+                        type="email"
+                        label="Email"
+                        name="email"
+                        variant="standard"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                        }}
+                        fullWidth
+                      />
+                    </MDBox>
+                    <MDBox p={0}>
+                      <Grid container spacing={3}>
+                        <Grid item xs={12} md={6}>
+                          <MDBox mb={2}>
+                            <FormControl fullWidth name="select-profile">
+                              <InputLabel id="profile">Perfil</InputLabel>
+                              <Select
+                                labelId="profile"
+                                id="profile"
+                                label="Perfil"
+                                name="profile"
+                                defaultValue="CLIENTE"
+                                value={profile}
+                                onChange={(event) => {
+                                  setProfile(event.target.value);
+                                }}
+                                classes="frank"
+                              >
+                                <MenuItem value="CLIENTE">CLIENTE</MenuItem>
+                                <MenuItem value="ADMIN">ADMIN</MenuItem>
+                                <MenuItem value="MASTER">MASTER</MenuItem>
+                              </Select>
+                            </FormControl>
+                          </MDBox>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <MDBox display="flex" alignItems="center" ml={-1}>
+                            <Switch
+                              checked={isActive}
+                              onChange={handleSetIsActive}
+                              name="is_active"
+                            />
+                            <MDTypography
+                              variant="button"
+                              fontWeight="regular"
+                              color="text"
+                              onClick={handleSetIsActive}
+                              sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
                             >
-                              <MenuItem value="CLIENTE">CLIENTE</MenuItem>
-                              <MenuItem value="ADMIN">ADMIN</MenuItem>
-                              <MenuItem value="MASTER">MASTER</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </MDBox>
+                              &nbsp;&nbsp;Activo
+                            </MDTypography>
+                          </MDBox>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <MDBox display="flex" alignItems="center" ml={-1}>
-                          <Switch
-                            checked={isActive}
-                            onChange={handleSetIsActive}
-                            name="is_active"
-                          />
-                          <MDTypography
-                            variant="button"
-                            fontWeight="regular"
-                            color="text"
-                            onClick={handleSetIsActive}
-                            sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-                          >
-                            &nbsp;&nbsp;Activo
-                          </MDTypography>
-                        </MDBox>
-                      </Grid>
-                    </Grid>
+                    </MDBox>
+                    <MDBox mb={2}>
+                      <MDInput
+                        type="password"
+                        label="Contraseña"
+                        name="password"
+                        variant="standard"
+                        value={password}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }}
+                        fullWidth
+                      />
+                    </MDBox>
+                    <MDBox mt={2} mb={1}>
+                      <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
+                        Guardar
+                      </MDButton>
+                    </MDBox>
                   </MDBox>
-                  <MDBox mb={2}>
-                    <MDInput
-                      type="password"
-                      label="Contraseña"
-                      name="password"
-                      variant="standard"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                      fullWidth
-                    />
-                  </MDBox>
-                  <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
-                      Guardar
-                    </MDButton>
-                  </MDBox>
-                </MDBox>) : <Loading/>}
+                ) : (
+                  <Loading />
+                )}
               </MDBox>
             </Card>
           </Grid>

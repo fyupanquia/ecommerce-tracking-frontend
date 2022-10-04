@@ -106,7 +106,6 @@ function FluxesNew() {
   const getBodyRequest = () => {
     const clone = JSON.parse(JSON.stringify(body));
     const fluxname = getNameInput().value;
-    console.log({ isPublic });
     return {
       name: fluxname,
       public: isPublic,
@@ -221,6 +220,7 @@ function FluxesNew() {
           if (response.status === 200) {
             const { data: rsp } = response;
             setName(rsp.name);
+            setIsPublic(rsp.public)
             const editBody = rsp.modules.map((m, i) => ({
               id: m.module_id.id,
               name: m.module_id.name,

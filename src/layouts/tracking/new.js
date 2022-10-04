@@ -34,31 +34,101 @@ import DeleteCard from "./cards/deleteCard";
 import MultipleSelectChip from "./select/chip";
 import OrdersOverview from "./timeline";
 
+import "components/MDSelect/select.css";
+import myBody from './data'
+import FluxHeader from './badge'
 function TasksNew() {
   const formEl = useRef();
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
   const [fluxHTML, setFluxesHTML] = useState([]);
   const [fluxes, setFluxes] = useState([]);
   const [flux, setFlux] = useState("");
   const [timeLine, setTimeLine] = useState("");
-
-  const getInputs = () => {
-    const iName = [...formEl.current.elements].find((e) => e.name === "name");
-    return { iName };
-  };
+  const [body, setBody] = useState(myBody);
 
   const onGoBack = () => {
     navigate("/dashboard");
   };
 
-  const onRequest = () => {
-    const found = fluxes.find((f) => f.id == flux);
-    console.log({ found });
-    setTimeLine(<OrdersOverview modules={found.modules} />);
+  const onTrack = () => {
+    if (!flux) {
+      setAlert(
+        <Grid item xs={12}>
+          <MDAlert color="error" dismissible>
+            <MDTypography variant="body2" color="white">
+              Seleccione el flujo a seguir
+            </MDTypography>
+          </MDAlert>
+        </Grid>
+      );
+      return;
+    }
+    if (user.profile == "ADMIN" && !email.trim()) {
+      setAlert(
+        <Grid item xs={12}>
+          <MDAlert color="error" dismissible>
+            <MDTypography variant="body2" color="white">
+              Ingrese el email del usuario
+            </MDTypography>
+          </MDAlert>
+        </Grid>
+      );
+      return;
+    }
+    if (!code.trim()) {
+      setAlert(
+        <Grid item xs={12}>
+          <MDAlert color="error" dismissible>
+            <MDTypography variant="body2" color="white">
+              Ingrese el código
+            </MDTypography>
+          </MDAlert>
+        </Grid>
+      );
+      return;
+    }
+
+    const baseURL = `http://localhost:3001/tracking/${flux}-${email || user.email}-${code}`;
+    axios
+      .get(baseURL, {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setBody(response.data);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        if (
+          e.response &&
+          e.response.status === 404 &&
+          e.response.data &&
+          (e.response.data.message === "El seguimiento de este módulo no está habilitado" ||
+            e.response.data.message === "El flujo para este usuario no ha sido iniciado aún")
+        ) {
+          setBody(null);
+          setAlert(
+            <Grid item xs={12}>
+              <MDAlert color="warning" dismissible>
+                <MDTypography variant="body2" color="white">
+                  No se logró trackear esta solicitud
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+          return;
+        }
+        onGoBack();
+      });
+    /*
+   
+    */
   };
 
   useEffect(() => {
@@ -69,6 +139,13 @@ function TasksNew() {
     }
   }, [alert]);
 
+
+  useEffect(() => {
+    if (body && body.modules) {
+      setTimeLine(<OrdersOverview modules={body.modules} />);
+    }
+  }, [body]);
+
   useEffect(() => {
     const baseURL = `http://localhost:3001/fluxes`;
     axios
@@ -78,11 +155,13 @@ function TasksNew() {
       .then((response) => {
         if (response.status === 200) {
           setFluxesHTML(
-            response.data.map((f) => (
-              <MenuItem key={f.id} value={f.id}>
-                {f.name}
-              </MenuItem>
-            ))
+            response.data
+              .filter((f) => f.public)
+              .map((f) => (
+                <MenuItem key={f.id} value={f.id}>
+                  {f.name}
+                </MenuItem>
+              ))
           );
           setFluxes(response.data);
         }
@@ -92,6 +171,105 @@ function TasksNew() {
         onGoBack();
       });
   }, []);
+
+  let form;
+
+  if (user.profile == "ADMIN") {
+    form = (
+      <>
+        <Grid item xs={4}>
+          <MDBox mb={2} p={2}>
+            <FormControl fullWidth name="select-modules">
+              <InputLabel id="fluxes">Flujos</InputLabel>
+              <Select
+                labelId="fluxes"
+                id="fluxes"
+                label="Flujos"
+                name="fluxes"
+                defaultValue=""
+                value={flux}
+                onChange={(event) => {
+                  setFlux(event.target.value);
+                }}
+              >
+                {fluxHTML}
+              </Select>
+            </FormControl>
+          </MDBox>
+        </Grid>
+        <Grid item xs={4}>
+          <MDBox mb={2} p={2}>
+            <MDInput
+              type="text"
+              label="Email"
+              name="email"
+              variant="standard"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
+              fullWidth
+            />
+          </MDBox>
+        </Grid>
+        <Grid item xs={4}>
+          <MDBox mb={2} p={2}>
+            <MDInput
+              type="text"
+              label="Identificador"
+              name="identificator"
+              variant="standard"
+              value={code}
+              onChange={(event) => {
+                setCode(event.target.value);
+              }}
+              fullWidth
+            />
+          </MDBox>
+        </Grid>
+      </>
+    );
+  } else {
+    form = (
+      <>
+        <Grid item xs={6}>
+          <MDBox mb={2} p={2}>
+            <FormControl fullWidth name="select-modules">
+              <InputLabel id="fluxes">Flujos</InputLabel>
+              <Select
+                labelId="fluxes"
+                id="fluxes"
+                label="Flujos"
+                name="fluxes"
+                defaultValue=""
+                value={flux}
+                onChange={(event) => {
+                  setFlux(event.target.value);
+                }}
+              >
+                {fluxHTML}
+              </Select>
+            </FormControl>
+          </MDBox>
+        </Grid>
+        <Grid item xs={6}>
+          <MDBox mb={2} p={2}>
+            <MDInput
+              type="text"
+              label="Identificador"
+              name="identificator"
+              variant="standard"
+              value={code}
+              onChange={(event) => {
+                setCode(event.target.value);
+              }}
+              fullWidth
+            />
+          </MDBox>
+        </Grid>
+      </>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -121,44 +299,17 @@ function TasksNew() {
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form">
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth>
-                        <InputLabel id="fluxes">Flujos</InputLabel>
-                        <Select
-                          labelId="fluxes"
-                          id="fluxes"
-                          label="Flujos"
-                          name="fluxes"
-                          defaultValue=""
-                          value={flux}
-                          onChange={(event) => {
-                            setFlux(event.target.value);
-                          }}
-                        >
-                          {fluxHTML}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <MDBox mb={2}>
-                        <MDInput
-                          type="text"
-                          label="Identificador"
-                          name="identificator"
-                          variant="standard"
-                          fullWidth
-                        />
-                      </MDBox>
-                    </Grid>
+                    {form}
                   </Grid>
                   <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onRequest}>
-                      Consultar
+                    <MDButton variant="gradient" color="info" fullWidth onClick={onTrack}>
+                      Seguir
                     </MDButton>
                   </MDBox>
                 </MDBox>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
+                <FluxHeader flux={body}/>
                 {timeLine}
               </MDBox>
             </Card>

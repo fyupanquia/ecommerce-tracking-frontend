@@ -12,33 +12,68 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
+import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
-import TimelineItem from "examples/Timeline/TimelineItem";
+import io from "socket.io-client";
+import TimelineItem from "./TimelineItem";
+import Transaction from "../transactions";
 
 function OrdersOverview({ modules }) {
+  const socket = io("http://localhost:3001");
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      setIsConnected(true);
+    });
+
+    socket.on("disconnect", () => {
+      setIsConnected(false);
+    });
+
+    socket.on("fyupanquia@outlook.com:message", (message) => {
+      console.log({ message });
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("pong");
+    };
+  }, []);
+
   return (
-    <Card sx={{ height: "100%" }}>
-      <MDBox p={2}>
-        {modules.map((m) => (
-          <TimelineItem
-            color="info"
-            icon="shopping_cart"
-            title={m.module_id.name}
-            dateTime={m.created_at}
-            key={m.id}
-          />
-        ))}
-      </MDBox>
-    </Card>
+    <Grid container spacing={2}>
+      <Grid item xs={3}>
+        <Card sx={{ height: "100%" }}>
+          <MDBox p={2}>
+            {modules.map((m) => (
+              <TimelineItem
+                color="info"
+                icon="shopping_cart"
+                title={m.module_id.name}
+                dateTime={m.created_at}
+                status={m.status}
+                key={m.id}
+              />
+            ))}
+          </MDBox>
+        </Card>
+      </Grid>
+      <Grid item xs={9}>
+        <Transaction modulo={ modules[1] }/> 
+      </Grid>
+    </Grid>
   );
 }
 

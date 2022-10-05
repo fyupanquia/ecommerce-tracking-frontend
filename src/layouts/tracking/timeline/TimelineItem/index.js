@@ -52,7 +52,6 @@ function TimelineItem({ color, icon, title, dateTime, status, description, lastI
   let tlBadge = null;
 
   if (status == "WAITING") {
-    console.log("eh!")
     tlBadge = (
       <StyledBox
         display="flex"
@@ -78,7 +77,7 @@ function TimelineItem({ color, icon, title, dateTime, status, description, lastI
         display="flex"
         justifyContent="center"
         alignItems="center"
-        bgColor={colors[status]}
+        bgColor={colors[status] || colors['OFFLINE']}
         color="white"
         width="2rem"
         height="2rem"

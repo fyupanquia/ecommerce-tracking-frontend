@@ -35,8 +35,9 @@ import MultipleSelectChip from "./select/chip";
 import OrdersOverview from "./timeline";
 
 import "components/MDSelect/select.css";
-import myBody from './data'
-import FluxHeader from './badge'
+import myBody from "./data";
+import FluxHeader from "./badge";
+
 function TasksNew() {
   const formEl = useRef();
   const params = useParams();
@@ -49,7 +50,7 @@ function TasksNew() {
   const [fluxes, setFluxes] = useState([]);
   const [flux, setFlux] = useState("");
   const [timeLine, setTimeLine] = useState("");
-  const [body, setBody] = useState(myBody);
+  const [body, setBody] = useState(null);
 
   const onGoBack = () => {
     navigate("/dashboard");
@@ -139,14 +140,14 @@ function TasksNew() {
     }
   }, [alert]);
 
-
   useEffect(() => {
-    if (body && body.modules) {
+    if (typeof body === "object" && body !== null && body.modules) {
       setTimeLine(<OrdersOverview modules={body.modules} />);
     }
   }, [body]);
 
   useEffect(() => {
+    /*
     const baseURL = `http://localhost:3001/fluxes`;
     axios
       .get(baseURL, {
@@ -170,6 +171,7 @@ function TasksNew() {
         console.log(e);
         onGoBack();
       });
+    */
   }, []);
 
   let form;
@@ -271,6 +273,19 @@ function TasksNew() {
     );
   }
 
+  const onStart = () => {
+    ((cnt) => {
+      let index = cnt;
+      setInterval(() => {
+        if (index <= myBody.length - 1) {
+          console.log("loading", index);
+          setBody(myBody[index]);
+          index += 1;
+        }
+      }, 5000);
+    })(0);
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -302,14 +317,14 @@ function TasksNew() {
                     {form}
                   </Grid>
                   <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onTrack}>
+                    <MDButton variant="gradient" color="info" fullWidth onClick={onStart}>
                       Seguir
                     </MDButton>
                   </MDBox>
                 </MDBox>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
-                <FluxHeader flux={body}/>
+                {body && <FluxHeader flux={body} />}
                 {timeLine}
               </MDBox>
             </Card>

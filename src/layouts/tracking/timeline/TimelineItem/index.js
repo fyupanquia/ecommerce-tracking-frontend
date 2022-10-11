@@ -29,7 +29,8 @@ import { useTimeline } from "examples/Timeline/context";
 // Custom styles for the TimelineItem
 import { styled } from "@mui/material/styles";
 import timelineItem from "./styles";
-import Badge from "../../badge"
+import Badge from "../../FluxHeader";
+import { tzToString } from "../../util/date";
 
 const StyledBox = styled(MDBox)(({ theme }) => ({
   backgroundColor: "#fb8c00",
@@ -77,7 +78,7 @@ function TimelineItem({ color, icon, title, dateTime, status, description, lastI
         display="flex"
         justifyContent="center"
         alignItems="center"
-        bgColor={colors[status] || colors['OFFLINE']}
+        bgColor={colors[status] || colors.OFFLINE}
         color="white"
         width="2rem"
         height="2rem"
@@ -102,7 +103,7 @@ function TimelineItem({ color, icon, title, dateTime, status, description, lastI
         </MDTypography>
         <MDBox mt={0.5}>
           <MDTypography variant="caption" color={isDark ? "secondary" : "text"}>
-            {dateTime}
+            {tzToString(dateTime)}
           </MDTypography>
         </MDBox>
         <MDBox mt={2} mb={1.5}>

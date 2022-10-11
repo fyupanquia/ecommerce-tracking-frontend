@@ -16,7 +16,6 @@ function Action({ row }) {
   };
 
   const onEdit = (u) => {
-    console.log("edit!", u);
     navigate(`/flujos/editar/${u.id}`);
   };
 

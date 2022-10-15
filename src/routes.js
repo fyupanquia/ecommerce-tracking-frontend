@@ -48,6 +48,9 @@ import UsersNew from "layouts/users/new";
 import UsersProfile from "layouts/users/profile";
 import Tracking from "layouts/tracking/new";
 import UserDelete from "layouts/users/delete";
+import Orders from "layouts/orders";
+import OrdersView from "layouts/orders/new";
+
 
 import Fluxes from "layouts/fluxes";
 import FluxesNew from "layouts/fluxes/new";
@@ -61,6 +64,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
+import Simulator from "layouts/simulator/new";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -83,7 +87,35 @@ const routes = {
         icon: <Icon fontSize="small">person</Icon>,
         route: "/perfil",
         component: <UsersProfile />,
-      },{
+      },
+      {
+        type: "collapse",
+        name: "Pedidos",
+        key: "pedidos",
+        icon: <Icon fontSize="small">card_giftcard</Icon>,
+        route: "/pedidos",
+        component: <Orders />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Pedidos",
+            key: "pedidos",
+            icon: <Icon fontSize="small">card_giftcard</Icon>,
+            route: "/pedidos",
+            dropdown: true,
+            component: <Orders />,
+          },
+          {
+            type: "collapse",
+            name: "Visualizar Pedido",
+            key: "pedidos-view",
+            icon: <Icon fontSize="small">card_giftcard</Icon>,
+            route: "/pedidos/ver/:id",
+            component: <OrdersView />,
+          }
+        ]
+      },
+      {
         type: "collapse",
         name: "Tracking",
         key: "tracking",
@@ -162,7 +194,7 @@ const routes = {
       },
       {
         type: "collapse",
-        name: "Modulos",
+        name: "Módulos",
         key: "modulos",
         icon: <Icon fontSize="small">all_inbox_icon</Icon>,
         route: "/modulos",
@@ -170,7 +202,7 @@ const routes = {
         collapse: [
           {
             type: "collapse",
-            name: "Modulos",
+            name: "Módulos",
             key: "modulos",
             icon: <Icon fontSize="small">all_inbox_icon</Icon>,
             route: "/modulos",
@@ -303,6 +335,217 @@ const routes = {
         component: <SignOut />,
       },
     ],
+    MASTER: [
+      {
+        type: "collapse",
+        name: "Dashboard",
+        key: "dashboard",
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: "/dashboard",
+        component: <Dashboard />,
+      },
+      {
+        type: "collapse",
+        name: "Perfil",
+        key: "perfil",
+        icon: <Icon fontSize="small">person</Icon>,
+        route: "/perfil",
+        component: <UsersProfile />,
+      },
+      {
+        type: "collapse",
+        name: "Usuarios",
+        key: "usuarios",
+        icon: <Icon fontSize="small">people</Icon>,
+        route: "/usuarios",
+        component: <Users />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Usuarios",
+            key: "usuarios",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/usuarios",
+            dropdown: true,
+            component: <Users />,
+          },
+          {
+            type: "collapse",
+            name: "Agregar",
+            key: "users-add",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/usuarios/agregar",
+            component: <UsersNew />,
+          },
+          {
+            type: "collapse",
+            name: "Editar",
+            key: "users-edit",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/usuarios/editar/:id",
+            component: <UsersNew />,
+          },
+          {
+            type: "collapse",
+            name: "Eliminar",
+            key: "users-delete",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/usuarios/eliminar/:id",
+            component: <UserDelete />,
+          },
+        ],
+      },
+      {
+        type: "collapse",
+        name: "Módulos",
+        key: "modulos",
+        icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+        route: "/modulos",
+        component: <Modules />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Módulos",
+            key: "modulos",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/modulos",
+            component: <Modules />,
+          },
+          {
+            type: "collapse",
+            name: "Agregar",
+            key: "modulos-add",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/modulos/agregar",
+            component: <ModulesNew />,
+          },
+          {
+            type: "collapse",
+            name: "Editar",
+            key: "modulos-edit",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/modulos/editar/:id",
+            component: <ModulesNew />,
+          },
+          {
+            type: "collapse",
+            name: "Eliminar",
+            key: "modulos-delete",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/modulos/eliminar/:id",
+            component: <ModuleDelete />,
+          },
+        ],
+      },
+      {
+        type: "collapse",
+        name: "Tareas",
+        key: "tareas",
+        icon: <Icon fontSize="small">inventory</Icon>,
+        route: "/tareas",
+        component: <Tasks />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Tareas",
+            key: "tareas",
+            icon: <Icon fontSize="small">inventory</Icon>,
+            route: "/tareas",
+            component: <Tasks />,
+          },
+          {
+            type: "collapse",
+            name: "Agregar",
+            key: "tareas-add",
+            icon: <Icon fontSize="small">inventory</Icon>,
+            route: "/tareas/agregar",
+            component: <TasksNew />,
+          },
+          {
+            type: "collapse",
+            name: "Editar",
+            key: "tareas-edit",
+            icon: <Icon fontSize="small">inventory</Icon>,
+            route: "/tareas/editar/:id",
+            component: <TasksNew />,
+          },
+          {
+            type: "collapse",
+            name: "Eliminar",
+            key: "tareas-delete",
+            icon: <Icon fontSize="small">inventory</Icon>,
+            route: "/tareas/eliminar/:id",
+            component: <TaskDelete />,
+          },
+        ],
+      },
+      {
+        type: "collapse",
+        name: "Flujos",
+        key: "flujos",
+        icon: <Icon fontSize="small">polyline</Icon>,
+        route: "/flujos",
+        component: <Fluxes />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Flujos",
+            key: "flujos",
+            icon: <Icon fontSize="small">polyline</Icon>,
+            route: "/flujos",
+            component: <Fluxes />,
+          },
+          {
+            type: "collapse",
+            name: "Agregar",
+            key: "flujos-add",
+            icon: <Icon fontSize="small">polyline</Icon>,
+            route: "/flujos/agregar",
+            component: <FluxesNew />,
+          },
+          {
+            type: "collapse",
+            name: "Editar",
+            key: "flujos-edit",
+            icon: <Icon fontSize="small">polyline</Icon>,
+            route: "/flujos/editar/:id",
+            component: <FluxesNew />,
+          },
+          {
+            type: "collapse",
+            name: "Eliminar",
+            key: "flujos-delete",
+            icon: <Icon fontSize="small">polyline</Icon>,
+            route: "/flujos/eliminar/:id",
+            component: <FluxDelete />,
+          },
+        ],
+      },
+      {
+        type: "collapse",
+        name: "Tracking",
+        key: "tracking",
+        icon: <Icon fontSize="small">place</Icon>,
+        route: "/tracking",
+        component: <Tracking />,
+      },
+      {
+        type: "collapse",
+        name: "Simulador",
+        key: "simulator",
+        icon: <Icon fontSize="small">tune</Icon>,
+        route: "/simulator",
+        component: <Simulator />,
+      },
+      {
+        type: "collapse",
+        name: "Cerrar sesión",
+        key: "sign-out",
+        icon: <Icon fontSize="small">logout</Icon>,
+        route: "/authentication/sign-out",
+        component: <SignOut />,
+      },
+    ]
   },
   auth: [
     {
@@ -320,7 +563,7 @@ const routes = {
       icon: <Icon fontSize="small">assignment</Icon>,
       route: "/authentication/sign-up",
       component: <SignUp />,
-    },
+    }
   ],
 };
 

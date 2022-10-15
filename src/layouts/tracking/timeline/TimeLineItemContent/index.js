@@ -25,9 +25,10 @@ import MDTypography from "components/MDTypography";
 
 // Billing page components
 import Transaction from "layouts/billing/components/Transaction";
-import Content from "./content";
+import TaskContent from "./TaskContent";
+import { tzToString } from "../../util/date";
 
-function Transactions({ modulo }) {
+function TimeLineItemContent({ modulo }) {
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
@@ -41,17 +42,17 @@ function Transactions({ modulo }) {
             </Icon>
           </MDBox>
           <MDTypography variant="button" color="text" fontWeight="regular">
-            {modulo.created_at}
+            {tzToString(modulo.started_at)}
           </MDTypography>
         </MDBox>
       </MDBox>
       <MDBox pt={3} pb={2} px={2}>
         {modulo.tasks.map((t) => (
-          <Content key={t.id} task={t} />
+          <TaskContent key={t.id} task={t} />
         ))}
       </MDBox>
     </Card>
   );
 }
 
-export default Transactions;
+export default TimeLineItemContent;

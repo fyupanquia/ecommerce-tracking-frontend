@@ -29,7 +29,8 @@ import { useTimeline } from "examples/Timeline/context";
 // Custom styles for the TimelineItem
 import { styled } from "@mui/material/styles";
 import timelineItem from "./styles";
-import Badge from "../../badge"
+import Badge from "../../FluxHeader";
+import { tzToString } from "../../util/date";
 
 const StyledBox = styled(MDBox)(({ theme }) => ({
   backgroundColor: "#fb8c00",
@@ -47,10 +48,10 @@ const StyledBox = styled(MDBox)(({ theme }) => ({
   },
 }));
 
-function TimelineItem({ color, icon, title, dateTime, status, description, lastItem }) {
+function TimelineItem({ color, icon, title, started_at, ended_at, status, description, lastItem }) {
   const isDark = useTimeline();
   let tlBadge = null;
-
+  
   if (status == "WAITING") {
     tlBadge = (
       <StyledBox
@@ -77,7 +78,7 @@ function TimelineItem({ color, icon, title, dateTime, status, description, lastI
         display="flex"
         justifyContent="center"
         alignItems="center"
-        bgColor={colors[status] || colors['OFFLINE']}
+        bgColor={colors[status] || colors.OFFLINE}
         color="white"
         width="2rem"
         height="2rem"
@@ -100,11 +101,20 @@ function TimelineItem({ color, icon, title, dateTime, status, description, lastI
         <MDTypography variant="button" fontWeight="medium" color={isDark ? "white" : "dark"}>
           {title}
         </MDTypography>
-        <MDBox mt={0.5}>
-          <MDTypography variant="caption" color={isDark ? "secondary" : "text"}>
-            {dateTime}
-          </MDTypography>
-        </MDBox>
+        {started_at ? (
+          <MDBox mt={0.5}>
+            <MDTypography variant="caption" color={isDark ? "secondary" : "text"}>
+              Iniciado: {tzToString(started_at)}
+            </MDTypography>
+          </MDBox>
+        ) : null}
+        {ended_at ? (
+          <MDBox mt={0.5}>
+            <MDTypography variant="caption" color={isDark ? "secondary" : "text"}>
+              Finalizado: {tzToString(ended_at)}
+            </MDTypography>
+          </MDBox>
+        ) : null}
         <MDBox mt={2} mb={1.5}>
           {description ? (
             <MDTypography variant="button" color={isDark ? "white" : "dark"}>
@@ -138,7 +148,7 @@ TimelineItem.propTypes = {
   ]),
   icon: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
-  dateTime: PropTypes.string.isRequired,
+  //dateTime: PropTypes.string.isRequired,
   description: PropTypes.string,
   lastItem: PropTypes.bool,
 };

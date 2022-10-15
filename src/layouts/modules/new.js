@@ -37,6 +37,7 @@ function ModulesNew() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
   const [name, setName] = useState("");
+  const [icon, setIcon] = useState("");
 
   const getInputs = () => {
     const iName = [...formEl.current.elements].find((e) => e.name === "name");
@@ -54,6 +55,7 @@ function ModulesNew() {
         baseURL,
         {
           name: iName.value,
+          icon
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -61,7 +63,8 @@ function ModulesNew() {
       )
       .then((response) => {
         if (response.status == 201) {
-          setName("")
+          setName("");
+          setIcon("")
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
@@ -92,6 +95,7 @@ function ModulesNew() {
         baseURL,
         {
           name: iName.value,
+          icon
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -150,7 +154,8 @@ function ModulesNew() {
           if (response.status === 200) {
             const { iName } = getInputs();
             const { data } = response;
-            setName(data.name)
+            setName(data.name);
+            setIcon(data.icon)
           }
         })
         .catch((e) => {
@@ -203,6 +208,57 @@ function ModulesNew() {
                       }}
                       fullWidth
                     />
+                  </MDBox>
+                  <MDBox mb={2}>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} md={6}>
+                        <MDInput
+                          type="text"
+                          label="Icono"
+                          name="icon"
+                          variant="standard"
+                          value={icon}
+                          onChange={(e) => {
+                            setIcon(e.target.value);
+                          }}
+                          fullWidth
+                        />
+                        <MDTypography variant="caption" color="text">
+                          Catálogo:{" "}
+                          <MDTypography
+                            variant="caption"
+                            fontWeight="medium"
+                            textTransform="capitalize"
+                          >
+                            <a
+                              href="https://mui.com/material-ui/material-icons/"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              Click acá
+                            </a>
+                          </MDTypography>
+                        </MDTypography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <MDBox p={2} mx={3} display="flex" justifyContent="center">
+                          <MDBox
+                            display="grid"
+                            justifyContent="center"
+                            alignItems="center"
+                            bgColor="info"
+                            color="white"
+                            width="4rem"
+                            height="4rem"
+                            shadow="md"
+                            borderRadius="lg"
+                            variant="gradient"
+                          >
+                            <Icon fontSize="default">{icon}</Icon>
+                          </MDBox>
+                        </MDBox>
+                      </Grid>
+                    </Grid>
                   </MDBox>
                   <MDBox mt={2} mb={1}>
                     <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>

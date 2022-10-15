@@ -11,28 +11,17 @@ import { useNavigate } from "react-router-dom";
 function Action({ row }) {
   const navigate = useNavigate();
 
-  const onDelete = (u) => {
-    navigate(`/flujos/eliminar/${u.id}`);
-  };
-
   const onEdit = (u) => {
-    navigate(`/flujos/editar/${u.id}`);
+    navigate(`/pedidos/ver/${u.id}`);
   };
 
   return (
     <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
       <MDBox variant="gradient" display="flex" justifyContent="space-between" alignItems="center">
         <MDBox ml="auto" lineHeight={0} color="dark" onClick={() => onEdit(row)}>
-          <Tooltip title="Editar" placement="top">
+          <Tooltip title="Visualizar" placement="top">
             <Icon sx={{ cursor: "pointer" }} fontSize="small">
-              edit
-            </Icon>
-          </Tooltip>
-        </MDBox>
-        <MDBox ml="auto" lineHeight={0} color="error" onClick={() => onDelete(row)}>
-          <Tooltip title="Eliminar" placement="top">
-            <Icon sx={{ cursor: "pointer" }} fontSize="small">
-              delete
+              visibility
             </Icon>
           </Tooltip>
         </MDBox>

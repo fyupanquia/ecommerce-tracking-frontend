@@ -16,7 +16,6 @@ function Action({ row }) {
   };
 
   const onEdit = (u) => {
-    console.log("edit!", u);
     navigate(`/modulos/editar/${u.id}`);
   };
 

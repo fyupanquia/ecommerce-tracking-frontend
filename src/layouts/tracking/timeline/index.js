@@ -25,32 +25,30 @@ import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import io from "socket.io-client";
+import { useLocalStorage } from "providers/useLocalStorage";
 import TimelineItem from "./TimelineItem";
-import Transaction from "../transactions";
+import TimeLineItemContent from "./TimeLineItemContent";
 
-function OrdersOverview({ modules }) {
-  const socket = io("http://localhost:3001");
-  const [isConnected, setIsConnected] = useState(socket.connected);
+function TimeLine({ modules }) {
+  const [selectedModule, setSelectedModule] = useState(null);
 
   useEffect(() => {
-    socket.on("connect", () => {
-      setIsConnected(true);
-    });
-
-    socket.on("disconnect", () => {
-      setIsConnected(false);
-    });
-
-    socket.on("fyupanquia@outlook.com:message", (message) => {
-      console.log({ message });
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("pong");
-    };
-  }, []);
+    for (let i = 0; i < modules.length; i++) {
+      const modulo = modules[i];
+      if (modulo.status === "WAITING") {
+        setSelectedModule(modulo);
+        return;
+      }
+    }
+    for (let i = modules.length - 1; i >= 0; i--) {
+      const modulo = modules[i];
+      if (modulo.status === "SUCCESS") {
+        setSelectedModule(modulo);
+        return;
+      }
+    }
+    setSelectedModule(modules[0]);
+  }, [modules]);
 
   return (
     <Grid container spacing={2}>
@@ -60,9 +58,10 @@ function OrdersOverview({ modules }) {
             {modules.map((m) => (
               <TimelineItem
                 color="info"
-                icon="shopping_cart"
+                icon={m.module_id.icon}
                 title={m.module_id.name}
-                dateTime={m.created_at}
+                started_at={m.started_at}
+                ended_at={m.ended_at}
                 status={m.status}
                 key={m.id}
               />
@@ -71,13 +70,17 @@ function OrdersOverview({ modules }) {
         </Card>
       </Grid>
       <Grid item xs={9}>
-        <Transaction modulo={ modules[1] }/> 
+        {selectedModule ? (
+          <TimeLineItemContent modulo={selectedModule} />
+        ) : (
+          <span>LOADING.....</span>
+        )}
       </Grid>
     </Grid>
   );
 }
 
-export default OrdersOverview;
+export default TimeLine;
 
 /*
         <TimelineItem

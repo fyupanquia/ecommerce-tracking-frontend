@@ -162,6 +162,7 @@ export default function App() {
             routes={routes.authenticated[useauth.profile]}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
+            user={ useauth }
           />
           <Configurator />
           {configsButton}

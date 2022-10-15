@@ -25,7 +25,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-import Tooltip from "@mui/material/Tooltip";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
@@ -37,6 +37,7 @@ function TasksNew() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
   const [name, setName] = useState("");
+   const [output, setOutput] = useState("text");
 
   const getInputs = () => {
     const iName = [...formEl.current.elements].find((e) => e.name === "name");
@@ -54,6 +55,7 @@ function TasksNew() {
         baseURL,
         {
           name: iName.value,
+          output
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -93,6 +95,7 @@ function TasksNew() {
         baseURL,
         {
           name: iName.value,
+          output
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -152,6 +155,7 @@ function TasksNew() {
             const { iName } = getInputs();
             const { data } = response;
             setName(data.name);
+            setOutput(data.output)
           }
         })
         .catch((e) => {
@@ -192,7 +196,7 @@ function TasksNew() {
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>
-                  <MDBox mb={2}>
+                  <MDBox mb={4}>
                     <MDInput
                       type="text"
                       label="Nombre"
@@ -204,6 +208,27 @@ function TasksNew() {
                       }}
                       fullWidth
                     />
+                  </MDBox>
+                  <MDBox mb={2}>
+                    <FormControl fullWidth name="select-output">
+                      <InputLabel id="output">Salida</InputLabel>
+                      <Select
+                        labelId="output"
+                        id="output"
+                        label="Salida"
+                        name="output"
+                        defaultValue={output}
+                        value={output}
+                        onChange={(event) => {
+                          setOutput(event.target.value);
+                        }}
+                      >
+                        <MenuItem value="text">TEXT</MenuItem>
+                        <MenuItem value="img">IMG</MenuItem>
+                        <MenuItem value="map">MAP</MenuItem>
+                        <MenuItem value="bool">BOOLEAN</MenuItem>
+                      </Select>
+                    </FormControl>
                   </MDBox>
                   <MDBox mt={2} mb={1}>
                     <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>

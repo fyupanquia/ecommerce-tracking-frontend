@@ -1,7 +1,7 @@
 import { GoogleMap, withScriptjs, withGoogleMap, Marker } from "react-google-maps";
 
 function Map(props) {
-  //console.log(props.marker.position);
+  console.log(props.marker.position);
   // { lat: -12.1877684, lng: -76.9374339 }
   // defaultCenter={{ ...props.marker.position }}
   return (

@@ -31,12 +31,14 @@ import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import DeleteCard from "./cards/deleteCard";
 
-import MultipleSelectChip from "./select/chip";
-import OrdersOverview from "./timeline";
+import TimeLine from "./timeline";
 
 import "components/MDSelect/select.css";
-import myBody from "./data";
-import FluxHeader from "./badge";
+import FluxHeader from "./FluxHeader";
+import io from "socket.io-client";
+import { EmailRounded } from "@mui/icons-material";
+
+const socket = io("http://localhost:3001");
 
 function TasksNew() {
   const formEl = useRef();
@@ -51,6 +53,8 @@ function TasksNew() {
   const [flux, setFlux] = useState("");
   const [timeLine, setTimeLine] = useState("");
   const [body, setBody] = useState(null);
+  const [eventListener, setEventListener] = useState("");
+  const [isConnected, setIsConnected] = useState(socket.connected);
 
   const onGoBack = () => {
     navigate("/dashboard");
@@ -69,7 +73,7 @@ function TasksNew() {
       );
       return;
     }
-    if (user.profile == "ADMIN" && !email.trim()) {
+    if (!email.trim()) {
       setAlert(
         <Grid item xs={12}>
           <MDAlert color="error" dismissible>
@@ -94,7 +98,7 @@ function TasksNew() {
       return;
     }
 
-    const baseURL = `http://localhost:3001/tracking/${flux}-${email || user.email}-${code}`;
+    const baseURL = `http://localhost:3001/tracking/${flux}-${email}-${code}`;
     axios
       .get(baseURL, {
         headers: { Authorization: `Bearer ${user.access_token}` },
@@ -127,9 +131,6 @@ function TasksNew() {
         }
         onGoBack();
       });
-    /*
-   
-    */
   };
 
   useEffect(() => {
@@ -141,13 +142,24 @@ function TasksNew() {
   }, [alert]);
 
   useEffect(() => {
+    if (user.profile === "CLIENTE") {
+      setEmail(user.email);
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (typeof body === "object" && body !== null && body.modules) {
-      setTimeLine(<OrdersOverview modules={body.modules} />);
+      setTimeLine(<TimeLine modules={body.modules} />);
+      socket.off(eventListener);
+      const elistener = `${flux}:${email}:${code}`;
+      setEventListener(elistener);
+      socket.on(elistener, (message) => {
+        setBody(message);
+      });
     }
   }, [body]);
 
   useEffect(() => {
-    /*
     const baseURL = `http://localhost:3001/fluxes`;
     axios
       .get(baseURL, {
@@ -171,12 +183,25 @@ function TasksNew() {
         console.log(e);
         onGoBack();
       });
-    */
+
+    socket.on("connect", () => {
+      setIsConnected(true);
+    });
+
+    socket.on("disconnect", () => {
+      setIsConnected(false);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("pong");
+    };
   }, []);
 
   let form;
 
-  if (user.profile == "ADMIN") {
+  if (user.profile == "ADMIN" || user.profile == "MASTER") {
     form = (
       <>
         <Grid item xs={4}>
@@ -273,19 +298,6 @@ function TasksNew() {
     );
   }
 
-  const onStart = () => {
-    ((cnt) => {
-      let index = cnt;
-      setInterval(() => {
-        if (index <= myBody.length - 1) {
-          console.log("loading", index);
-          setBody(myBody[index]);
-          index += 1;
-        }
-      }, 5000);
-    })(0);
-  };
-
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -317,7 +329,7 @@ function TasksNew() {
                     {form}
                   </Grid>
                   <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onStart}>
+                    <MDButton variant="gradient" color="info" fullWidth onClick={onTrack}>
                       Seguir
                     </MDButton>
                   </MDBox>
@@ -325,6 +337,26 @@ function TasksNew() {
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 {body && <FluxHeader flux={body} />}
+                {body &&
+                body.modules.filter((m) => m.status === "SUCCESS").length ===
+                  body.modules.length ? (
+                  <Grid item xs={12}>
+                    <MDAlert color="success">
+                      <MDTypography variant="body2" color="white">
+                        <MDTypography
+                          component="a"
+                          href="#"
+                          variant="body2"
+                          fontWeight="medium"
+                          color="white"
+                        >
+                          ¡Felicidades!
+                        </MDTypography>{" "}
+                        Usted ha recibido su pedido :)
+                      </MDTypography>
+                    </MDAlert>{" "}
+                  </Grid>
+                ) : null}
                 {timeLine}
               </MDBox>
             </Card>

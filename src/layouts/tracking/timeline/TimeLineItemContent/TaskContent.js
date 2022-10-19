@@ -120,71 +120,46 @@ function Content({ task }) {
           </FormGroup>
         );
       } else if (task.task_id.output === "map") {
-        if (Array.isArray(task.outputValue)) {
-          const lastMarker = task.outputValue[task.outputValue.length - 1];
-          if (lastMarker) {
-            setOutput(
-              <Map
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&key=${credentials.GOOGLE_API_KEY}`}
-                containerElement={<div style={{ height: "400px" }} />}
-                mapElement={<div style={{ height: "100%" }} />}
-                loadingElement={<p>Cargando..</p>}
-                marker={lastMarker}
-                onMarkerRightClick={() => {
-                  console.log("clicked!!");
-                }}
-              />
-            );
-          }
+        const lastMarker = task.outputValue[task.outputValue.length - 1];
+        if (lastMarker) {
+          setOutput(
+            <Map
+              googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&key=${credentials.GOOGLE_API_KEY}`}
+              containerElement={<div style={{ height: "400px" }} />}
+              mapElement={<div style={{ height: "100%" }} />}
+              loadingElement={<p>Cargando..</p>}
+              marker={lastMarker}
+              onMarkerRightClick={() => {
+                console.log("clicked!!");
+              }}
+            />
+          );
         }
       }
     } else if (task.status == "WAITING") {
       if (task.task_id.output === "map") {
-        console.log({ outputValue : task.outputValue })
-        if (Array.isArray(task.outputValue)) {
-          const lastMarker = task.outputValue[task.outputValue.length - 1];
-          if (lastMarker) {
-            setOutput(
-              <Map
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&key=${credentials.GOOGLE_API_KEY}`}
-                containerElement={<div style={{ height: "400px" }} />}
-                mapElement={<div style={{ height: "100%" }} />}
-                loadingElement={<p>Cargando..</p>}
-                marker={lastMarker}
-                onMarkerRightClick={() => {
-                  console.log("clicked!!");
-                }}
-              />
-            );
-          }
-        }
-      } else if (task.task_id.output == "bool") {
-        setOutput(
-          <FormGroup>
-            <FormControlLabel
-              control={<Switch checked={false} aria-label="login switch" />}
-              label="Pendiente"
+        const lastMarker = task.outputValue[task.outputValue.length - 1];
+        if (lastMarker) {
+          setOutput(
+            <Map
+              googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&key=${credentials.GOOGLE_API_KEY}`}
+              containerElement={<div style={{ height: "400px" }} />}
+              mapElement={<div style={{ height: "100%" }} />}
+              loadingElement={<p>Cargando..</p>}
+              marker={lastMarker}
+              onMarkerRightClick={() => {
+                console.log("clicked!!");
+              }}
             />
-          </FormGroup>
-        );
-      } 
+          );
+        }
+      }
     } else if (task.status == "ERROR") {
       setOutput(
         <Stack sx={{ width: "100%" }} spacing={2}>
           <Alert severity="error">{task.outputValue}</Alert>
         </Stack>
       );
-    } else {
-      if (task.task_id.output == "bool") {
-        setOutput(
-          <FormGroup>
-            <FormControlLabel
-              control={<Switch checked={false} aria-label="login switch" />}
-              label={task.outputValue ? "Finalizado" : "Pendiente"}
-            />
-          </FormGroup>
-        );
-      } 
     }
   }, [task]);
 

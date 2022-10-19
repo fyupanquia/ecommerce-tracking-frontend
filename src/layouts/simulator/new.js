@@ -35,6 +35,8 @@ import arrBodies from "./data";
 import FluxHeader from "./FluxHeader";
 import Flux from "./flux";
 
+import credentials from "credentials.json"
+
 function convertTZ() {
   const date = new Date();
   const tzString = "America/Lima";
@@ -148,7 +150,7 @@ function TasksNew() {
         return m;
       });
 
-      const baseURL = `http://localhost:3001/tracking`;
+      const baseURL = `${credentials.SERVER_URL}/tracking`;
 
       console.time();
       setBody(newBody);
@@ -250,7 +252,7 @@ function TasksNew() {
       setCounter(0);
       return;
     }
-    const baseURL = `http://localhost:3001/tracking/${flux}-${email}-${code}`;
+    const baseURL = `${credentials.SERVER_URL}/tracking/${flux}-${email}-${code}`;
     axios
       .post(baseURL, fluxBody, {
         headers: { Authorization: `Bearer ${user.access_token}` },
@@ -301,7 +303,7 @@ function TasksNew() {
 
   // GETTING FLUXES
   useEffect(() => {
-    const baseURL = `http://localhost:3001/fluxes`;
+    const baseURL = `${credentials.SERVER_URL}/fluxes`;
     axios
       .get(baseURL, {
         headers: { Authorization: `Bearer ${user.access_token}` },
@@ -328,8 +330,8 @@ function TasksNew() {
 
   const form = (
     <>
-      <Grid item xs={4}>
-        <MDBox mb={2} p={2}>
+      <Grid item xs={12} md={4}>
+        <MDBox mb={2} >
           <FormControl fullWidth name="select-modules">
             <InputLabel id="fluxes">Flujos</InputLabel>
             <Select
@@ -348,8 +350,8 @@ function TasksNew() {
           </FormControl>
         </MDBox>
       </Grid>
-      <Grid item xs={4}>
-        <MDBox mb={2} p={2}>
+      <Grid item xs={12} md={4}>
+        <MDBox mb={2} >
           <MDInput
             type="text"
             label="Email"
@@ -363,8 +365,8 @@ function TasksNew() {
           />
         </MDBox>
       </Grid>
-      <Grid item xs={4}>
-        <MDBox mb={2} p={2}>
+      <Grid item xs={12} md={4}>
+        <MDBox mb={2} >
           <MDInput
             type="text"
             label="Identificador"

@@ -33,7 +33,7 @@ import Loading from "components/Loading";
 import DeleteCard from "./cards/deleteCard";
 
 import 'components/MDSelect/select.css'
-
+import credentials from "credentials.json"
 function UsersNew() {
   const formEl = useRef();
   const params = useParams();
@@ -63,7 +63,7 @@ function UsersNew() {
   };
 
   const onSave = ({ iFullname, iEmail, iPassword, iIsActive, iProfile }) => {
-    const baseURL = "http://localhost:3001/users";
+    const baseURL = `${credentials.SERVER_URL}/users`;
 
     axios
       .post(
@@ -109,7 +109,7 @@ function UsersNew() {
   };
 
   const onEdit = ({ id, iFullname, iEmail, iPassword, iIsActive, iProfile }) => {
-    const baseURL = `http://localhost:3001/users/${id}`;
+    const baseURL = `${credentials.SERVER_URL}/users/${id}`;
     axios
       .patch(
         baseURL,
@@ -169,7 +169,7 @@ function UsersNew() {
 
   useEffect(() => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/users/${params.id}`;
+      const baseURL = `${credentials.SERVER_URL}/users/${params.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

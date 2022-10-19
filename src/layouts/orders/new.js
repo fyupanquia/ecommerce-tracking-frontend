@@ -28,6 +28,7 @@ import Footer from "examples/Footer";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
 import DefaultProjectCard from "./DefaultProjectCard";
+import credentials from "credentials.json"
 
 function OrderView() {
   const formEl = useRef();
@@ -49,7 +50,7 @@ function OrderView() {
 
   useEffect(() => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/orders/${params.id}`;
+      const baseURL = `${credentials.SERVER_URL}/orders/${params.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

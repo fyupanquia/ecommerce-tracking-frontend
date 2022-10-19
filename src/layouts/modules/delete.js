@@ -29,7 +29,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
-
+import credentials from "credentials.json"
 function UsersNew() {
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
@@ -41,7 +41,7 @@ function UsersNew() {
 
   const onRemove = () => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/modules/${params.id}`;
+      const baseURL = `${credentials.SERVER_URL}/modules/${params.id}`;
       axios
         .delete(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

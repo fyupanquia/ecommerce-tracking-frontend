@@ -29,6 +29,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
+import credentials from "credentials.json"
 
 function TaskNew() {
   const params = useParams();
@@ -41,7 +42,7 @@ function TaskNew() {
 
   const onRemove = () => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/fluxes/${params.id}`;
+      const baseURL = `${credentials.SERVER_URL}/fluxes/${params.id}`;
       axios
         .delete(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

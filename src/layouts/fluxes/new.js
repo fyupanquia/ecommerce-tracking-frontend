@@ -44,9 +44,9 @@ import MultipleSelectChip from "./select/chip";
 import ModuleTable from "./tables/data/moduleTable";
 import ModuleData from "./tables/data/moduleData";
 import TaskData from "./tables/data/taskData";
-
+import credentials from "credentials.json"
 const getTasks = ({ token }) => {
-  const baseURL = `http://localhost:3001/tasks`;
+  const baseURL = `${credentials.SERVER_URL}/tasks`;
   return axios
     .get(baseURL, {
       headers: { Authorization: `Bearer ${token}` },
@@ -58,7 +58,7 @@ const getTasks = ({ token }) => {
     });
 };
 const getModules = ({ token }) => {
-  const baseURL = `http://localhost:3001/modules`;
+  const baseURL = `${credentials.SERVER_URL}/modules`;
   return axios
     .get(baseURL, {
       headers: { Authorization: `Bearer ${token}` },
@@ -123,7 +123,7 @@ function FluxesNew() {
   };
 
   const onSave = (bodyRequest) => {
-    const baseURL = "http://localhost:3001/fluxes";
+    const baseURL = `${credentials.SERVER_URL}/fluxes`;
     axios
       .post(baseURL, bodyRequest, {
         headers: { Authorization: `Bearer ${user.access_token}` },
@@ -154,7 +154,7 @@ function FluxesNew() {
   };
 
   const onEdit = (id, bodyRequest) => {
-    const baseURL = `http://localhost:3001/fluxes/${id}`;
+    const baseURL = `${credentials.SERVER_URL}/fluxes/${id}`;
     axios
       .patch(baseURL, bodyRequest, {
         headers: { Authorization: `Bearer ${user.access_token}` },
@@ -211,7 +211,7 @@ function FluxesNew() {
     setModules(modulesFromAPI);
 
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/fluxes/${params.id}`;
+      const baseURL = `${credentials.SERVER_URL}/fluxes/${params.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

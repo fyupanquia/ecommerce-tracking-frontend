@@ -38,7 +38,7 @@ import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
 import tableData from "./tables/data/tableData";
 import Loading from "components/Loading";
-
+import credentials from "credentials.json"
 function Tables() {
   const [taks, setTaks] = useState(null);
   const [columns, setColumns] = useState([]);
@@ -52,7 +52,7 @@ function Tables() {
 
   useEffect(() => {
     if (taks === null) {
-      const baseURL = "http://localhost:3001/tasks";
+      const baseURL = `${credentials.SERVER_URL}/tasks`;
 
       axios
         .get(baseURL, {

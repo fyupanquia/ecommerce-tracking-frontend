@@ -31,7 +31,7 @@ import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading";
 import DeleteCard from "./cards/deleteCard";
-
+import credentials from "credentials.json"
 function UsersProfile() {
   const formEl = useRef();
   const [user, setUser] = useLocalStorage("user", null);
@@ -53,7 +53,7 @@ function UsersProfile() {
   };
 
   const onEdit = ({ id, iFullname, iEmail, iPassword }) => {
-    const baseURL = `http://localhost:3001/users/${id}`;
+    const baseURL = `${credentials.SERVER_URL}/users/${id}`;
     axios
       .patch(
         baseURL,
@@ -107,7 +107,7 @@ function UsersProfile() {
 
   useEffect(() => {
     if (user && user.id) {
-      const baseURL = `http://localhost:3001/users/${user.id}`;
+      const baseURL = `${credentials.SERVER_URL}/users/${user.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

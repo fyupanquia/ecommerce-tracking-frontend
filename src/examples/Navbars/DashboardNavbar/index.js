@@ -110,7 +110,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       <NotificationItem icon={<Icon>email</Icon>} title="Cotificaciones" />
       <NotificationItem icon={<Icon>podcasts</Icon>} title="Conectividad" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Competados" />
+      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Completados" />
     </Menu>
   );
 
@@ -183,6 +183,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
               >
                 <Icon sx={iconsStyle}>settings</Icon>
               </IconButton>
+              {/*
               <IconButton
                 size="small"
                 disableRipple
@@ -196,6 +197,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 <Icon sx={iconsStyle}>notifications</Icon>
               </IconButton>
               {renderMenu()}
+              */}
             </MDBox>
           </MDBox>
         )}

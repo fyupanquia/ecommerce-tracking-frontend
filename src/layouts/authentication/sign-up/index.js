@@ -44,7 +44,7 @@ import { useLocalStorage } from "providers/useLocalStorage";
 
 import axios from "axios";
 import MDAlert from "components/MDAlert";
-
+import credentials from "credentials.json"
 function Basic() {
   const formEl = useRef();
   const [user, setUser] = useLocalStorage("user", null);
@@ -61,7 +61,7 @@ function Basic() {
       fullname: iFullname.value,
     };
 
-    const baseURL = "http://localhost:3001/users";
+    const baseURL = `${credentials.SERVER_URL}/users`;
     axios
       .post(baseURL, userData)
       .then((response) => {

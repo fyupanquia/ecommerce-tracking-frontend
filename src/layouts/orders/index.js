@@ -38,7 +38,7 @@ import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
 import tableData from "./tables/data/tableData";
 import Loading from "components/Loading";
-
+import credentials from "credentials.json"
 function Orders() {
   const [orders, setOrders] = useState(null);
   const [columns, setColumns] = useState([]);
@@ -52,7 +52,7 @@ function Orders() {
 
   useEffect(() => {
     if (orders === null) {
-      const baseURL = "http://localhost:3001/orders";
+      const baseURL = `${credentials.SERVER_URL}/orders`;
 
       axios
         .get(baseURL, {

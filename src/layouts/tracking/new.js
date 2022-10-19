@@ -37,8 +37,8 @@ import "components/MDSelect/select.css";
 import FluxHeader from "./FluxHeader";
 import io from "socket.io-client";
 import { EmailRounded } from "@mui/icons-material";
-
-const socket = io("http://localhost:3001");
+import credentials from "credentials.json"
+const socket = io(credentials.SERVER_URL);
 
 function TasksNew() {
   const formEl = useRef();
@@ -98,7 +98,7 @@ function TasksNew() {
       return;
     }
 
-    const baseURL = `http://localhost:3001/tracking/${flux}-${email}-${code}`;
+    const baseURL = `${credentials.SERVER_URL}/tracking/${flux}-${email}-${code}`;
     axios
       .get(baseURL, {
         headers: { Authorization: `Bearer ${user.access_token}` },
@@ -160,7 +160,7 @@ function TasksNew() {
   }, [body]);
 
   useEffect(() => {
-    const baseURL = `http://localhost:3001/fluxes`;
+    const baseURL = `${credentials.SERVER_URL}/fluxes`;
     axios
       .get(baseURL, {
         headers: { Authorization: `Bearer ${user.access_token}` },
@@ -204,8 +204,8 @@ function TasksNew() {
   if (user.profile == "ADMIN" || user.profile == "MASTER") {
     form = (
       <>
-        <Grid item xs={4}>
-          <MDBox mb={2} p={2}>
+        <Grid item xs={12} md={4}>
+          <MDBox mb={2}>
             <FormControl fullWidth name="select-modules">
               <InputLabel id="fluxes">Flujos</InputLabel>
               <Select
@@ -224,8 +224,8 @@ function TasksNew() {
             </FormControl>
           </MDBox>
         </Grid>
-        <Grid item xs={4}>
-          <MDBox mb={2} p={2}>
+        <Grid item xs={12} md={4}>
+          <MDBox mb={2}>
             <MDInput
               type="text"
               label="Email"
@@ -239,8 +239,8 @@ function TasksNew() {
             />
           </MDBox>
         </Grid>
-        <Grid item xs={4}>
-          <MDBox mb={2} p={2}>
+        <Grid item xs={12} md={4}>
+          <MDBox mb={2}>
             <MDInput
               type="text"
               label="Identificador"

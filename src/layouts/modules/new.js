@@ -29,7 +29,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
-
+import credentials from "credentials.json"
 function ModulesNew() {
   const formEl = useRef();
   const params = useParams();
@@ -49,7 +49,7 @@ function ModulesNew() {
   };
 
   const onSave = ({ iName }) => {
-    const baseURL = "http://localhost:3001/modules";
+    const baseURL = `${credentials.SERVER_URL}/modules`;
     axios
       .post(
         baseURL,
@@ -89,7 +89,7 @@ function ModulesNew() {
   };
 
   const onEdit = ({ id, iName }) => {
-    const baseURL = `http://localhost:3001/modules/${id}`;
+    const baseURL = `${credentials.SERVER_URL}/modules/${id}`;
     axios
       .patch(
         baseURL,
@@ -145,7 +145,7 @@ function ModulesNew() {
 
   useEffect(() => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/modules/${params.id}`;
+      const baseURL = `${credentials.SERVER_URL}/modules/${params.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

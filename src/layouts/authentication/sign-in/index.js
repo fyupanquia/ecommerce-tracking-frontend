@@ -44,6 +44,7 @@ import { useLocalStorage } from "providers/useLocalStorage";
 
 import axios from "axios";
 import MDAlert from "components/MDAlert";
+import credentials from "credentials.json"
 
 function Basic() {
   const formEl = useRef();
@@ -62,7 +63,7 @@ function Basic() {
       password: iPassword.value,
     };
 
-    const baseURL = "http://localhost:3001/auth/signin";
+    const baseURL = `${credentials.SERVER_URL}/auth/signin`;
     axios
       .post(baseURL, userData)
       .then((response) => {

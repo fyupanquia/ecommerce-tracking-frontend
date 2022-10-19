@@ -29,7 +29,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
-
+import credentials from "credentials.json"
 function TasksNew() {
   const formEl = useRef();
   const params = useParams();
@@ -49,7 +49,7 @@ function TasksNew() {
   };
 
   const onSave = ({ iName }) => {
-    const baseURL = "http://localhost:3001/tasks";
+    const baseURL = `${credentials.SERVER_URL}/tasks`;
     axios
       .post(
         baseURL,
@@ -89,7 +89,7 @@ function TasksNew() {
   };
 
   const onEdit = ({ id, iName }) => {
-    const baseURL = `http://localhost:3001/tasks/${id}`;
+    const baseURL = `${credentials.SERVER_URL}/tasks/${id}`;
     axios
       .patch(
         baseURL,
@@ -145,7 +145,7 @@ function TasksNew() {
 
   useEffect(() => {
     if (params && params.id) {
-      const baseURL = `http://localhost:3001/tasks/${params.id}`;
+      const baseURL = `${credentials.SERVER_URL}/tasks/${params.id}`;
       axios
         .get(baseURL, {
           headers: { Authorization: `Bearer ${user.access_token}` },

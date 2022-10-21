@@ -92,7 +92,7 @@ export default function MultipleSelectChip({ label, rows, submitLabel, onSubmit,
         </Select>
       </FormControl>
       <MDBox pt={3} pb={3} px={3}>
-        <MDButton variant="gradient" color="info" fullWidth onClick={onSave} disabled={disabledSubmit}>
+        <MDButton variant="gradient" color="primary" fullWidth onClick={onSave} disabled={disabledSubmit}>
           {submitLabel}
         </MDButton>
       </MDBox>

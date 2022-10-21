@@ -68,9 +68,9 @@ function UsersNew() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -78,7 +78,7 @@ function UsersNew() {
                 <MDTypography variant="h6" color="white">
                   Eliminar módulo
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onGoBack}>
+                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
                   &nbsp;Volver
                 </MDButton>

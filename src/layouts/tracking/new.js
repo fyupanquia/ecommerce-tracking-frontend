@@ -313,9 +313,9 @@ function TasksNew() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -330,7 +330,7 @@ function TasksNew() {
                     {form}
                   </Grid>
                   <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onTrack}>
+                    <MDButton variant="gradient" color="primary" fullWidth onClick={onTrack}>
                       Seguir
                     </MDButton>
                   </MDBox>

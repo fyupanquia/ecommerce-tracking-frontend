@@ -30,6 +30,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import axios from "axios";
 import DeleteCard from "./cards/deleteCard";
 import credentials from "credentials.json"
+
 function TasksNew() {
   const formEl = useRef();
   const params = useParams();
@@ -179,9 +180,9 @@ function TasksNew() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -189,7 +190,7 @@ function TasksNew() {
                 <MDTypography variant="h6" color="white">
                   {params && params.id ? "Editar" : "Registrar"} tarea
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onGoBack}>
+                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
                   &nbsp;Volver
                 </MDButton>
@@ -231,7 +232,7 @@ function TasksNew() {
                     </FormControl>
                   </MDBox>
                   <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
+                    <MDButton variant="gradient" color="primary" fullWidth onClick={onSubmit}>
                       Guardar
                     </MDButton>
                   </MDBox>

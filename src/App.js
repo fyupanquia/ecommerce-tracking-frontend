@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -47,15 +47,24 @@ import createCache from "@emotion/cache";
 import routes from "routes";
 
 // Material Dashboard 2 React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+import {
+  useMaterialUIController,
+  setMiniSidenav,
+  setOpenConfigurator,
+  setSidenavColor,
+} from "context";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
 import { useLocalStorage } from "providers/useLocalStorage";
+import { getProjectByPath } from "providers/Axios";
+import { patchThemeWithProvider } from "util/object";
+import Loading from "components/Loading";
 
 export default function App() {
+  const [customTheme, setCustomTheme] = useState(null);
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -70,6 +79,8 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const [useauth, setUser] = useLocalStorage("user", null);
+  const [project, setProject] = useLocalStorage("project", null);
 
   // Cache for the rtl
   useMemo(() => {
@@ -111,7 +122,27 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const [useauth, setUser] = useLocalStorage("user", null);
+  useEffect(async () => {
+    if (!useauth) {
+      const slug = pathname.split("/")[1];
+      const isRoute = routes.auth.find((r) => r.route === pathname);
+      // routes.auth
+      if (project && (slug === project.slug || isRoute)) {
+        patchThemeWithProvider(theme, project);
+        setCustomTheme(theme);
+      } else {
+        const defaultPath = "tracking";
+        const rspProject = await getProjectByPath(isRoute ? defaultPath : pathname, defaultPath);
+        patchThemeWithProvider(theme, rspProject);
+        setProject(rspProject);
+        setCustomTheme(theme);
+      }
+      // setSidenavColor(dispatch, rspProject.primaryColor);
+    } else {
+      patchThemeWithProvider(theme, project);
+      setCustomTheme(theme);
+    }
+  }, []);
 
   const getRoutes = (allRoutes) => [
     ...allRoutes.map((route) => {
@@ -126,6 +157,7 @@ export default function App() {
       return null;
     }),
   ];
+
   const configsButton = (
     <MDBox
       display="flex"
@@ -149,20 +181,21 @@ export default function App() {
       </Icon>
     </MDBox>
   );
-   
-  return (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
+  console.log({ tema: darkMode ? themeDark : customTheme });
+  return customTheme ? (
+    <ThemeProvider theme={darkMode ? themeDark : customTheme}>
       <CssBaseline />
       {layout === "dashboard" && useauth && (
         <>
           <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Sistema de seguimiento"
+            color={customTheme.palette.primary.main}
+            //brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+            brand={project.logo_url}
+            brandName={project.name}
             routes={routes.authenticated[useauth.profile]}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
-            user={ useauth }
+            user={useauth}
           />
           <Configurator />
           {configsButton}
@@ -175,11 +208,13 @@ export default function App() {
           useauth ? (
             <Route path="*" element={<Navigate to="/dashboard" />} key="all" />
           ) : (
-            <Route path="*" element={<Navigate to="/authentication/sign-in" />} key="all" />
+            <Route path="*" element={<Navigate to="/sign-in" />} key="all" />
           ),
         ]}
       </Routes>
     </ThemeProvider>
+  ) : (
+    <Loading/>
   );
   /*
   return direction === "rtl" ? (

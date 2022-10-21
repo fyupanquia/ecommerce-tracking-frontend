@@ -179,9 +179,9 @@ function ModulesNew() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -189,7 +189,7 @@ function ModulesNew() {
                 <MDTypography variant="h6" color="white">
                   {params && params.id ? "Editar" : "Registrar"} módulo
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onGoBack}>
+                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
                   &nbsp;Volver
                 </MDButton>
@@ -246,7 +246,7 @@ function ModulesNew() {
                             display="grid"
                             justifyContent="center"
                             alignItems="center"
-                            bgColor="info"
+                            bgColor="primary"
                             color="white"
                             width="4rem"
                             height="4rem"
@@ -261,7 +261,7 @@ function ModulesNew() {
                     </Grid>
                   </MDBox>
                   <MDBox mt={2} mb={1}>
-                    <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
+                    <MDButton variant="gradient" color="primary" fullWidth onClick={onSubmit}>
                       Guardar
                     </MDButton>
                   </MDBox>

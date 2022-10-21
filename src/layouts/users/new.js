@@ -207,9 +207,9 @@ function UsersNew() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -217,7 +217,7 @@ function UsersNew() {
                 <MDTypography variant="h6" color="white">
                   {params && params.id ? "Editar" : "Registrar"} usuario
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onGoBack}>
+                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
                   &nbsp;Volver
                 </MDButton>
@@ -310,7 +310,7 @@ function UsersNew() {
                       />
                     </MDBox>
                     <MDBox mt={2} mb={1}>
-                      <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
+                      <MDButton variant="gradient" color="primary" fullWidth onClick={onSubmit}>
                         Guardar
                       </MDButton>
                     </MDBox>

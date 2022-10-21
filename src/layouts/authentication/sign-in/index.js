@@ -44,12 +44,14 @@ import { useLocalStorage } from "providers/useLocalStorage";
 
 import axios from "axios";
 import MDAlert from "components/MDAlert";
-import credentials from "credentials.json"
+import MDAvatar from "components/MDAvatar";
+import credentials from "credentials.json";
 
 function Basic() {
   const formEl = useRef();
   const [rememberMe, setRememberMe] = useState(false);
   const [user, setUser] = useLocalStorage("user", null);
+  const [project, setProject] = useLocalStorage("project", null);
   const [alert, setAlert] = useState(null);
   const navigate = useNavigate();
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
@@ -58,14 +60,13 @@ function Basic() {
     const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
     const iRememberme = [...formEl.current.elements].find((e) => e.name === "rememberme");
 
-    const userData = {
-      email: iEmail.value,
-      password: iPassword.value,
-    };
-
     const baseURL = `${credentials.SERVER_URL}/auth/signin`;
     axios
-      .post(baseURL, userData)
+      .post(baseURL, {
+        email: iEmail.value,
+        password: iPassword.value,
+        project_id: project.id,
+      })
       .then((response) => {
         if (response.status == 200) {
           // userData.token = response.data.access_token;
@@ -107,9 +108,9 @@ function Basic() {
       <Card>
         <MDBox
           variant="gradient"
-          bgColor="info"
+          bgColor="primary"
           borderRadius="lg"
-          coloredShadow="info"
+          coloredShadow="primary"
           mx={2}
           mt={-3}
           p={2}
@@ -117,42 +118,51 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Login
+            {project.name}
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
-              <MDTypography
-                component={MuiLink}
-                href="https://www.facebook.com/RipleyPeru"
-                target="_blank"
-                variant="body1"
-                color="white"
-              >
-                <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography
-                component={MuiLink}
-                href="https://www.instagram.com/ripleyperu"
-                target="_blank"
-                variant="body1"
-                color="white"
-              >
-                <InstagramIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography
-                component={MuiLink}
-                href="https://www.youtube.com/user/TiendasRipleyPeru"
-                target="_blank"
-                variant="body1"
-                color="white"
-              >
-                <YouTubeIcon color="inherit" />
-              </MDTypography>
-            </Grid>
+          <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
+            <MDAvatar src={project.logo_url} alt="profile-image" size="xl" shadow="sm" />
+          </Grid>
+          <Grid container justifyContent="center">
+            {project.facebook ? (
+              <Grid item xs={2}>
+                <MDTypography
+                  component={MuiLink}
+                  href={project.facebook}
+                  target="_blank"
+                  variant="body1"
+                  color="white"
+                >
+                  <FacebookIcon color="inherit" />
+                </MDTypography>
+              </Grid>
+            ) : null}
+            {project.instagram ? (
+              <Grid item xs={2}>
+                <MDTypography
+                  component={MuiLink}
+                  href={project.instagram}
+                  target="_blank"
+                  variant="body1"
+                  color="white"
+                >
+                  <InstagramIcon color="inherit" />
+                </MDTypography>
+              </Grid>
+            ) : null}
+            {project.youtube ? (
+              <Grid item xs={2}>
+                <MDTypography
+                  component={MuiLink}
+                  href={project.youtube}
+                  target="_blank"
+                  variant="body1"
+                  color="white"
+                >
+                  <YouTubeIcon color="inherit" />
+                </MDTypography>
+              </Grid>
+            ) : null}
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -177,7 +187,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth onClick={onLogin}>
+              <MDButton variant="gradient" color="primary" fullWidth onClick={onLogin}>
                 Iniciar sesión
               </MDButton>
             </MDBox>
@@ -186,9 +196,9 @@ function Basic() {
                 ¿Aún no tienes una cuenta?{" "}
                 <MDTypography
                   component={Link}
-                  to="/authentication/sign-up"
+                  to="/sign-up"
                   variant="button"
-                  color="info"
+                  color="primary"
                   fontWeight="medium"
                   textGradient
                 >
@@ -204,3 +214,8 @@ function Basic() {
 }
 
 export default Basic;
+/*
+https://www.facebook.com/RipleyPeru
+https://www.instagram.com/ripleyperu
+https://www.youtube.com/user/TiendasRipleyPeru
+*/

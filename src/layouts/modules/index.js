@@ -84,9 +84,9 @@ function Tables() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -94,7 +94,7 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Tabla de módulos
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onAddUser}>
+                <MDButton variant="gradient" color="secondary" onClick={onAddUser}>
                   <Icon sx={{ fontWeight: "bold" }}>add</Icon>
                   &nbsp;Agregar
                 </MDButton>

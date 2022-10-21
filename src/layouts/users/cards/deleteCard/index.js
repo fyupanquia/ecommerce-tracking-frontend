@@ -55,7 +55,7 @@ function DefaultInfoCard({ color, icon, title, description, value, onRemove, onC
 
         <Grid item xs={12} display="flex" justifyContent="center">
           <MDBox pb={2} px={2} textAlign="center">
-            <MDButton variant="gradient" color="info" onClick={onCancel}>
+            <MDButton variant="gradient" color="primary" onClick={onCancel}>
               CANCELAR&nbsp;
               <Icon sx={{ fontWeight: "bold" }}>cancel</Icon>
             </MDButton>

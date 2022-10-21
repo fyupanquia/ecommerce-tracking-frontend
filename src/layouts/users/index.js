@@ -44,6 +44,7 @@ function Tables() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [user, setUser] = useLocalStorage("user", null);
+  const [project, setProject] = useLocalStorage("project", null);
   const navigate = useNavigate();
 
   const onAddUser = () => {
@@ -64,7 +65,7 @@ function Tables() {
           }
         });
     } else {
-      const data = usersTableData(users);
+      const data = usersTableData(users, project);
       setColumns(data.columns);
       setRows(data.rows);
     }
@@ -83,9 +84,9 @@ function Tables() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -93,7 +94,7 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Tabla de usuarios
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onAddUser}>
+                <MDButton variant="gradient" color="secondary" onClick={onAddUser}>
                   <Icon sx={{ fontWeight: "bold" }}>add</Icon>
                   &nbsp;Agregar
                 </MDButton>

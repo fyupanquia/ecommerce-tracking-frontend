@@ -49,6 +49,8 @@ import {
   setWhiteSidenav,
 } from "context";
 
+import { useLocalStorage } from "providers/useLocalStorage";
+
 function stringToColor(string) {
   let hash = 0;
   let i;
@@ -82,7 +84,6 @@ function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
-
   let textColor = "white";
 
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
@@ -210,7 +211,12 @@ function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
       />
       <MDBox pt={0} pb={0} px={4} textAlign="center">
         <MDBox display="flex" mt={1} alignItems="center" lineHeight={1}>
-          <Avatar {...stringAvatar(user.fullname)} />
+          <Avatar
+            {...{
+              sx: { bgcolor: color },
+              children: `${user.fullname.split(" ")[0][0]}${user.fullname.split(" ")[1][0]}`,
+            }}
+          />
           <MDBox ml={1} lineHeight={1}>
             <MDTypography display="block" variant="button" fontWeight="medium" color={textColor}>
               {user.fullname}
@@ -255,10 +261,14 @@ Sidenav.defaultProps = {
 
 // Typechecking props for the Sidenav
 Sidenav.propTypes = {
-  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
+  color: PropTypes.string,
   brand: PropTypes.string,
   brandName: PropTypes.string.isRequired,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default Sidenav;
+
+/*
+<Avatar {...{sx:{bgcolor:color}, children:`${user.fullname.split(" ")[0][0]}${user.fullname.split(" ")[1][0]}` }} />
+*/

@@ -51,16 +51,10 @@ import UserDelete from "layouts/users/delete";
 import Orders from "layouts/orders";
 import OrdersView from "layouts/orders/new";
 
-
 import Fluxes from "layouts/fluxes";
 import FluxesNew from "layouts/fluxes/new";
 import FluxDelete from "layouts/fluxes/delete";
 
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
@@ -112,8 +106,8 @@ const routes = {
             icon: <Icon fontSize="small">card_giftcard</Icon>,
             route: "/pedidos/ver/:id",
             component: <OrdersView />,
-          }
-        ]
+          },
+        ],
       },
       {
         type: "collapse",
@@ -128,7 +122,7 @@ const routes = {
         name: "Cerrar sesión",
         key: "sign-out",
         icon: <Icon fontSize="small">logout</Icon>,
-        route: "/authentication/sign-out",
+        route: "/sign-out",
         component: <SignOut />,
       },
     ],
@@ -331,7 +325,7 @@ const routes = {
         name: "Cerrar sesión",
         key: "sign-out",
         icon: <Icon fontSize="small">logout</Icon>,
-        route: "/authentication/sign-out",
+        route: "/sign-out",
         component: <SignOut />,
       },
     ],
@@ -542,18 +536,53 @@ const routes = {
         name: "Cerrar sesión",
         key: "sign-out",
         icon: <Icon fontSize="small">logout</Icon>,
-        route: "/authentication/sign-out",
+        route: "/sign-out",
         component: <SignOut />,
       },
-    ]
+    ],
   },
   auth: [
+    /*
     {
       type: "collapse",
       name: "Sign In",
       key: "sign-in",
       icon: <Icon fontSize="small">login</Icon>,
-      route: "/authentication/sign-in",
+      route: "/",
+      component: <SignIn />,
+      collapse: [
+        {
+          type: "collapse",
+          name: "Sign In",
+          key: "sign-in",
+          icon: <Icon fontSize="small">login</Icon>,
+          route: "/sign-in",
+          component: <SignIn />,
+        },
+        {
+          type: "collapse",
+          name: "Sign In",
+          key: "sign-in",
+          icon: <Icon fontSize="small">login</Icon>,
+          route: "/:slug",
+          component: <SignIn />,
+        },
+      ],
+    }, */
+    {
+      type: "collapse",
+      name: "Sign In",
+      key: "sign-in",
+      icon: <Icon fontSize="small">login</Icon>,
+      route: "/",
+      component: <SignIn />,
+    },
+    {
+      type: "collapse",
+      name: "Sign In",
+      key: "sign-in",
+      icon: <Icon fontSize="small">login</Icon>,
+      route: "/sign-in",
       component: <SignIn />,
     },
     {
@@ -561,9 +590,17 @@ const routes = {
       name: "Sign Up",
       key: "sign-up",
       icon: <Icon fontSize="small">assignment</Icon>,
-      route: "/authentication/sign-up",
+      route: "/sign-up",
       component: <SignUp />,
-    }
+    },
+    {
+      type: "collapse",
+      name: "Sign In",
+      key: "sign-in",
+      icon: <Icon fontSize="small">login</Icon>,
+      route: "/:slug",
+      component: <SignIn />,
+    },
   ],
 };
 

@@ -44,8 +44,8 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
     <ListItem component="li">
       <MDBox
         {...rest}
-        sx={(theme) =>
-          collapseItem(theme, {
+        bgColor="#5CCC80"
+        sx={(theme) => collapseItem(theme, {
             active,
             transparentSidenav,
             whiteSidenav,

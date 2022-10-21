@@ -141,9 +141,9 @@ function UsersProfile() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -191,7 +191,7 @@ function UsersProfile() {
                       />
                     </MDBox>
                     <MDBox mt={2} mb={1}>
-                      <MDButton variant="gradient" color="info" fullWidth onClick={onSubmit}>
+                      <MDButton variant="gradient" color="primary" fullWidth onClick={onSubmit}>
                         Guardar
                       </MDButton>
                     </MDBox>

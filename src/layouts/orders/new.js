@@ -81,9 +81,9 @@ function OrderView() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -91,7 +91,7 @@ function OrderView() {
                 <MDTypography variant="h6" color="white">
                   Visualizar Pedido
                 </MDTypography>
-                <MDButton variant="gradient" color="dark" onClick={onGoBack}>
+                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
                   <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
                   &nbsp;Volver
                 </MDButton>

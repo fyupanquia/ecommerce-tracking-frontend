@@ -13,13 +13,15 @@ import MDTypography from "components/MDTypography";
 
 function SignOut() {
   const [user, setUser] = useLocalStorage("user", null);
+  const [project, setProject] = useLocalStorage("project", null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
       setUser(null);
+      //setProject(null);
     } else {
-      window.location.reload(false);
+      window.location = "/sign-in";
     }
   }, [user]);
 
@@ -35,9 +37,9 @@ function SignOut() {
                 py={3}
                 px={2}
                 variant="gradient"
-                bgColor="info"
+                bgColor="primary"
                 borderRadius="lg"
-                coloredShadow="info"
+                coloredShadow="primary"
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"

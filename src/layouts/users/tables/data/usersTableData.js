@@ -33,6 +33,7 @@ import team4 from "assets/images/team-4.jpg";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { deepOrange, deepPurple } from "@mui/material/colors";
+import { useLocalStorage } from "providers/useLocalStorage";
 import UserAction from "./UserAction";
 
 function stringToColor(string) {
@@ -63,7 +64,7 @@ function stringAvatar(name) {
     children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
   };
 }
-export default function data(users) {
+export default function data(users, project) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       {/* <MDAvatar src={image} name={name} size="sm" /> */}
@@ -76,39 +77,47 @@ export default function data(users) {
       </MDBox>
     </MDBox>
   );
+  let columns = [
+    { Header: "Usuario", accessor: "usuario", width: "20%", align: "left" },
+    { Header: "Perfil", accessor: "profile", align: "left" },
+    { Header: "Project", accessor: "project", align: "left" },
+    { Header: "Estado", accessor: "estado", align: "center" },
+    { Header: "Registrado", accessor: "registrado", align: "center" },
+    { Header: "Acción", accessor: "action", width: "15%", align: "center" },
+  ];
+  const rows = users.map((user) => ({
+    usuario: <Author image={team2} name={user.fullname} email={user.email} />,
+    project: user.project_id.name,
+    profile: (
+      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+        {user.profile}
+      </MDTypography>
+    ),
+    estado: (
+      <MDBox ml={-1}>
+        <MDBadge
+          badgeContent={user.is_active ? "activo" : "desactivo"}
+          color={user.is_active ? "success" : "dark"}
+          variant="gradient"
+          size="sm"
+        />
+      </MDBox>
+    ),
+    registrado: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {new Date(user.created_at).toLocaleDateString()}
+      </MDTypography>
+    ),
+    action: <UserAction user={user} />,
+  }));
+  if (project.id !== 3) {
+    columns = [...columns.slice(0, 2), ...columns.slice(3)];
+    delete rows.project;
+  }
   return {
-    columns: [
-      { Header: "Usuario", accessor: "usuario", width: "30%", align: "left" },
-      { Header: "Perfil", accessor: "profile", align: "left" },
-      { Header: "Estado", accessor: "estado", align: "center" },
-      { Header: "Registrado", accessor: "registrado", align: "center" },
-      { Header: "Acción", accessor: "action", width: "20%", align: "center" },
-    ],
+    columns,
 
-    rows: users.map((user) => ({
-      usuario: <Author image={team2} name={user.fullname} email={user.email} />,
-      profile: (
-        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-          {user.profile}
-        </MDTypography>
-      ),
-      estado: (
-        <MDBox ml={-1}>
-          <MDBadge
-            badgeContent={user.is_active ? "activo" : "desactivo"}
-            color={user.is_active ? "success" : "dark"}
-            variant="gradient"
-            size="sm"
-          />
-        </MDBox>
-      ),
-      registrado: (
-        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {new Date(user.created_at).toLocaleDateString()}
-        </MDTypography>
-      ),
-      action: <UserAction user={user} />,
-    })),
+    rows,
   };
 }
 

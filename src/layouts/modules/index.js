@@ -39,7 +39,9 @@ import { useLocalStorage } from "providers/useLocalStorage";
 import tableData from "./tables/data/tableData";
 
 import Loading from "components/Loading";
-import credentials from "credentials.json"
+import MDAlert from "components/MDAlert";
+import credentials from "credentials.json";
+
 function Tables() {
   const [modules, setModules] = useState(null);
   const [columns, setColumns] = useState([]);
@@ -109,7 +111,24 @@ function Tables() {
                     noEndBorder
                   />
                 ) : (
-                  <Loading />
+                  <Grid container spacing={6}>
+                    <Grid item xs={12}>
+                      <MDAlert color="info" dismissible>
+                        <MDTypography variant="body2" color="white">
+                          No se encontraron módulos {" "}
+                          <MDTypography
+                            component="a"
+                            href="#"
+                            variant="body2"
+                            fontWeight="medium"
+                            color="white"
+                          >
+                            ¡Registra uno dándole clic en agregar!
+                          </MDTypography>
+                        </MDTypography>
+                      </MDAlert>
+                    </Grid>
+                  </Grid>
                 )}
               </MDBox>
             </Card>
@@ -120,7 +139,7 @@ function Tables() {
     </DashboardLayout>
   );
 
-  const loading = <span />;
+  const loading = <Loading />;
 
   return modules ? body : loading;
 }

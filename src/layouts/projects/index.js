@@ -42,19 +42,19 @@ import credentials from "credentials.json"
 import MDAlert from "components/MDAlert";
 
 function Tables() {
-  const [taks, setTaks] = useState(null);
+  const [projects, setProjects] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
 
   const onAddUser = () => {
-    navigate("/tareas/agregar");
+    navigate("/proyectos/agregar");
   };
 
   useEffect(() => {
-    if (taks === null) {
-      const baseURL = `${credentials.SERVER_URL}/tasks`;
+    if (projects === null) {
+      const baseURL = `${credentials.SERVER_URL}/projects`;
 
       axios
         .get(baseURL, {
@@ -62,15 +62,15 @@ function Tables() {
         })
         .then((response) => {
           if (response.status == 200) {
-            setTaks(response.data);
+            setProjects(response.data);
           }
         });
     } else {
-      const data = tableData(taks);
+      const data = tableData(projects);
       setColumns(data.columns);
       setRows(data.rows);
     }
-  }, [taks]);
+  }, [projects]);
 
   const body = (
     <DashboardLayout>
@@ -93,7 +93,7 @@ function Tables() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  Tabla de tareas
+                  Tabla de proyectos
                 </MDTypography>
                 <MDButton variant="gradient" color="secondary" onClick={onAddUser}>
                   <Icon sx={{ fontWeight: "bold" }}>add</Icon>
@@ -140,7 +140,7 @@ function Tables() {
 
   const loading = <Loading/>;
 
-  return taks ? body : loading;
+  return projects ? body : loading;
 }
 
 export default Tables;

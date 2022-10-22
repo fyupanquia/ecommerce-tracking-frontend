@@ -41,9 +41,15 @@ import Users from "layouts/users";
 import Tasks from "layouts/tasks";
 import TasksNew from "layouts/tasks/new";
 import TaskDelete from "layouts/tasks/delete";
+
+import Projects from "layouts/projects";
+import ProjectsNew from "layouts/projects/new";
+import ProjectsDelete from "layouts/projects/delete";
+
 import Modules from "layouts/modules";
 import ModulesNew from "layouts/modules/new";
 import ModuleDelete from "layouts/modules/delete";
+
 import UsersNew from "layouts/users/new";
 import UsersProfile from "layouts/users/profile";
 import Tracking from "layouts/tracking/new";
@@ -391,6 +397,48 @@ const routes = {
       },
       {
         type: "collapse",
+        name: "Proyectos",
+        key: "proyectos",
+        icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+        route: "/proyectos",
+        component: <Projects />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Proyectos",
+            key: "proyectos",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/proyectos",
+            component: <Projects />,
+          },
+          {
+            type: "collapse",
+            name: "Agregar",
+            key: "proyectos-add",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/proyectos/agregar",
+            component: <ProjectsNew />,
+          },
+          {
+            type: "collapse",
+            name: "Editar",
+            key: "proyectos-edit",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/proyectos/editar/:id",
+            component: <ProjectsNew />,
+          },
+          {
+            type: "collapse",
+            name: "Eliminar",
+            key: "proyectos-delete",
+            icon: <Icon fontSize="small">all_inbox_icon</Icon>,
+            route: "/proyectos/eliminar/:id",
+            component: <ProjectsDelete />,
+          },
+        ],
+      },
+      {
+        type: "collapse",
         name: "Módulos",
         key: "modulos",
         icon: <Icon fontSize="small">all_inbox_icon</Icon>,
@@ -523,6 +571,7 @@ const routes = {
         route: "/tracking",
         component: <Tracking />,
       },
+      /*
       {
         type: "collapse",
         name: "Simulador",
@@ -531,6 +580,7 @@ const routes = {
         route: "/simulator",
         component: <Simulator />,
       },
+      */
       {
         type: "collapse",
         name: "Cerrar sesión",
@@ -605,54 +655,3 @@ const routes = {
 };
 
 export default routes;
-
-/*
-    {
-      type: "collapse",
-      name: "Dashboard",
-      key: "dashboard",
-      icon: <Icon fontSize="small">dashboard</Icon>,
-      route: "/dashboard",
-      component: <Dashboard />,
-    },
-    {
-      type: "collapse",
-      name: "Tables",
-      key: "tables",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/tables",
-      component: <Tables />,
-    },
-    {
-      type: "collapse",
-      name: "Billing",
-      key: "billing",
-      icon: <Icon fontSize="small">receipt_long</Icon>,
-      route: "/billing",
-      component: <Billing />,
-    },
-    {
-      type: "collapse",
-      name: "RTL",
-      key: "rtl",
-      icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-      route: "/rtl",
-      component: <RTL />,
-    },
-    {
-      type: "collapse",
-      name: "Notifications",
-      key: "notifications",
-      icon: <Icon fontSize="small">notifications</Icon>,
-      route: "/notifications",
-      component: <Notifications />,
-    },
-    {
-      type: "collapse",
-      name: "Profile",
-      key: "profile",
-      icon: <Icon fontSize="small">person</Icon>,
-      route: "/profile",
-      component: <Profile />,
-    },
-    */

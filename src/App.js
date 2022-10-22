@@ -131,11 +131,15 @@ export default function App() {
         patchThemeWithProvider(theme, project);
         setCustomTheme(theme);
       } else {
-        const defaultPath = "tracking";
+        const defaultPath = "admin";
         const rspProject = await getProjectByPath(isRoute ? defaultPath : pathname, defaultPath);
-        patchThemeWithProvider(theme, rspProject);
-        setProject(rspProject);
-        setCustomTheme(theme);
+        if (rspProject) {
+          patchThemeWithProvider(theme, rspProject);
+          setProject(rspProject);
+          setCustomTheme(theme);
+        } else {
+          console.log("not found!")
+        }
       }
       // setSidenavColor(dispatch, rspProject.primaryColor);
     } else {

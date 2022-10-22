@@ -116,7 +116,6 @@ export default function data(users, project) {
   }
   return {
     columns,
-
     rows,
   };
 }

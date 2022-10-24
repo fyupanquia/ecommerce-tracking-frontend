@@ -33,7 +33,7 @@ import credentials from "credentials.json";
 import ColorPicker from "material-ui-color-picker";
 import Button from "@mui/material/Button";
 import FileUpload from "react-material-file-upload";
-import DeleteCard from "./cards/deleteCard";
+import MDAvatar from "components/MDAvatar";
 
 function TasksNew() {
   const formEl = useRef();
@@ -116,16 +116,6 @@ function TasksNew() {
 
   const onEdit = (id) => {
     const baseURL = `${credentials.SERVER_URL}/projects/${id}`;
-    console.log({
-      name,
-      description,
-      primaryColor,
-      secondaryColor,
-      logoURL,
-      slug,
-      files,
-    });
-    /*
     axios
       .patch(
         baseURL,
@@ -134,9 +124,8 @@ function TasksNew() {
           description,
           primaryColor,
           secondaryColor,
-          logoURL,
+          logo_url: logoURL,
           slug,
-          files
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -165,7 +154,6 @@ function TasksNew() {
           );
         }
       });
-      */
   };
 
   const onSubmit = () => {
@@ -192,7 +180,6 @@ function TasksNew() {
         },
       })
       .then((response) => {
-        console.log({ response });
         setFiles([myFile]);
         setLogoURL(`${credentials.SERVER_URL}/${response.data.filename}`);
       })
@@ -326,6 +313,7 @@ function TasksNew() {
                       </MDBox>
                     </Grid>
                     <Grid item xs={12} md={6}>
+                      Selecciona tu :
                       <MDBox mb={4} justifyContent="center" alignItems="center">
                         <ColorPicker
                           name="secondaryColor"
@@ -350,23 +338,13 @@ function TasksNew() {
                     <Grid item xs={12} md={4}>
                       <MDBox textAlign="center" alignItems="center">
                         {logoURL ? (
-                          <CardMedia
-                            src={logoURL}
-                            component="img"
-                            title="Logo de la empresa"
-                            sx={{
-                              maxWidth: "50%",
-                              margin: 0,
-                              boxShadow: ({ boxShadows: { md } }) => md,
-                              objectFit: "cover",
-                              objectPosition: "center",
-                            }}
-                          />
+                          <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
+                            <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
+                          </Grid>
                         ) : null}
                       </MDBox>
                     </Grid>
                   </Grid>
-
                   <MDBox mb={4}>
                     <MDInput
                       type="text"

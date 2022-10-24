@@ -37,10 +37,11 @@ import "components/MDSelect/select.css";
 import FluxHeader from "./FluxHeader";
 import io from "socket.io-client";
 import { EmailRounded } from "@mui/icons-material";
-import credentials from "credentials.json"
+import credentials from "credentials.json";
+
 const socket = io(credentials.SERVER_URL);
 
-function TasksNew() {
+function Tracking() {
   const formEl = useRef();
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
@@ -105,29 +106,29 @@ function TasksNew() {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.data);
           setBody(response.data);
         }
       })
       .catch((e) => {
-        console.log(e);
-        if (
-          e.response &&
-          e.response.status === 404 &&
-          e.response.data &&
-          (e.response.data.message === "El seguimiento de este módulo no está habilitado" ||
-            e.response.data.message === "El flujo para este usuario no ha sido iniciado aún")
-        ) {
-          setBody(null);
-          setAlert(
-            <Grid item xs={12}>
-              <MDAlert color="warning" dismissible>
-                <MDTypography variant="body2" color="white">
-                  No se logró trackear esta solicitud
-                </MDTypography>
-              </MDAlert>
-            </Grid>
-          );
+        if (e.response && e.response.status === 404 && e.response.data) {
+          if (e.response.data.message === "El seguimiento de este módulo no está habilitado") {
+            setBody(null);
+            setAlert(
+              <Grid item xs={12}>
+                <MDAlert color="warning" dismissible>
+                  <MDTypography variant="body2" color="white">
+                    {e.response.data.message}
+                  </MDTypography>
+                </MDAlert>
+              </Grid>
+            );
+          } else if (
+            e.response.data.message === "El flujo para este usuario no ha sido iniciado aún"
+          ) {
+            const choosenFlux = fluxes.find(f => f.id == flux);
+            choosenFlux.email = email;
+            setBody(choosenFlux);
+          }
           return;
         }
         onGoBack();
@@ -338,7 +339,22 @@ function TasksNew() {
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 {body && <FluxHeader flux={body} />}
-                {body &&
+                {timeLine}
+              </MDBox>
+            </Card>
+          </Grid>
+        </Grid>
+      </MDBox>
+      <Footer />
+    </DashboardLayout>
+  );
+}
+
+export default Tracking;
+
+
+/*
+{body &&
                 body.modules.filter((m) => m.status === "SUCCESS").length ===
                   body.modules.length ? (
                   <Grid item xs={12}>
@@ -358,15 +374,4 @@ function TasksNew() {
                     </MDAlert>{" "}
                   </Grid>
                 ) : null}
-                {timeLine}
-              </MDBox>
-            </Card>
-          </Grid>
-        </Grid>
-      </MDBox>
-      <Footer />
-    </DashboardLayout>
-  );
-}
-
-export default TasksNew;
+                */

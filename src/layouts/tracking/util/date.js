@@ -1,4 +1,5 @@
 export const  tzToString = (date) => {
+  if (typeof date !== "string") return "";
   /*
   const d = new Date(date);
   const date = new Date();

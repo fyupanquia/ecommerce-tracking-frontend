@@ -29,13 +29,13 @@ function Action({ row }) {
             </Icon>
           </Tooltip>
         </MDBox>
-        <MDBox ml="auto" lineHeight={0} color="error" onClick={() => onDelete(row)}>
+        {/* <MDBox ml="auto" lineHeight={0} color="error" onClick={() => onDelete(row)}>
           <Tooltip title="Eliminar" placement="top">
             <Icon sx={{ cursor: "pointer" }} fontSize="small">
               delete
             </Icon>
           </Tooltip>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
     </MDTypography>
   );

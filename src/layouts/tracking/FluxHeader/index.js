@@ -109,11 +109,12 @@ function stringToColor(string) {
   return color;
 }
 function stringAvatar(name) {
+  const split = name.split(" ");
   return {
     sx: {
       bgcolor: stringToColor(name),
     },
-    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    children: `${split[0][0]}${split.length > 1 ? split[1][0] : ""}`,
   };
 }
 export default function FluxHeader({ flux }) {

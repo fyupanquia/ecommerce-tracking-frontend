@@ -34,6 +34,7 @@ import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import { useLocalStorage } from "providers/useLocalStorage";
+import { tzToString } from "util/date";
 import UserAction from "./UserAction";
 
 function stringToColor(string) {
@@ -65,7 +66,7 @@ function stringAvatar(name) {
   };
 }
 export default function data(users, project) {
-  const Author = ({ image, name, email }) => (
+  const Author = ({ image, name, email, profile }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       {/* <MDAvatar src={image} name={name} size="sm" /> */}
       <Avatar {...stringAvatar(name)} />
@@ -74,25 +75,24 @@ export default function data(users, project) {
           {name}
         </MDTypography>
         <MDTypography variant="caption">{email}</MDTypography>
+        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+          {profile}
+        </MDTypography>
       </MDBox>
     </MDBox>
   );
   let columns = [
     { Header: "Usuario", accessor: "usuario", width: "20%", align: "left" },
-    { Header: "Perfil", accessor: "profile", align: "left" },
-    { Header: "Project", accessor: "project", align: "left" },
-    { Header: "Estado", accessor: "estado", align: "center" },
+    { Header: "Proyecto", accessor: "project", align: "left" },
     { Header: "Registrado", accessor: "registrado", align: "center" },
+    { Header: "Estado", accessor: "estado", align: "center" },
     { Header: "Acción", accessor: "action", width: "15%", align: "center" },
   ];
   const rows = users.map((user) => ({
-    usuario: <Author image={team2} name={user.fullname} email={user.email} />,
-    project: user.project_id.name,
-    profile: (
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {user.profile}
-      </MDTypography>
+    usuario: (
+      <Author image={team2} name={user.fullname} email={user.email} profile={user.profile} />
     ),
+    project: user.project_id.name,
     estado: (
       <MDBox ml={-1}>
         <MDBadge
@@ -105,7 +105,7 @@ export default function data(users, project) {
     ),
     registrado: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {new Date(user.created_at).toLocaleDateString()}
+        {tzToString(user.created_at, -5)}
       </MDTypography>
     ),
     action: <UserAction user={user} />,

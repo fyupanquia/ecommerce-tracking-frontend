@@ -185,7 +185,7 @@ export default function App() {
       </Icon>
     </MDBox>
   );
-  console.log({ tema: darkMode ? themeDark : customTheme });
+
   return customTheme ? (
     <ThemeProvider theme={darkMode ? themeDark : customTheme}>
       <CssBaseline />

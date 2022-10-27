@@ -43,10 +43,11 @@ import credentials from "credentials.json"
 import MDAlert from "components/MDAlert";
 
 function Tables() {
-  const [taks, setTaks] = useState(null);
+  const [fluxes, setFluxes] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [user, setUser] = useLocalStorage("user", null);
+  const [project, setProject] = useLocalStorage("project", null);
   const navigate = useNavigate();
 
   const onAddUser = () => {
@@ -54,7 +55,7 @@ function Tables() {
   };
 
   useEffect(() => {
-    if (taks === null) {
+    if (fluxes === null) {
       const baseURL = `${credentials.SERVER_URL}/fluxes`;
 
       axios
@@ -63,15 +64,15 @@ function Tables() {
         })
         .then((response) => {
           if (response.status == 200) {
-            setTaks(response.data);
+            setFluxes(response.data);
           }
         });
     } else {
-      const data = tableData(taks);
+      const data = tableData(fluxes, project);
       setColumns(data.columns);
       setRows(data.rows);
     }
-  }, [taks]);
+  }, [fluxes]);
 
   const body = (
     <DashboardLayout>
@@ -141,7 +142,7 @@ function Tables() {
 
   const loading = <Loading />;
 
-  return taks ? body : loading;
+  return fluxes ? body : loading;
 }
 
 export default Tables;

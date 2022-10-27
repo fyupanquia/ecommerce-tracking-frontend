@@ -49,8 +49,6 @@ import {
   setWhiteSidenav,
 } from "context";
 
-import { useLocalStorage } from "providers/useLocalStorage";
-
 function stringToColor(string) {
   let hash = 0;
   let i;
@@ -79,6 +77,14 @@ function stringAvatar(name) {
     children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
   };
 }
+
+const trimFullname = (str) => {
+  const length = 15;
+  if (typeof str !== "string") return str;
+  if (str.length <= length) return str;
+  return `${str.substring(0, length)}...`;
+};
+
 function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
@@ -219,7 +225,7 @@ function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
           />
           <MDBox ml={1} lineHeight={1}>
             <MDTypography display="block" variant="button" fontWeight="medium" color={textColor}>
-              {user.fullname}
+              {trimFullname(user.fullname)}
             </MDTypography>
           </MDBox>
         </MDBox>

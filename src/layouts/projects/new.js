@@ -69,7 +69,7 @@ function TasksNew() {
       slug,
       files,
     });
-    /*
+    
     axios
       .post(
         baseURL,
@@ -78,9 +78,8 @@ function TasksNew() {
           description,
           primaryColor,
           secondaryColor,
-          logoURL,
+          logo_url: logoURL,
           slug,
-          files
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -89,7 +88,10 @@ function TasksNew() {
       .then((response) => {
         if (response.status == 201) {
           setName("");
-
+          setDescription("");
+          setSlug("");
+          setLogoURL("");
+          setFiles([]);
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
@@ -111,7 +113,7 @@ function TasksNew() {
           );
         }
       });
-      */
+      
   };
 
   const onEdit = (id) => {

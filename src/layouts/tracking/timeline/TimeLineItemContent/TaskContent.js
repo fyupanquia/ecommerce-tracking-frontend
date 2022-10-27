@@ -100,9 +100,11 @@ function Content({ task }) {
                 component="img"
                 title={task.task_id.name}
                 sx={{
-                  maxWidth: "50%",
+                  maxWidth: "100%",
                   margin: 0,
-                  boxShadow: ({ boxShadows: { md } }) => md,
+                  border: "1px solid gray",
+                  boxShadow: ({ boxShadows: { xl } }) => xl,
+                  //boxShadow: "5px 10px red",
                   objectFit: "cover",
                   objectPosition: "center",
                 }}

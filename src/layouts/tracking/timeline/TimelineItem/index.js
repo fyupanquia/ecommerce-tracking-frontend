@@ -30,7 +30,7 @@ import { useTimeline } from "examples/Timeline/context";
 import { styled } from "@mui/material/styles";
 import timelineItem from "./styles";
 import Badge from "../../FluxHeader";
-import { tzToString } from "../../util/date";
+import { tzToString } from "util/date";
 
 const StyledBox = styled(MDBox)(({ theme }) => ({
   backgroundColor: "#fb8c00",

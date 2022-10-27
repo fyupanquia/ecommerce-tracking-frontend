@@ -19,7 +19,12 @@ export default {
     datasets: { label: "Compras", data: [4, 10, 15, 10, 2, 1, 20, 11, 2] },
   },
   tasks: {
+    labels: ["L", "M", "M", "J", "V", "S", "D"],
+    datasets: { label: "Flujos", data: [4, 10, 15, 10, 2, 1, 20] },
+  }
+  /*
+  tasks: {
     labels: ["Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
     datasets: { label: "Flujos", data: [4, 10, 15, 10, 2, 1, 20, 11, 2] },
-  },
+  }*/,
 };

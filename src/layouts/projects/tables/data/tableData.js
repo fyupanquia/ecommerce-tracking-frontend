@@ -33,6 +33,7 @@ import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
 import Action from "./Action"
+import { tzToString } from "util/date";
 
 export default function data(data) {
   const Author = ({ name }) => (
@@ -67,7 +68,7 @@ export default function data(data) {
       description: <Author name={r.description} />,
       registrado: (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {new Date(r.created_at).toLocaleDateString()}
+          {tzToString(r.created_at,-5)}
         </MDTypography>
       ),
       action: <Action row={r} />,

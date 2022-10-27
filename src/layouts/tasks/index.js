@@ -46,6 +46,7 @@ function Tables() {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
   const [user, setUser] = useLocalStorage("user", null);
+  const [project, setProject] = useLocalStorage("project", null);
   const navigate = useNavigate();
 
   const onAddUser = () => {
@@ -66,7 +67,7 @@ function Tables() {
           }
         });
     } else {
-      const data = tableData(taks);
+      const data = tableData(taks, project);
       setColumns(data.columns);
       setRows(data.rows);
     }

@@ -25,9 +25,9 @@ import MDTypography from "components/MDTypography";
 
 // Billing page components
 import Transaction from "layouts/billing/components/Transaction";
+import { tzToString } from "util/date";
 import TaskContent from "./TaskContent";
-import { tzToString } from "../../util/date";
- 
+
 function TimeLineItemContent({ modulo }) {
   return (
     <Card sx={{ height: "100%" }}>

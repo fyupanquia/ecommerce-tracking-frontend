@@ -32,15 +32,17 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading";
 import DeleteCard from "./cards/deleteCard";
 
-import 'components/MDSelect/select.css'
-import credentials from "credentials.json"
+import "components/MDSelect/select.css";
+import credentials from "credentials.json";
+
 function UsersNew() {
   const formEl = useRef();
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
-  const [question, setQuestion] = useState(null);
+  const [projects, setProjects] = useState(null);
+  const [project, setProject] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [profile, setProfile] = useState("CLIENTE");
   const [fullname, setFullname] = useState("");
@@ -63,22 +65,23 @@ function UsersNew() {
   };
 
   const onSave = ({ iFullname, iEmail, iPassword, iIsActive, iProfile }) => {
-    const baseURL = `${credentials.SERVER_URL}/users`;
+    let baseURL = `${credentials.SERVER_URL}/users`;
+    const body = {
+      fullname: iFullname.value,
+      email: iEmail.value,
+      password: iPassword.value,
+      is_active: iIsActive.checked,
+      profile: iProfile.value,
+    };
+    if (user && user.profile === "MASTER" && params && !params.id) {
+      baseURL += "/register";
+      body.project_id = project;
+    }
 
     axios
-      .post(
-        baseURL,
-        {
-          fullname: iFullname.value,
-          email: iEmail.value,
-          password: iPassword.value,
-          is_active: iIsActive.checked,
-          profile: iProfile.value,
-        },
-        {
-          headers: { Authorization: `Bearer ${user.access_token}` },
-        }
-      )
+      .post(baseURL, body, {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      })
       .then((response) => {
         if (response.status == 201) {
           setFullname("");
@@ -100,6 +103,19 @@ function UsersNew() {
                     correctamente
                   </MDTypography>
                   !
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+        }
+      })
+      .catch((e) => {
+        if (e.response && e.response.data) {
+          setAlert(
+            <Grid item xs={12}>
+              <MDAlert color="error" dismissible>
+                <MDTypography variant="body2" color="white">
+                  {e.response.data.message}
                 </MDTypography>
               </MDAlert>
             </Grid>
@@ -169,9 +185,8 @@ function UsersNew() {
 
   useEffect(() => {
     if (params && params.id) {
-      const baseURL = `${credentials.SERVER_URL}/users/${params.id}`;
       axios
-        .get(baseURL, {
+        .get(`${credentials.SERVER_URL}/users/${params.id}`, {
           headers: { Authorization: `Bearer ${user.access_token}` },
         })
         .then((response) => {
@@ -190,6 +205,23 @@ function UsersNew() {
         });
     } else {
       setLoaded(true);
+    }
+
+    if (user && user.profile === "MASTER") {
+      axios
+        .get(`${credentials.SERVER_URL}/projects`, {
+          headers: { Authorization: `Bearer ${user.access_token}` },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            setProjects(response.data);
+            setProject(response.data[0].id);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          onGoBack();
+        });
     }
   }, []);
 
@@ -296,6 +328,32 @@ function UsersNew() {
                         </Grid>
                       </Grid>
                     </MDBox>
+                    {user && user.profile === "MASTER" && params && !params.id && projects ? (
+                      <MDBox mb={2}>
+                        <FormControl fullWidth name="select-project">
+                          <InputLabel id="project">Proyecto</InputLabel>
+                          <Select
+                            labelId="project"
+                            id="project"
+                            label="Proyecto"
+                            name="project"
+                            defaultValue="CLIENTE"
+                            value={project}
+                            onChange={(event) => {
+                              setProject(event.target.value);
+                            }}
+                          >
+                            {projects
+                              ? projects.map((p) => (
+                                  <MenuItem key={p.id} value={p.id}>
+                                    {p.name}
+                                  </MenuItem>
+                                ))
+                              : null}
+                          </Select>
+                        </FormControl>
+                      </MDBox>
+                    ) : null}
                     <MDBox mb={2}>
                       <MDInput
                         type="password"

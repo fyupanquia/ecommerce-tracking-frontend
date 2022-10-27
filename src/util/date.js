@@ -1,16 +1,16 @@
-export const  tzToString = (date) => {
+export const tzToString = (date, addHours) => {
   if (typeof date !== "string") return "";
-  /*
-  const d = new Date(date);
-  const date = new Date();
-  */
+
   const tzString = "America/Lima";
-  const d = new Date(
+  let d = new Date(
     (typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {
       timeZone: tzString,
     })
   );
-  d.setHours(d.getHours()-7)
+  if (addHours) {
+    const unix = d.setHours(d.getHours() + addHours);
+    d = new Date(unix)
+  }
 
   const months = [
     "Enero",
@@ -32,5 +32,7 @@ export const  tzToString = (date) => {
   const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
   const monthName = months[d.getMonth()];
   const dayName = days[d.getDay()];
-  return `${padTwo0(d.getDate())} ${monthName} ${d.getFullYear()} ${padTwo0(d.getHours())}:${padTwo0(d.getMinutes())}:${padTwo0(d.getSeconds())}`;
+  return `${padTwo0(d.getDate())} ${monthName} ${d.getFullYear()} ${padTwo0(
+    d.getHours()
+  )}:${padTwo0(d.getMinutes())}:${padTwo0(d.getSeconds())}`;
 };

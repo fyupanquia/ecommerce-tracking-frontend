@@ -25,14 +25,10 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-// Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
-
 import Action from "./Action";
+import { tzToString } from "util/date";
 
-export default function data(data) {
+export default function data(data, project) {
   const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>
@@ -51,26 +47,35 @@ export default function data(data) {
       <MDTypography variant="caption">{description}</MDTypography>
     </MDBox>
   );
+  let columns = [
+    { Header: "Flujo", accessor: "flux", width: "40%", align: "left" },
+    { Header: "Proyecto", accessor: "project", align: "left" },
+    { Header: "Modulos", accessor: "modules", align: "center" },
+    { Header: "Tareas", accessor: "tasks", align: "center" },
+    { Header: "Registrado", accessor: "registrado", width: "15%", align: "center" },
+    { Header: "Acción", accessor: "action", width: "15%", align: "center" },
+  ];
+
+  const rows = data.map((r) => ({
+    flux: <Author name={r.name} />,
+    project: r.project_id.name,
+    modules: r.modules.length,
+    tasks: r.modules.reduce((c, m) => c + m.tasks.length, 0),
+    registrado: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {tzToString(r.created_at,-5)}
+      </MDTypography>
+    ),
+    action: <Action row={r} />,
+  }));
+
+  if (project.id !== 3) {
+    columns = [...columns.slice(0, 2), ...columns.slice(3)];
+    delete rows.project;
+  }
 
   return {
-    columns: [
-      { Header: "Flujo", accessor: "flux", width: "60%", align: "left" },
-      { Header: "Modulos", accessor: "modules", align: "center" },
-      { Header: "Tareas", accessor: "tasks", align: "center" },
-      { Header: "Registrado", accessor: "registrado", align: "center" },
-      { Header: "Acción", accessor: "action", width: "20%", align: "center" },
-    ],
-
-    rows: data.map((r) => ({
-      flux: <Author name={r.name} />,
-      modules: r.modules.length,
-      tasks: r.modules.reduce((c, m) => c + m.tasks.length, 0),
-      registrado: (
-        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {new Date(r.created_at).toLocaleDateString()}
-        </MDTypography>
-      ),
-      action: <Action row={r} />,
-    })),
+    columns,
+    rows,
   };
 }

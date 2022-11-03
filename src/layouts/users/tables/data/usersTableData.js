@@ -36,36 +36,9 @@ import { deepOrange, deepPurple } from "@mui/material/colors";
 import { useLocalStorage } from "providers/useLocalStorage";
 import { tzToString } from "util/date";
 import UserAction from "./UserAction";
+import { stringAvatar } from 'util/string'
 
-function stringToColor(string) {
-  let hash = 0;
-  let i;
-
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  let color = "#";
-
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  /* eslint-enable no-bitwise */
-
-  return color;
-}
-
-function stringAvatar(name) {
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-  };
-}
-export default function data(users, project) {
+export default function data(users, user) {
   const Author = ({ image, name, email, profile }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       {/* <MDAvatar src={image} name={name} size="sm" /> */}
@@ -88,16 +61,16 @@ export default function data(users, project) {
     { Header: "Estado", accessor: "estado", align: "center" },
     { Header: "Acción", accessor: "action", width: "15%", align: "center" },
   ];
-  const rows = users.map((user) => ({
+  const rows = users.map((u) => ({
     usuario: (
-      <Author image={team2} name={user.fullname} email={user.email} profile={user.profile} />
+      <Author image={team2} name={u.fullname} email={u.email} profile={u.profile} />
     ),
-    project: user.project_id.name,
+    project: u.project_id.name,
     estado: (
       <MDBox ml={-1}>
         <MDBadge
-          badgeContent={user.is_active ? "activo" : "desactivo"}
-          color={user.is_active ? "success" : "dark"}
+          badgeContent={u.is_active ? "activo" : "desactivo"}
+          color={u.is_active ? "success" : "dark"}
           variant="gradient"
           size="sm"
         />
@@ -105,14 +78,13 @@ export default function data(users, project) {
     ),
     registrado: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {tzToString(user.created_at, -5)}
+        {tzToString(u.created_at, -5)}
       </MDTypography>
     ),
-    action: <UserAction user={user} />,
+    action: <UserAction user={u} />,
   }));
-  if (project.id !== 3) {
-    columns = [...columns.slice(0, 2), ...columns.slice(3)];
-    delete rows.project;
+  if (user.profile === "MASTER") {
+    columns = columns.filter((c) => c.accessor != "project");
   }
   return {
     columns,

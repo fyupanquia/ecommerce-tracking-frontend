@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 // @mui material components
@@ -31,15 +31,18 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-
+import MDInput from "components/MDInput";
 // Data
 
 import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
 import Loading from "components/Loading";
 import usersTableData from "./tables/data/usersTableData";
+import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import credentials from "credentials.json"
 function Tables() {
+  const params = useParams();
+  const [items, setItems] = useState(null);
   const [users, setUsers] = useState(null);
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
@@ -52,23 +55,27 @@ function Tables() {
   };
 
   useEffect(() => {
-    if (users === null) {
-      const baseURL = `${credentials.SERVER_URL}/users`;
+    const baseURL = `${credentials.SERVER_URL}/reports/projects?begin_date=2022-10-17&end_date=2022-11-02`;
 
-      axios
-        .get(baseURL, {
-          headers: { Authorization: `Bearer ${user.access_token}` },
-        })
-        .then((response) => {
-          if (response.status == 200) {
-            setUsers(response.data);
-          }
-        });
-    } else {
-      const data = usersTableData(users, user);
-      setColumns(data.columns);
-      setRows(data.rows);
-    }
+    axios
+      .get(baseURL, {
+        headers: { Authorization: `Bearer ${user.access_token}` },
+      })
+      .then((response) => {
+        if (response.status == 200) {
+          setItems({
+            //labels: Object.values(response.data.projectReport).map(i => (i.day)),
+            labels: Object.keys(response.data.projectReport).map(i => {
+              const parts = i.split("-");
+              return `${parts[2]}/${parts[1]}`
+            }),
+            datasets: { label: "Proyectos", data: Object.values(response.data.projectReport).map(i => (i.val)) },
+          })
+          const data = usersTableData(response.data.projects, user);
+          setColumns(data.columns);
+          setRows(data.rows);
+        }
+      });
   }, [users]);
 
   return (
@@ -92,13 +99,61 @@ function Tables() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  Tabla de usuarios
+                  Resumen de {params.item}
                 </MDTypography>
-                <MDButton variant="gradient" color="secondary" onClick={onAddUser}>
-                  <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-                  &nbsp;Agregar
+              </MDBox>
+              <MDBox pt={4} pb={3} px={3}>
+              <MDBox component="form" role="form">
+              <MDBox p={0}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={6}>
+                      <MDInput
+                      type="text"
+                      label="Nombres Completos"
+                      name="fullname"
+                      variant="standard"
+                      value=""
+                      onChange={(e) => {
+                        //setFullname(e.target.value);
+                      }}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                        <MDInput
+                        type="text"
+                        label="Nombres Completos"
+                        name="fullname"
+                        variant="standard"
+                        value=""
+                        onChange={(e) => {
+                          //setFullname(e.target.value);
+                        }}
+                        fullWidth
+                      />
+                  </Grid>
+                </Grid>
+              </MDBox>
+              <MDBox mt={2} mb={1}>
+                <MDButton variant="gradient" color="primary" fullWidth onClick={()=>{}}>
+                  Guardar
                 </MDButton>
               </MDBox>
+              </MDBox>
+              </MDBox>
+              {items ? <MDBox pt={6}>
+                <Grid item xs={12} md={12} lg={12}>
+                    <MDBox mb={3}>
+                      <ReportsLineChart
+                        color="dark"
+                        title="Proyectos"
+                        description={`Proyectos registrados`}
+                        date="Actualizado hace 1 minuto"
+                        chart={items}
+                      />
+                    </MDBox>
+                  </Grid>
+              </MDBox> : null }
               <MDBox pt={3}>
                 {rows.length ? (
                   <DataTable

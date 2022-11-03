@@ -49,35 +49,6 @@ import {
   setWhiteSidenav,
 } from "context";
 
-function stringToColor(string) {
-  let hash = 0;
-  let i;
-
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  let color = "#";
-
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  /* eslint-enable no-bitwise */
-
-  return color;
-}
-
-function stringAvatar(name) {
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-  };
-}
-
 const trimFullname = (str) => {
   const length = 15;
   if (typeof str !== "string") return str;
@@ -220,7 +191,7 @@ function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
           <Avatar
             {...{
               sx: { bgcolor: color },
-              children: `${user.fullname.split(" ")[0][0]}${user.fullname.split(" ")[1][0]}`,
+              children: `${user.fullname.split(" ")[0][0]}${user.fullname.split(" ").length>=2 ? user.fullname.split(" ")[1][0] : ''}`,
             }}
           />
           <MDBox ml={1} lineHeight={1}>

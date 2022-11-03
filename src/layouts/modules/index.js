@@ -68,7 +68,7 @@ function Tables() {
           }
         });
     } else {
-      const data = tableData(modules, project);
+      const data = tableData(modules, user);
       setColumns(data.columns);
       setRows(data.rows);
     }

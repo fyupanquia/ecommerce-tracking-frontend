@@ -67,7 +67,7 @@ function Tables() {
           }
         });
     } else {
-      const data = tableData(taks, project);
+      const data = tableData(taks, user);
       setColumns(data.columns);
       setRows(data.rows);
     }

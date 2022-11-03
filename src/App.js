@@ -131,7 +131,7 @@ export default function App() {
         patchThemeWithProvider(theme, project);
         setCustomTheme(theme);
       } else {
-        const defaultPath = "admin";
+        const defaultPath = "seguimiento";
         const rspProject = await getProjectByPath(isRoute ? defaultPath : pathname, defaultPath);
         if (rspProject) {
           patchThemeWithProvider(theme, rspProject);

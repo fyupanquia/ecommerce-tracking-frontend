@@ -37,6 +37,8 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
+import DashboardDetail from "layouts/dashboard/detail";
+
 import Users from "layouts/users";
 import Tasks from "layouts/tasks";
 import TasksNew from "layouts/tasks/new";
@@ -343,6 +345,24 @@ const routes = {
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "/dashboard",
         component: <Dashboard />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Dashboard",
+            key: "dashboard",
+            icon: <Icon fontSize="small">dashboard</Icon>,
+            route: "/dashboard",
+            component: <Dashboard />
+          },
+          {
+            type: "collapse",
+            name: "Dashboard",
+            key: "dashboard",
+            icon: <Icon fontSize="small">dashboard</Icon>,
+            route: "/dashboard/:item",
+            component: <DashboardDetail />
+          },
+        ]
       },
       {
         type: "collapse",

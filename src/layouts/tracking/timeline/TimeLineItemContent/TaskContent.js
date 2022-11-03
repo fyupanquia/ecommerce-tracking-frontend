@@ -162,6 +162,8 @@ function Content({ task }) {
           <Alert severity="error">{task.outputValue}</Alert>
         </Stack>
       );
+    } else {
+      setOutput(null)
     }
   }, [task]);
 

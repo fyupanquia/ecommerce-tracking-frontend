@@ -68,7 +68,7 @@ function Tables() {
           }
         });
     } else {
-      const data = tableData(fluxes, project);
+      const data = tableData(fluxes, user);
       setColumns(data.columns);
       setRows(data.rows);
     }

@@ -28,7 +28,7 @@ import MDBadge from "components/MDBadge";
 import Action from "./Action";
 import { tzToString } from "util/date";
 
-export default function data(data, project) {
+export default function data(data, user) {
   const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>
@@ -69,9 +69,8 @@ export default function data(data, project) {
     action: <Action row={r} />,
   }));
 
-  if (project.id !== 3) {
-    columns = [...columns.slice(0, 2), ...columns.slice(3)];
-    delete rows.project;
+  if (user.profile === "MASTER") {
+    columns = columns.filter((c) => c.accessor != "project");
   }
 
   return {

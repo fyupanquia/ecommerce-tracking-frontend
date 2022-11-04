@@ -40,7 +40,8 @@ import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
 import Avatar from "@mui/material/Avatar";
-
+import MDAvatar from "components/MDAvatar";
+import { stringAvatar } from 'util/string'
 // Material Dashboard 2 React context
 import {
   useMaterialUIController,
@@ -113,7 +114,7 @@ function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
       ) : (
         <NavLink key={key} to={route}>
           {/* <SidenavCollapse name={name} icon={icon} active={key === collapseName} /> */}
-          <SidenavCollapse name={name} icon={icon} active={collapseName.indexOf(key) !== -1} />
+          <SidenavCollapse name={name} icon={icon} active={collapseName.split("/")[0].indexOf(key) !== -1} />
         </NavLink>
       );
     } else if (type === "title") {
@@ -188,12 +189,13 @@ function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
       />
       <MDBox pt={0} pb={0} px={4} textAlign="center">
         <MDBox display="flex" mt={1} alignItems="center" lineHeight={1}>
-          <Avatar
+          {user.img_url ? <MDAvatar src={user.img_url} name={user.fullname} size="sm" />  : <Avatar
             {...{
               sx: { bgcolor: color },
               children: `${user.fullname.split(" ")[0][0]}${user.fullname.split(" ").length>=2 ? user.fullname.split(" ")[1][0] : ''}`,
             }}
-          />
+          /> }
+
           <MDBox ml={1} lineHeight={1}>
             <MDTypography display="block" variant="button" fontWeight="medium" color={textColor}>
               {trimFullname(user.fullname)}
@@ -229,6 +231,7 @@ function Sidenav({ color, brand, brandName, routes, user, ...rest }) {
     </SidenavRoot>
   );
 }
+
 
 // Setting default values for the props of Sidenav
 Sidenav.defaultProps = {

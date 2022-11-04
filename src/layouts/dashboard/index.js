@@ -100,54 +100,80 @@ function Dashboard() {
     navigate(`/dashboard/${item}`);
   }
 
-  console.log({ tasks})
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      {useauth.profile == "CLIENTE" ? (
-        <MDBox py={3}>
-          <MDBox mt={4.5}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6} lg={4}>
+      {useauth.profile == "ADMIN" ? (
+        <MDBox py={2}>
+        <MDBox mt={4.5}>
+          <Grid container spacing={2}>
+            {users ? (
+              <Grid item xs={12} md={6} lg={6}>
                 <MDBox mb={3}>
-                  <ReportsBarChart
-                    color="info"
-                    title="Inicios de sesión"
-                    description="Últimas conexiones"
-                    date="Actualizado hace 5 minutos"
-                    chart={reportsBarChartData}
+                  <ReportsLineChart
+                    color="secondary"
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="secondary" onClick={()=> goToDashboard('usuarios')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Usuarios
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(users.datasets.data).amount} Usuarios registrados`}
+                    date="Actualizado hace 1 minuto"
+                    chart={users}
                   />
                 </MDBox>
               </Grid>
-              <Grid item xs={12} md={6} lg={4}>
+            ) : null}
+            {fluxes ? (
+              <Grid item xs={12} md={6} lg={6}>
+                <MDBox mb={3}>
+                  <ReportsLineChart
+                    color="info"
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="info" onClick={()=> goToDashboard('flujos')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Flujos
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(fluxes.datasets.data).amount} Flujos registrados`}
+                    date="Actualizado hace 1 minuto"
+                    chart={fluxes}
+                  />
+                </MDBox>
+              </Grid>
+            ) : null}
+            {modules ? (
+              <Grid item xs={12} md={6} lg={6}>
                 <MDBox mb={3}>
                   <ReportsLineChart
                     color="success"
-                    title="Compras"
-                    description={
-                      <>
-                        (<strong>+10%</strong>) pedidos realizados
-                      </>
-                    }
-                    date="Actualizado hace 1 hora"
-                    chart={sales}
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="success" onClick={()=> goToDashboard('modulos')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Módulos
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(modules.datasets.data).amount} Módulos registrados`}
+                    date="Actualizado hace 1 minuto"
+                    chart={modules}
                   />
                 </MDBox>
               </Grid>
-              <Grid item xs={12} md={6} lg={4}>
+            ) : null}
+            {tasks ? (
+              <Grid item xs={12} md={6} lg={6}>
                 <MDBox mb={3}>
                   <ReportsLineChart
-                    color="dark"
-                    title="Flujos"
-                    description="Flujos concretados"
+                    color="warning"
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="warning" onClick={()=> goToDashboard('proyectos')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Tareas
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(tasks.datasets.data).amount} Tareas registradas`}
                     date="Actualizado hace 1 minuto"
                     chart={tasks}
                   />
                 </MDBox>
               </Grid>
-            </Grid>
-          </MDBox>
+            ) : null}
+          </Grid>
         </MDBox>
+      </MDBox>
       ) : (
         <MDBox py={2}>
           <MDBox mt={4.5}>
@@ -157,10 +183,10 @@ function Dashboard() {
                   <MDBox mb={3}>
                     <ReportsLineChart
                       color="primary"
-                      title={<MDButton variant="gradient" color="primary" onClick={()=> goToDashboard('proyectos')}>
+                      title={<MDBox mb={1}><MDButton variant="gradient" color="primary" onClick={()=> goToDashboard('proyectos')}>
                       <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
                       &nbsp;Proyectos
-                    </MDButton>}
+                    </MDButton></MDBox>}
                       description={`${getPercentageData(projects.datasets.data).amount} Proyectos registrados`}
                       date="Actualizado hace 1 minuto"
                       chart={projects}
@@ -168,70 +194,70 @@ function Dashboard() {
                   </MDBox>
                 </Grid>
               ) : null}
-              {users ? (
-                <Grid item xs={12} md={6} lg={6}>
-                  <MDBox mb={3}>
-                    <ReportsLineChart
-                      color="secondary"
-                      title={<MDButton variant="gradient" color="secondary">
-                      <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
-                      &nbsp;Usuarios
-                    </MDButton>}
-                      description={`${getPercentageData(users.datasets.data).amount} Usuarios registrados`}
-                      date="Actualizado hace 1 minuto"
-                      chart={users}
-                    />
-                  </MDBox>
-                </Grid>
-              ) : null}
-              {fluxes ? (
-                <Grid item xs={12} md={6} lg={6}>
-                  <MDBox mb={3}>
-                    <ReportsLineChart
-                      color="info"
-                      title={<MDButton variant="gradient" color="info">
-                      <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
-                      &nbsp;Flujos
-                    </MDButton>}
-                      description={`${getPercentageData(fluxes.datasets.data).amount} Flujos registrados`}
-                      date="Actualizado hace 1 minuto"
-                      chart={fluxes}
-                    />
-                  </MDBox>
-                </Grid>
-              ) : null}
-              {modules ? (
-                <Grid item xs={12} md={6} lg={6}>
-                  <MDBox mb={3}>
-                    <ReportsLineChart
-                      color="success"
-                      title={<MDButton variant="gradient" color="success">
-                      <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
-                      &nbsp;Módulos
-                    </MDButton>}
-                      description={`${getPercentageData(modules.datasets.data).amount} Módulos registrados`}
-                      date="Actualizado hace 1 minuto"
-                      chart={modules}
-                    />
-                  </MDBox>
-                </Grid>
-              ) : null}
-              {tasks ? (
-                <Grid item xs={12} md={6} lg={6}>
-                  <MDBox mb={3}>
-                    <ReportsLineChart
-                      color="warning"
-                      title={<MDButton variant="gradient" color="warning">
-                      <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
-                      &nbsp;Tareas
-                    </MDButton>}
-                      description={`${getPercentageData(tasks.datasets.data).amount} Tareas registradas`}
-                      date="Actualizado hace 1 minuto"
-                      chart={tasks}
-                    />
-                  </MDBox>
-                </Grid>
-              ) : null}
+               {users ? (
+              <Grid item xs={12} md={6} lg={6}>
+                <MDBox mb={3}>
+                  <ReportsLineChart
+                    color="secondary"
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="secondary" onClick={()=> goToDashboard('usuarios')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Usuarios
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(users.datasets.data).amount} Usuarios registrados`}
+                    date="Actualizado hace 1 minuto"
+                    chart={users}
+                  />
+                </MDBox>
+              </Grid>
+            ) : null}
+            {fluxes ? (
+              <Grid item xs={12} md={6} lg={6}>
+                <MDBox mb={3}>
+                  <ReportsLineChart
+                    color="info"
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="info" onClick={()=> goToDashboard('flujos')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Flujos
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(fluxes.datasets.data).amount} Flujos registrados`}
+                    date="Actualizado hace 1 minuto"
+                    chart={fluxes}
+                  />
+                </MDBox>
+              </Grid>
+            ) : null}
+            {modules ? (
+              <Grid item xs={12} md={6} lg={6}>
+                <MDBox mb={3}>
+                  <ReportsLineChart
+                    color="success"
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="success" onClick={()=> goToDashboard('modulos')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Módulos
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(modules.datasets.data).amount} Módulos registrados`}
+                    date="Actualizado hace 1 minuto"
+                    chart={modules}
+                  />
+                </MDBox>
+              </Grid>
+            ) : null}
+            {tasks ? (
+              <Grid item xs={12} md={6} lg={6}>
+                <MDBox mb={3}>
+                  <ReportsLineChart
+                    color="warning"
+                    title={<MDBox mb={1}><MDButton variant="gradient" color="warning" onClick={()=> goToDashboard('proyectos')}>
+                    <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
+                    &nbsp;Tareas
+                  </MDButton></MDBox>}
+                    description={`${getPercentageData(tasks.datasets.data).amount} Tareas registradas`}
+                    date="Actualizado hace 1 minuto"
+                    chart={tasks}
+                  />
+                </MDBox>
+              </Grid>
+            ) : null}
             </Grid>
           </MDBox>
         </MDBox>

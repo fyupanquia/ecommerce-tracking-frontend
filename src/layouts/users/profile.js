@@ -24,14 +24,13 @@ import { useLocalStorage } from "providers/useLocalStorage";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-
-import Tooltip from "@mui/material/Tooltip";
-
 import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading";
-import DeleteCard from "./cards/deleteCard";
 import credentials from "credentials.json"
+import FileUpload from "react-material-file-upload";
+import MDAvatar from "components/MDAvatar";
+
 function UsersProfile() {
   const formEl = useRef();
   const [user, setUser] = useLocalStorage("user", null);
@@ -39,28 +38,24 @@ function UsersProfile() {
   const [alert, setAlert] = useState(null);
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loaded, setLoaded] = useState(false);
-
-  const getInputs = () => {
-    const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
-    const iEmail = [...formEl.current.elements].find((e) => e.name === "email");
-    const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
-    return { iFullname, iEmail, iPassword };
-  };
+  const [logoURL, setLogoURL] = useState(false);
+  const [files, setFiles] = useState([]);
 
   const onGoBack = () => {
     navigate("/usuarios");
   };
 
-  const onEdit = ({ id, iFullname, iEmail, iPassword }) => {
-    const baseURL = `${credentials.SERVER_URL}/users/${id}`;
+  const onEdit = ({ id }) => {
     axios
       .patch(
-        baseURL,
+        `${credentials.SERVER_URL}/users/${id}`,
         {
-          fullname: iFullname.value,
-          email: iEmail.value,
-          password: iPassword.value || undefined,
+          fullname,
+          email,
+          password: password || undefined,
+          img_url: logoURL
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -68,11 +63,12 @@ function UsersProfile() {
       )
       .then((response) => {
         if (response.status == 200) {
+          setUser({...user, ...response.data});
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡Usuario {iEmail.value} fue actualizado{" "}
+                  ¡Usuario {email} fue actualizado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -92,17 +88,62 @@ function UsersProfile() {
   };
 
   const onSubmit = () => {
-    const { iFullname, iEmail, iPassword } = getInputs();
+    onEdit({ id: user.id});
+  };
 
-    onEdit({ id: user.id, iFullname, iEmail, iPassword });
+  const uploadFile = (files) => {
+    if (!files.length) {
+      setFiles([]);
+      setLogoURL("");
+      return;
+    }
+    const myFile = files[0];
+    const formData = new FormData();
+    formData.append("file", myFile);
+    axios
+      .post(`${credentials.SERVER_URL}/files/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        setFiles([myFile]);
+        setLogoURL(`${credentials.SERVER_URL}/${response.data.filename}`);
+      })
+      .catch((e) => {
+        if (e.response && e.response.status === 400) {
+          setAlert(
+            <Grid item xs={12}>
+              <MDAlert color="error" dismissible>
+                <MDTypography variant="body2" color="white">
+                  ¡Sólo se permiten archivos de con formato{" "}
+                  <MDTypography
+                    component="a"
+                    href="#"
+                    variant="body2"
+                    fontWeight="medium"
+                    color="white"
+                  >
+                    imagen
+                  </MDTypography>
+                  !
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+        }
+      });
   };
 
   useEffect(() => {
     if (alert) {
       window.setTimeout(() => {
         setAlert(null);
-      }, 5000);
+        window.location = "/perfil"
+      }, 3000);
     }
+
+    return () => {}
   }, [alert]);
 
   useEffect(() => {
@@ -117,6 +158,7 @@ function UsersProfile() {
             const { data } = response;
             setFullname(data.fullname);
             setEmail(data.email);
+            setLogoURL(data.img_url);
             setLoaded(true);
           }
         })
@@ -181,6 +223,27 @@ function UsersProfile() {
                         fullWidth
                       />
                     </MDBox>
+                    <Grid container>
+                    <Grid item xs={12} md={8}>
+                      <MDBox mb={4} textAlign="center">
+                        <FileUpload
+                          value={files}
+                          onChange={uploadFile}
+                          buttonText="Seleccionar"
+                          title="Selecciona una imagen de perfil"
+                        />
+                      </MDBox>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <MDBox textAlign="center" alignItems="center">
+                        {logoURL ? (
+                          <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
+                            <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
+                          </Grid>
+                        ) : null}
+                      </MDBox>
+                    </Grid>
+                  </Grid>
                     <MDBox mb={2}>
                       <MDInput
                         type="password"
@@ -188,6 +251,9 @@ function UsersProfile() {
                         name="password"
                         variant="standard"
                         fullWidth
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }}
                       />
                     </MDBox>
                     <MDBox mt={2} mb={1}>

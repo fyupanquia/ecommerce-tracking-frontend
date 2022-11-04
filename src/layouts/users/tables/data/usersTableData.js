@@ -41,8 +41,7 @@ import { stringAvatar } from 'util/string'
 export default function data(users, user) {
   const Author = ({ image, name, email, profile }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      {/* <MDAvatar src={image} name={name} size="sm" /> */}
-      <Avatar {...stringAvatar(name)} />
+      {image ? <MDAvatar src={image} name={name} size="sm" /> : <Avatar {...stringAvatar(name)} />}
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {name}
@@ -63,7 +62,7 @@ export default function data(users, user) {
   ];
   const rows = users.map((u) => ({
     usuario: (
-      <Author image={team2} name={u.fullname} email={u.email} profile={u.profile} />
+      <Author image={u.img_url} name={u.fullname} email={u.email} profile={u.profile} />
     ),
     project: u.project_id.name,
     estado: (

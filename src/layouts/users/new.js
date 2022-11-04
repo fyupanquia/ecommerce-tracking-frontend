@@ -34,6 +34,8 @@ import DeleteCard from "./cards/deleteCard";
 
 import "components/MDSelect/select.css";
 import credentials from "credentials.json";
+import FileUpload from "react-material-file-upload";
+import MDAvatar from "components/MDAvatar";
 
 function UsersNew() {
   const formEl = useRef();
@@ -50,28 +52,22 @@ function UsersNew() {
   const [password, setPassword] = useState("");
   const handleSetIsActive = () => setIsActive(!isActive);
   const [loaded, setLoaded] = useState(false);
-
-  const getInputs = () => {
-    const iFullname = [...formEl.current.elements].find((e) => e.name === "fullname");
-    const iEmail = [...formEl.current.elements].find((e) => e.name === "email");
-    const iPassword = [...formEl.current.elements].find((e) => e.name === "password");
-    const iIsActive = [...formEl.current.elements].find((e) => e.name === "is_active");
-    const iProfile = [...formEl.current.elements].find((e) => e.name === "profile");
-    return { iFullname, iEmail, iPassword, iIsActive, iProfile };
-  };
+  const [logoURL, setLogoURL] = useState(false);
+  const [files, setFiles] = useState([]);
 
   const onGoBack = () => {
     navigate("/usuarios");
   };
 
-  const onSave = ({ iFullname, iEmail, iPassword, iIsActive, iProfile }) => {
+  const onSave = () => {
     let baseURL = `${credentials.SERVER_URL}/users`;
     const body = {
-      fullname: iFullname.value,
-      email: iEmail.value,
-      password: iPassword.value,
-      is_active: iIsActive.checked,
-      profile: iProfile.value,
+      fullname,
+      email,
+      password,
+      is_active: isActive,
+      img_url: logoURL,
+      profile
     };
     if (user && user.profile === "MASTER" && params && !params.id) {
       baseURL += "/register";
@@ -92,7 +88,7 @@ function UsersNew() {
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡Usuario {iEmail.value} fue registrado{" "}
+                  ¡Usuario {email} fue registrado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -124,17 +120,17 @@ function UsersNew() {
       });
   };
 
-  const onEdit = ({ id, iFullname, iEmail, iPassword, iIsActive, iProfile }) => {
-    const baseURL = `${credentials.SERVER_URL}/users/${id}`;
+  const onEdit = ({ id }) => {
     axios
       .patch(
-        baseURL,
+        `${credentials.SERVER_URL}/users/${id}`,
         {
-          fullname: iFullname.value,
-          email: iEmail.value,
-          password: iPassword.value || undefined,
-          is_active: iIsActive.checked,
-          profile: iProfile.value,
+          fullname,
+          email,
+          password: password || undefined,
+          is_active: isActive,
+          img_url: logoURL,
+          profile,
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -146,7 +142,7 @@ function UsersNew() {
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡Usuario {iEmail.value} fue actualizado{" "}
+                  ¡Usuario {email} fue actualizado{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -166,13 +162,55 @@ function UsersNew() {
   };
 
   const onSubmit = () => {
-    const { iFullname, iEmail, iPassword, iIsActive, iProfile } = getInputs();
-
     if (params && params.id) {
-      onEdit({ id: params.id, iFullname, iEmail, iPassword, iIsActive, iProfile });
+      onEdit({ id: params.id });
     } else {
-      onSave({ iFullname, iEmail, iPassword, iIsActive, iProfile });
+      onSave();
     }
+  };
+
+  const uploadFile = (files) => {
+    if (!files.length) {
+      setFiles([]);
+      setLogoURL("");
+      return;
+    }
+    const myFile = files[0];
+    const formData = new FormData();
+    formData.append("file", myFile);
+    axios
+      .post(`${credentials.SERVER_URL}/files/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        setFiles([myFile]);
+        setLogoURL(`${credentials.SERVER_URL}/${response.data.filename}`);
+      })
+      .catch((e) => {
+        if (e.response && e.response.status === 400) {
+          setAlert(
+            <Grid item xs={12}>
+              <MDAlert color="error" dismissible>
+                <MDTypography variant="body2" color="white">
+                  ¡Sólo se permiten archivos de con formato{" "}
+                  <MDTypography
+                    component="a"
+                    href="#"
+                    variant="body2"
+                    fontWeight="medium"
+                    color="white"
+                  >
+                    imagen
+                  </MDTypography>
+                  !
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+        }
+      });
   };
 
   useEffect(() => {
@@ -181,6 +219,7 @@ function UsersNew() {
         setAlert(null);
       }, 5000);
     }
+    return () => {}
   }, [alert]);
 
   useEffect(() => {
@@ -197,6 +236,7 @@ function UsersNew() {
             setIsActive(data.is_active);
             setProfile(data.profile);
             setLoaded(true);
+            setLogoURL(data.img_url)
           }
         })
         .catch((e) => {
@@ -256,7 +296,7 @@ function UsersNew() {
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 {loaded ? (
-                  <MDBox component="form" role="form" ref={formEl}>
+                  <MDBox component="form" role="form">
                     <MDBox mb={2}>
                       <MDInput
                         type="text"
@@ -289,7 +329,10 @@ function UsersNew() {
                           <MDBox mb={2}>
                             <FormControl fullWidth name="select-profile">
                               <InputLabel id="profile">Perfil</InputLabel>
-                              <Select
+                              
+                                {
+                                user.profile==="MASTER" ? (
+                                  <Select
                                 labelId="profile"
                                 id="profile"
                                 label="Perfil"
@@ -299,12 +342,19 @@ function UsersNew() {
                                 onChange={(event) => {
                                   setProfile(event.target.value);
                                 }}
-                                classes="frank"
-                              >
-                                <MenuItem value="CLIENTE">CLIENTE</MenuItem>
-                                <MenuItem value="ADMIN">ADMIN</MenuItem>
-                                <MenuItem value="MASTER">MASTER</MenuItem>
-                              </Select>
+                              ><MenuItem value="CLIENTE">CLIENTE</MenuItem><MenuItem value="ADMIN">ADMIN</MenuItem><MenuItem value="MASTER">MASTER</MenuItem></Select>
+                                ) : (<Select
+                                labelId="profile"
+                                id="profile"
+                                label="Perfil"
+                                name="profile"
+                                defaultValue="CLIENTE"
+                                value={profile}
+                                onChange={(event) => {
+                                  setProfile(event.target.value);
+                                }}
+                              ><MenuItem value="CLIENTE">CLIENTE</MenuItem><MenuItem value="ADMIN">ADMIN</MenuItem></Select>)
+                                }
                             </FormControl>
                           </MDBox>
                         </Grid>
@@ -354,6 +404,27 @@ function UsersNew() {
                         </FormControl>
                       </MDBox>
                     ) : null}
+                    <Grid container>
+                    <Grid item xs={12} md={8}>
+                      <MDBox mb={4} textAlign="center">
+                        <FileUpload
+                          value={files}
+                          onChange={uploadFile}
+                          buttonText="Seleccionar"
+                          title="Selecciona una imagen de perfil"
+                        />
+                      </MDBox>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <MDBox textAlign="center" alignItems="center">
+                        {logoURL ? (
+                          <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
+                            <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
+                          </Grid>
+                        ) : null}
+                      </MDBox>
+                    </Grid>
+                  </Grid>
                     <MDBox mb={2}>
                       <MDInput
                         type="password"

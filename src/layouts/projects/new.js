@@ -112,6 +112,19 @@ function TasksNew() {
             </Grid>
           );
         }
+      }).catch((e) => {
+        console.log(e);
+        if (e.response && e.response.data) {
+          setAlert(
+            <Grid item xs={12}>
+              <MDAlert color="error" dismissible>
+                <MDTypography variant="body2" color="white">
+                  {e.response.data.message}
+                </MDTypography>
+              </MDAlert>
+            </Grid>
+          );
+        }
       });
       
   };

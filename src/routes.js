@@ -76,14 +76,6 @@ const routes = {
     CLIENTE: [
       {
         type: "collapse",
-        name: "Dashboard",
-        key: "dashboard",
-        icon: <Icon fontSize="small">dashboard</Icon>,
-        route: "/dashboard",
-        component: <Dashboard />,
-      },
-      {
-        type: "collapse",
         name: "Perfil",
         key: "perfil",
         icon: <Icon fontSize="small">person</Icon>,
@@ -142,6 +134,24 @@ const routes = {
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "/dashboard",
         component: <Dashboard />,
+        collapse: [
+          {
+            type: "collapse",
+            name: "Dashboard",
+            key: "dashboard",
+            icon: <Icon fontSize="small">dashboard</Icon>,
+            route: "/dashboard",
+            component: <Dashboard />
+          },
+          {
+            type: "collapse",
+            name: "Dashboard",
+            key: "dashboard",
+            icon: <Icon fontSize="small">dashboard</Icon>,
+            route: "/dashboard/:item",
+            component: <DashboardDetail />
+          },
+        ]
       },
       {
         type: "collapse",

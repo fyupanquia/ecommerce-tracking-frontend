@@ -36,8 +36,9 @@ import Action from "./Action"
 import { tzToString } from "util/date";
 
 export default function data(data) {
-  const Author = ({ name }) => (
+  const Author = ({ name, image }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
+      {image ? <MDAvatar src={image} name={name} size="sm" /> : null }
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {name}
@@ -64,7 +65,7 @@ export default function data(data) {
     ],
 
     rows: data.map((r) => ({
-      module: <Author name={r.name} />,
+      module: <Author name={r.name} image={r.logo_url} />,
       description: <Author name={r.description} />,
       registrado: (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">

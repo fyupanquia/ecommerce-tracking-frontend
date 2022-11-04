@@ -17,6 +17,8 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React components
 import MDTypography from "components/MDTypography";
+import MDAvatar from "components/MDAvatar";
+import MDBox from "components/MDBox";
 import { tzToString } from "util/date";
 
 export default function data(users, user) {
@@ -24,8 +26,20 @@ export default function data(users, user) {
     { Header: "Nombre", accessor: "name", width: "70%", align: "left" },
     { Header: "Registrado", accessor: "registered", align: "center" }
   ];
+
+  const Author = ({ image, name }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      {image ? <MDAvatar src={image} name={name} size="sm" /> : null }
+      <MDBox ml={2} lineHeight={1}>
+        <MDTypography display="block" variant="button" fontWeight="medium">
+          {name}
+        </MDTypography>
+      </MDBox>
+    </MDBox>
+  );
+
   const rows = users.map((u) => ({
-    name: u.name,
+    name:<Author name={u.name || u.fullname} image={u.logo_url} />,
     registered: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {tzToString(u.created_at, -5)}

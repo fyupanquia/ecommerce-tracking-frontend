@@ -27,7 +27,7 @@ import Footer from "examples/Footer";
 import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading";
-import credentials from "credentials.json"
+import credentials from "credentials.json";
 import FileUpload from "react-material-file-upload";
 import MDAvatar from "components/MDAvatar";
 
@@ -42,6 +42,10 @@ function UsersProfile() {
   const [loaded, setLoaded] = useState(false);
   const [logoURL, setLogoURL] = useState(false);
   const [files, setFiles] = useState([]);
+  const [twoFA, setTwoFA] = useState(false);
+  const handleSet2FA = () => setTwoFA(!twoFA);
+  const [authentication, setAuthentication] = useState("EMAIL");
+  const [authentications, setAuthentications] = useState(["EMAIL", "PHONE"]);
 
   const onGoBack = () => {
     navigate("/usuarios");
@@ -55,7 +59,8 @@ function UsersProfile() {
           fullname,
           email,
           password: password || undefined,
-          img_url: logoURL
+          img_url: logoURL,
+          twofa: authentication
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -63,7 +68,7 @@ function UsersProfile() {
       )
       .then((response) => {
         if (response.status == 200) {
-          setUser({...user, ...response.data});
+          setUser({ ...user, ...response.data });
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
@@ -88,7 +93,7 @@ function UsersProfile() {
   };
 
   const onSubmit = () => {
-    onEdit({ id: user.id});
+    onEdit({ id: user.id });
   };
 
   const uploadFile = (files) => {
@@ -139,11 +144,11 @@ function UsersProfile() {
     if (alert) {
       window.setTimeout(() => {
         setAlert(null);
-        window.location = "/perfil"
+        window.location = "/perfil";
       }, 3000);
     }
 
-    return () => {}
+    return () => {};
   }, [alert]);
 
   useEffect(() => {
@@ -217,33 +222,80 @@ function UsersProfile() {
                         name="email"
                         variant="standard"
                         value={email}
-                        onChange={(e) => {
+                        disabled
+                        /* onChange={(e) => {
                           setEmail(e.target.value);
-                        }}
+                        }} */
                         fullWidth
                       />
                     </MDBox>
                     <Grid container>
-                    <Grid item xs={12} md={8}>
-                      <MDBox mb={4} textAlign="center">
-                        <FileUpload
-                          value={files}
-                          onChange={uploadFile}
-                          buttonText="Seleccionar"
-                          title="Selecciona una imagen de perfil"
-                        />
-                      </MDBox>
+                      <Grid item xs={12} md={8}>
+                        <MDBox mb={4} textAlign="center">
+                          <FileUpload
+                            value={files}
+                            onChange={uploadFile}
+                            buttonText="Seleccionar"
+                            title="Selecciona una imagen de perfil"
+                          />
+                        </MDBox>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <MDBox textAlign="center" alignItems="center">
+                          {logoURL ? (
+                            <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
+                              <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
+                            </Grid>
+                          ) : null}
+                        </MDBox>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                      <MDBox textAlign="center" alignItems="center">
-                        {logoURL ? (
-                          <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
-                            <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
-                          </Grid>
-                        ) : null}
-                      </MDBox>
-                    </Grid>
-                  </Grid>
+                    <MDBox p={0}>
+                      <Grid container spacing={3}>
+                        <Grid item xs={12} md={6}>
+                          <MDBox display="flex" alignItems="center" ml={-1}>
+                            <Switch checked={twoFA} onChange={handleSet2FA} name="twoFA" />
+                            <MDTypography
+                              variant="button"
+                              fontWeight="regular"
+                              color="text"
+                              onClick={handleSet2FA}
+                              sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
+                            >
+                              &nbsp;&nbsp;Autenticación de doble factor (2FA)
+                            </MDTypography>
+                          </MDBox>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          {twoFA ? (
+                            <MDBox mb={2}>
+                              <FormControl fullWidth name="select-authentication">
+                                <InputLabel id="authentication">2FA</InputLabel>
+                                <Select
+                                  labelId="authentication"
+                                  id="authentication"
+                                  label="2FA"
+                                  name="authentication"
+                                  defaultValue={authentication}
+                                  value={authentication}
+                                  onChange={(event) => {
+                                    setAuthentication(event.target.value);
+                                  }}
+                                >
+                                  {authentications
+                                    ? authentications.map((p) => (
+                                        <MenuItem key={p} value={p}>
+                                          {p}
+                                        </MenuItem>
+                                      ))
+                                    : null}
+                                </Select>
+                              </FormControl>
+                            </MDBox>
+                          ) : null}
+                        </Grid>
+                      </Grid>
+                    </MDBox>
                     <MDBox mb={2}>
                       <MDInput
                         type="password"

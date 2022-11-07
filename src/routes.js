@@ -64,6 +64,7 @@ import FluxesNew from "layouts/fluxes/new";
 import FluxDelete from "layouts/fluxes/delete";
 
 import SignIn from "layouts/authentication/sign-in";
+import Confirmation from "layouts/authentication/confirmation";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 import Simulator from "layouts/simulator/new";
@@ -622,33 +623,6 @@ const routes = {
     ],
   },
   auth: [
-    /*
-    {
-      type: "collapse",
-      name: "Sign In",
-      key: "sign-in",
-      icon: <Icon fontSize="small">login</Icon>,
-      route: "/",
-      component: <SignIn />,
-      collapse: [
-        {
-          type: "collapse",
-          name: "Sign In",
-          key: "sign-in",
-          icon: <Icon fontSize="small">login</Icon>,
-          route: "/sign-in",
-          component: <SignIn />,
-        },
-        {
-          type: "collapse",
-          name: "Sign In",
-          key: "sign-in",
-          icon: <Icon fontSize="small">login</Icon>,
-          route: "/:slug",
-          component: <SignIn />,
-        },
-      ],
-    }, */
     {
       type: "collapse",
       name: "Sign In",
@@ -664,6 +638,14 @@ const routes = {
       icon: <Icon fontSize="small">login</Icon>,
       route: "/sign-in",
       component: <SignIn />,
+    },
+    {
+      type: "collapse",
+      name: "Confirmation Code",
+      key: "confirm",
+      icon: <Icon fontSize="small">login</Icon>,
+      route: "/confirm",
+      component: <Confirmation />,
     },
     {
       type: "collapse",

@@ -51,6 +51,7 @@ function Basic() {
   const formEl = useRef();
   const [rememberMe, setRememberMe] = useState(false);
   const [user, setUser] = useLocalStorage("user", null);
+  const [pendingUser, setPenddingUser] = useLocalStorage("pending_user", null);
   const [project, setProject] = useLocalStorage("project", null);
   const [alert, setAlert] = useState(null);
   const navigate = useNavigate();
@@ -76,15 +77,31 @@ function Basic() {
       .catch((e) => {
         console.log(e);
         if (e.response && e.response.data) {
-          setAlert(
-            <Grid item xs={12}>
-              <MDAlert color="error" dismissible>
-                <MDTypography variant="body2" color="white">
-                  {e.response.data.message}
-                </MDTypography>
-              </MDAlert>
-            </Grid>
-          );
+          if (e.response.data.message === "EMAIL_NOT_CONFIRMED") {
+            setPenddingUser({
+              email: iEmail.value,
+              project_id: project.id,
+              type: "EMAIL"
+            });
+            window.location = "/confirm";
+          } else if (e.response.data.message === "2FA_ENABLED") {
+            setPenddingUser({
+              email: iEmail.value,
+              project_id: project.id,
+              type: "2FA"
+            });
+            window.location = "/confirm";
+          } else {
+            setAlert(
+              <Grid item xs={12}>
+                <MDAlert color="error" dismissible>
+                  <MDTypography variant="body2" color="white">
+                    {e.response.data.message}
+                  </MDTypography>
+                </MDAlert>
+              </Grid>
+            );
+          }
         }
       });
   };

@@ -67,7 +67,7 @@ function UsersNew() {
       password,
       is_active: isActive,
       img_url: logoURL,
-      profile
+      profile,
     };
     if (user && user.profile === "MASTER" && params && !params.id) {
       baseURL += "/register";
@@ -219,7 +219,7 @@ function UsersNew() {
         setAlert(null);
       }, 5000);
     }
-    return () => {}
+    return () => {};
   }, [alert]);
 
   useEffect(() => {
@@ -236,7 +236,7 @@ function UsersNew() {
             setIsActive(data.is_active);
             setProfile(data.profile);
             setLoaded(true);
-            setLogoURL(data.img_url)
+            setLogoURL(data.img_url);
           }
         })
         .catch((e) => {
@@ -329,32 +329,39 @@ function UsersNew() {
                           <MDBox mb={2}>
                             <FormControl fullWidth name="select-profile">
                               <InputLabel id="profile">Perfil</InputLabel>
-                              
-                                {
-                                user.profile==="MASTER" ? (
-                                  <Select
-                                labelId="profile"
-                                id="profile"
-                                label="Perfil"
-                                name="profile"
-                                defaultValue="CLIENTE"
-                                value={profile}
-                                onChange={(event) => {
-                                  setProfile(event.target.value);
-                                }}
-                              ><MenuItem value="CLIENTE">CLIENTE</MenuItem><MenuItem value="ADMIN">ADMIN</MenuItem><MenuItem value="MASTER">MASTER</MenuItem></Select>
-                                ) : (<Select
-                                labelId="profile"
-                                id="profile"
-                                label="Perfil"
-                                name="profile"
-                                defaultValue="CLIENTE"
-                                value={profile}
-                                onChange={(event) => {
-                                  setProfile(event.target.value);
-                                }}
-                              ><MenuItem value="CLIENTE">CLIENTE</MenuItem><MenuItem value="ADMIN">ADMIN</MenuItem></Select>)
-                                }
+
+                              {user.profile === "MASTER" ? (
+                                <Select
+                                  labelId="profile"
+                                  id="profile"
+                                  label="Perfil"
+                                  name="profile"
+                                  defaultValue="CLIENTE"
+                                  value={profile}
+                                  onChange={(event) => {
+                                    setProfile(event.target.value);
+                                  }}
+                                >
+                                  <MenuItem value="CLIENTE">CLIENTE</MenuItem>
+                                  <MenuItem value="ADMIN">ADMIN</MenuItem>
+                                  <MenuItem value="MASTER">MASTER</MenuItem>
+                                </Select>
+                              ) : (
+                                <Select
+                                  labelId="profile"
+                                  id="profile"
+                                  label="Perfil"
+                                  name="profile"
+                                  defaultValue="CLIENTE"
+                                  value={profile}
+                                  onChange={(event) => {
+                                    setProfile(event.target.value);
+                                  }}
+                                >
+                                  <MenuItem value="CLIENTE">CLIENTE</MenuItem>
+                                  <MenuItem value="ADMIN">ADMIN</MenuItem>
+                                </Select>
+                              )}
                             </FormControl>
                           </MDBox>
                         </Grid>
@@ -405,26 +412,26 @@ function UsersNew() {
                       </MDBox>
                     ) : null}
                     <Grid container>
-                    <Grid item xs={12} md={8}>
-                      <MDBox mb={4} textAlign="center">
-                        <FileUpload
-                          value={files}
-                          onChange={uploadFile}
-                          buttonText="Seleccionar"
-                          title="Selecciona una imagen de perfil"
-                        />
-                      </MDBox>
+                      <Grid item xs={12} md={8}>
+                        <MDBox mb={4} textAlign="center">
+                          <FileUpload
+                            value={files}
+                            onChange={uploadFile}
+                            buttonText="Seleccionar"
+                            title="Selecciona una imagen de perfil"
+                          />
+                        </MDBox>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <MDBox textAlign="center" alignItems="center">
+                          {logoURL ? (
+                            <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
+                              <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
+                            </Grid>
+                          ) : null}
+                        </MDBox>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                      <MDBox textAlign="center" alignItems="center">
-                        {logoURL ? (
-                          <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
-                            <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
-                          </Grid>
-                        ) : null}
-                      </MDBox>
-                    </Grid>
-                  </Grid>
                     <MDBox mb={2}>
                       <MDInput
                         type="password"

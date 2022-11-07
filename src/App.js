@@ -131,7 +131,7 @@ export default function App() {
         patchThemeWithProvider(theme, project);
         setCustomTheme(theme);
       } else {
-        const defaultPath = "seguimiento";
+        const defaultPath = "systrack";
         const rspProject = await getProjectByPath(isRoute ? defaultPath : pathname, defaultPath);
         if (rspProject) {
           patchThemeWithProvider(theme, rspProject);

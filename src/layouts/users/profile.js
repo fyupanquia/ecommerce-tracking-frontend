@@ -43,14 +43,17 @@ function UsersProfile() {
   const [logoURL, setLogoURL] = useState(false);
   const [files, setFiles] = useState([]);
   const [twoFA, setTwoFA] = useState(false);
-  const handleSet2FA = () => setTwoFA(!twoFA);
+  
   const [authentication, setAuthentication] = useState("EMAIL");
   const [authentications, setAuthentications] = useState(["EMAIL", "PHONE"]);
 
   const onGoBack = () => {
     navigate("/usuarios");
   };
-
+  const handleSet2FA = () => {
+    setTwoFA(!twoFA)
+    setAuthentication(null);
+  };
   const onEdit = ({ id }) => {
     axios
       .patch(

@@ -37,8 +37,9 @@ import DataTable from "examples/Tables/DataTable";
 import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
 import Loading from "components/Loading";
+import credentials from "credentials.json";
 import usersTableData from "./tables/data/usersTableData";
-import credentials from "credentials.json"
+
 function Tables() {
   const [users, setUsers] = useState(null);
   const [columns, setColumns] = useState([]);
@@ -47,8 +48,11 @@ function Tables() {
   const [project, setProject] = useLocalStorage("project", null);
   const navigate = useNavigate();
 
-  const onAddUser = () => {
+  const onAdd = () => {
     navigate("/usuarios/agregar");
+  };
+  const onExport = () => {
+    navigate("/dashboard/usuarios");
   };
 
   useEffect(() => {
@@ -94,10 +98,19 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Tabla de usuarios
                 </MDTypography>
-                <MDButton variant="gradient" color="secondary" onClick={onAddUser}>
-                  <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-                  &nbsp;Agregar
-                </MDButton>
+                <MDBox p={0}>
+                  <MDButton variant="gradient" color="secondary" onClick={onAdd} title="Agregar">
+                    <Icon sx={{ fontWeight: "bold" }}>add</Icon>
+                  </MDButton>{" "}
+                  <MDButton
+                    variant="gradient"
+                    color="secondary"
+                    onClick={onExport}
+                    title="Exportar"
+                  >
+                    <Icon sx={{ fontWeight: "bold" }}>bar_chart</Icon>
+                  </MDButton>
+                </MDBox>
               </MDBox>
               <MDBox pt={3}>
                 {rows.length ? (

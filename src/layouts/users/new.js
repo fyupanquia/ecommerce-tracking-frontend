@@ -30,7 +30,6 @@ import Tooltip from "@mui/material/Tooltip";
 import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading";
-import DeleteCard from "./cards/deleteCard";
 
 import "components/MDSelect/select.css";
 import credentials from "credentials.json";

@@ -36,10 +36,10 @@ import DataTable from "examples/Tables/DataTable";
 
 import axios from "axios";
 import { useLocalStorage } from "providers/useLocalStorage";
-import tableData from "./tables/data/tableData";
 import Loading from "components/Loading";
-import credentials from "credentials.json"
+import credentials from "credentials.json";
 import MDAlert from "components/MDAlert";
+import tableData from "./tables/data/tableData";
 
 function Tables() {
   const [taks, setTaks] = useState(null);
@@ -49,10 +49,12 @@ function Tables() {
   const [project, setProject] = useLocalStorage("project", null);
   const navigate = useNavigate();
 
-  const onAddUser = () => {
+  const onAdd = () => {
     navigate("/tareas/agregar");
   };
-
+  const onExport = () => {
+    navigate("/dashboard/tareas");
+  };
   useEffect(() => {
     if (taks === null) {
       const baseURL = `${credentials.SERVER_URL}/tasks`;
@@ -96,10 +98,19 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Tabla de tareas
                 </MDTypography>
-                <MDButton variant="gradient" color="secondary" onClick={onAddUser}>
-                  <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-                  &nbsp;Agregar
-                </MDButton>
+                <MDBox p={0}>
+                  <MDButton variant="gradient" color="secondary" onClick={onAdd} title="Agregar">
+                    <Icon sx={{ fontWeight: "bold" }}>add</Icon>
+                  </MDButton>{" "}
+                  <MDButton
+                    variant="gradient"
+                    color="secondary"
+                    onClick={onExport}
+                    title="Exportar"
+                  >
+                    <Icon sx={{ fontWeight: "bold" }}>bar_chart</Icon>
+                  </MDButton>
+                </MDBox>
               </MDBox>
               <MDBox pt={3}>
                 {rows.length ? (
@@ -115,7 +126,7 @@ function Tables() {
                     <Grid item xs={12}>
                       <MDAlert color="info" dismissible>
                         <MDTypography variant="body2" color="white">
-                          No se encontraron tareas {" "}
+                          No se encontraron tareas{" "}
                           <MDTypography
                             component="a"
                             href="#"
@@ -139,7 +150,7 @@ function Tables() {
     </DashboardLayout>
   );
 
-  const loading = <Loading/>;
+  const loading = <Loading />;
 
   return taks ? body : loading;
 }

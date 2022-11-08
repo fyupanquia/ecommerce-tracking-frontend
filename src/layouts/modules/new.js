@@ -28,8 +28,9 @@ import Footer from "examples/Footer";
 import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
+import credentials from "credentials.json";
 import DeleteCard from "./cards/deleteCard";
-import credentials from "credentials.json"
+
 function ModulesNew() {
   const formEl = useRef();
   const params = useParams();
@@ -55,7 +56,7 @@ function ModulesNew() {
         baseURL,
         {
           name: iName.value,
-          icon
+          icon,
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -64,7 +65,7 @@ function ModulesNew() {
       .then((response) => {
         if (response.status == 201) {
           setName("");
-          setIcon("")
+          setIcon("");
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
@@ -95,7 +96,7 @@ function ModulesNew() {
         baseURL,
         {
           name: iName.value,
-          icon
+          icon,
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -155,7 +156,7 @@ function ModulesNew() {
             const { iName } = getInputs();
             const { data } = response;
             setName(data.name);
-            setIcon(data.icon)
+            setIcon(data.icon);
           }
         })
         .catch((e) => {

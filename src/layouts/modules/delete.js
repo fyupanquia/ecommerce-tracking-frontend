@@ -28,8 +28,9 @@ import Footer from "examples/Footer";
 import Tooltip from "@mui/material/Tooltip";
 
 import axios from "axios";
+import credentials from "credentials.json";
 import DeleteCard from "./cards/deleteCard";
-import credentials from "credentials.json"
+
 function UsersNew() {
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);

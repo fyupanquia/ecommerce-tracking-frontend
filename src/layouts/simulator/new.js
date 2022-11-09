@@ -31,11 +31,10 @@ import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import "components/MDSelect/select.css";
+import credentials from "credentials.json";
 import arrBodies from "./data";
 import FluxHeader from "./FluxHeader";
 import Flux from "./flux";
-
-import credentials from "credentials.json"
 
 function convertTZ() {
   const date = new Date();
@@ -174,7 +173,7 @@ function TasksNew() {
         .catch((e) => {
           console.log(e);
         });
-    } else if(typeof counter === "number" && counter > arrBodies.length - 1){
+    } else if (typeof counter === "number" && counter > arrBodies.length - 1) {
       setCounter(null);
     }
 
@@ -297,7 +296,6 @@ function TasksNew() {
   useEffect(() => {
     if (typeof body === "object" && body !== null && body.modules) {
       setSimulatorForm(<Flux body={body} />);
-
     }
   }, [body]);
 
@@ -331,7 +329,7 @@ function TasksNew() {
   const form = (
     <>
       <Grid item xs={12} md={4}>
-        <MDBox mb={2} >
+        <MDBox mb={2}>
           <FormControl fullWidth name="select-modules">
             <InputLabel id="fluxes">Flujos</InputLabel>
             <Select
@@ -351,7 +349,7 @@ function TasksNew() {
         </MDBox>
       </Grid>
       <Grid item xs={12} md={4}>
-        <MDBox mb={2} >
+        <MDBox mb={2}>
           <MDInput
             type="text"
             label="Email"
@@ -366,7 +364,7 @@ function TasksNew() {
         </MDBox>
       </Grid>
       <Grid item xs={12} md={4}>
-        <MDBox mb={2} >
+        <MDBox mb={2}>
           <MDInput
             type="text"
             label="Identificador"

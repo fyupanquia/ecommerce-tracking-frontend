@@ -51,7 +51,7 @@ function UsersNew() {
   const [password, setPassword] = useState("");
   const handleSetIsActive = () => setIsActive(!isActive);
   const [loaded, setLoaded] = useState(false);
-  const [logoURL, setLogoURL] = useState(false);
+  const [logoURL, setLogoURL] = useState("");
   const [files, setFiles] = useState([]);
 
   const onGoBack = () => {

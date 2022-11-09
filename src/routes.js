@@ -119,7 +119,7 @@ const routes = {
         component: <Tracking />,
       },
       {
-        type: "collapse",
+        type: "divider",
         name: "Cerrar sesión",
         key: "sign-out",
         icon: <Icon fontSize="small">logout</Icon>,
@@ -130,7 +130,15 @@ const routes = {
     ADMIN: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Perfil",
+        key: "perfil",
+        icon: <Icon fontSize="small">person</Icon>,
+        route: "/perfil",
+        component: <UsersProfile />,
+      },
+      {
+        type: "collapse",
+        name: "Analytics",
         key: "dashboard",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "/dashboard",
@@ -138,7 +146,7 @@ const routes = {
         collapse: [
           {
             type: "collapse",
-            name: "Dashboard",
+            name: "Analytics",
             key: "dashboard",
             icon: <Icon fontSize="small">dashboard</Icon>,
             route: "/dashboard",
@@ -146,21 +154,13 @@ const routes = {
           },
           {
             type: "collapse",
-            name: "Dashboard",
+            name: "Analytics",
             key: "dashboard",
             icon: <Icon fontSize="small">dashboard</Icon>,
             route: "/dashboard/:item",
             component: <DashboardDetail />
           },
         ]
-      },
-      {
-        type: "collapse",
-        name: "Perfil",
-        key: "perfil",
-        icon: <Icon fontSize="small">person</Icon>,
-        route: "/perfil",
-        component: <UsersProfile />,
       },
       {
         type: "collapse",
@@ -340,7 +340,7 @@ const routes = {
         component: <Tracking />,
       },
       {
-        type: "collapse",
+        type: "divider",
         name: "Cerrar sesión",
         key: "sign-out",
         icon: <Icon fontSize="small">logout</Icon>,
@@ -351,7 +351,15 @@ const routes = {
     MASTER: [
       {
         type: "collapse",
-        name: "Dashboard",
+        name: "Perfil",
+        key: "perfil",
+        icon: <Icon fontSize="small">person</Icon>,
+        route: "/perfil",
+        component: <UsersProfile />,
+      },
+      {
+        type: "collapse",
+        name: "Analytics",
         key: "dashboard",
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: "/dashboard",
@@ -359,7 +367,7 @@ const routes = {
         collapse: [
           {
             type: "collapse",
-            name: "Dashboard",
+            name: "Analytics",
             key: "dashboard",
             icon: <Icon fontSize="small">dashboard</Icon>,
             route: "/dashboard",
@@ -367,21 +375,13 @@ const routes = {
           },
           {
             type: "collapse",
-            name: "Dashboard",
+            name: "Analytics",
             key: "dashboard",
             icon: <Icon fontSize="small">dashboard</Icon>,
             route: "/dashboard/:item",
             component: <DashboardDetail />
           },
         ]
-      },
-      {
-        type: "collapse",
-        name: "Perfil",
-        key: "perfil",
-        icon: <Icon fontSize="small">person</Icon>,
-        route: "/perfil",
-        component: <UsersProfile />,
       },
       {
         type: "collapse",
@@ -613,7 +613,7 @@ const routes = {
       },
       */
       {
-        type: "collapse",
+        type: "divider",
         name: "Cerrar sesión",
         key: "sign-out",
         icon: <Icon fontSize="small">logout</Icon>,

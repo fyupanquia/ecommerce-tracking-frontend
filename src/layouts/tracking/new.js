@@ -25,8 +25,6 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-import Tooltip from "@mui/material/Tooltip";
-
 import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import DeleteCard from "./cards/deleteCard";
@@ -35,11 +33,14 @@ import TimeLine from "./timeline";
 
 import "components/MDSelect/select.css";
 import FluxHeader from "./FluxHeader";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 import { EmailRounded } from "@mui/icons-material";
 import credentials from "credentials.json";
 
-const socket = io(credentials.SERVER_URL);
+// const socket = io(credentials.SERVER_URL);
+import { getSocket } from "util/socket";
+
+const socket = getSocket();
 
 function Tracking() {
   const formEl = useRef();
@@ -125,7 +126,7 @@ function Tracking() {
           } else if (
             e.response.data.message === "El flujo para este usuario no ha sido iniciado aún"
           ) {
-            const choosenFlux = fluxes.find(f => f.id == flux);
+            const choosenFlux = fluxes.find((f) => f.id == flux);
             choosenFlux.email = email;
             setBody(choosenFlux);
           }
@@ -351,7 +352,6 @@ function Tracking() {
 }
 
 export default Tracking;
-
 
 /*
 {body &&

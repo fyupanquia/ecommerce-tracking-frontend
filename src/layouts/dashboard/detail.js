@@ -91,7 +91,6 @@ function Tables() {
       .focus();
   };
   const onSendEmail = () => {
-    console.log("eh?")
     axios
       .post(
         `${credentials.SERVER_URL}/email/sendReport`,
@@ -167,7 +166,6 @@ function Tables() {
         }
       )
       .then((response) => {
-        console.log({ response });
         if (response.status == 200) {
           setFileIDs(response.data);
         }

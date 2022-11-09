@@ -210,7 +210,7 @@ export default function App() {
         {[
           ...getRoutes(useauth ? routes.authenticated[useauth.profile] : routes.auth),
           useauth ? (
-            <Route path="*" element={<Navigate to="/dashboard" />} key="all" />
+            <Route path="*" element={<Navigate to="/perfil" />} key="all" />
           ) : (
             <Route path="*" element={<Navigate to="/sign-in" />} key="all" />
           ),

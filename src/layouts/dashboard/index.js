@@ -60,7 +60,10 @@ function Dashboard() {
         if (response.status == 200) {
           console.log(response.data);
           const { userReport, fluxReport, moduleReport, taskReport, projectReport } = response.data;
-
+          setProjects({
+            labels: projectReport[0],
+            datasets: { label: "Proyectos", data: projectReport[1]},
+          });
           setUsers({
             labels: userReport[0],
             datasets: { label: "Usuarios", data: userReport[1] },
@@ -77,10 +80,7 @@ function Dashboard() {
             labels: taskReport[0],
             datasets: { label: "Tareas", data: taskReport[1] },
           });
-          setProjects({
-            labels: projectReport[0],
-            datasets: { label: "Proyectos", data: projectReport[1] },
-          });
+          
         }
       });
   }, []);

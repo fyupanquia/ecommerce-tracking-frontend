@@ -51,7 +51,9 @@ function Basic() {
   const formEl = useRef();
   const [user, setUser] = useLocalStorage("user", null);
   const [project, setProject] = useLocalStorage("project", null);
+  const [pendingUser, setPenddingUser] = useLocalStorage("pending_user", null);
   const [alert, setAlert] = useState(null);
+  const [disabled, setDisabled] = useState(false);
   const navigate = useNavigate();
   const onLogin = () => {
     const iEmail = [...formEl.current.elements].find((e) => e.name === "email");
@@ -68,9 +70,7 @@ function Basic() {
       })
       .then((response) => {
         if (response.status == 201) {
-          iEmail.value = "";
-          iPassword.value = "";
-          iFullname.value = "";
+          setDisabled(true);
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
@@ -80,6 +80,14 @@ function Basic() {
               </MDAlert>
             </Grid>
           );
+          setPenddingUser({
+            email: iEmail.value,
+            project_id: project.id,
+            type: "EMAIL",
+          });
+          window.setTimeout(() => {
+            window.location = "/confirm";
+          }, 4000);
         }
       })
       .catch((e) => {
@@ -183,10 +191,18 @@ function Basic() {
                 variant="standard"
                 fullWidth
                 name="fullname"
+                disabled={disabled}
               />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth name="email" />
+              <MDInput
+                type="email"
+                label="Email"
+                variant="standard"
+                fullWidth
+                name="email"
+                disabled={disabled}
+              />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
@@ -195,6 +211,7 @@ function Basic() {
                 variant="standard"
                 fullWidth
                 name="password"
+                disabled={disabled}
               />
             </MDBox>
             <MDBox mt={4} mb={1}>

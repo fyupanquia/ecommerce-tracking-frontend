@@ -35,11 +35,11 @@ import Stack from "@mui/material/Stack";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import { useLocalStorage } from "providers/useLocalStorage";
 import { tzToString } from "util/date";
+import { stringAvatar } from "util/string";
 import UserAction from "./UserAction";
-import { stringAvatar } from 'util/string'
 
 export default function data(users, user) {
-  const Author = ({ image, name, email, profile }) => (
+  const Author = ({ image, name, email, profile, email_confirmed }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       {image ? <MDAvatar src={image} name={name} size="sm" /> : <Avatar {...stringAvatar(name)} />}
       <MDBox ml={2} lineHeight={1}>
@@ -50,19 +50,33 @@ export default function data(users, user) {
         <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
           {profile}
         </MDTypography>
+        <MDBox ml={-1}>
+          <MDBadge
+            badgeContent={email_confirmed ? "confirmado" : "sin confirmar"}
+            color={email_confirmed ? "success" : "dark"}
+            variant="gradient"
+            size="sm"
+          />
+        </MDBox>
       </MDBox>
     </MDBox>
   );
   let columns = [
     { Header: "Usuario", accessor: "usuario", width: "20%", align: "left" },
     { Header: "Proyecto", accessor: "project", align: "left" },
-    { Header: "Registrado", accessor: "registrado", align: "center" },
     { Header: "Estado", accessor: "estado", align: "center" },
+    { Header: "Registrado", accessor: "registrado", align: "center" },
     { Header: "Acción", accessor: "action", width: "15%", align: "center" },
   ];
   const rows = users.map((u) => ({
     usuario: (
-      <Author image={u.img_url} name={u.fullname} email={u.email} profile={u.profile} />
+      <Author
+        image={u.img_url}
+        name={u.fullname}
+        email={u.email}
+        profile={u.profile}
+        email_confirmed={u.email_confirmed}
+      />
     ),
     project: u.project_id.name,
     estado: (
@@ -82,7 +96,7 @@ export default function data(users, user) {
     ),
     action: <UserAction user={u} />,
   }));
-  if (user.profile === "MASTER") {
+  if (user.profile !== "MASTER") {
     columns = columns.filter((c) => c.accessor != "project");
   }
   return {

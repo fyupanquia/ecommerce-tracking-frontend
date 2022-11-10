@@ -38,20 +38,21 @@ function UsersProfile() {
   const [alert, setAlert] = useState(null);
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [logoURL, setLogoURL] = useState(false);
   const [files, setFiles] = useState([]);
   const [twoFA, setTwoFA] = useState(false);
-  
+
   const [authentication, setAuthentication] = useState("EMAIL");
-  const [authentications, setAuthentications] = useState(["EMAIL", "PHONE"]);
+  const [authentications, setAuthentications] = useState(["EMAIL"]);
 
   const onGoBack = () => {
     navigate("/usuarios");
   };
   const handleSet2FA = () => {
-    setTwoFA(!twoFA)
+    setTwoFA(!twoFA);
     setAuthentication(null);
   };
   const onEdit = ({ id }) => {
@@ -61,9 +62,10 @@ function UsersProfile() {
         {
           fullname,
           email,
+          phone,
           password: password || undefined,
           img_url: logoURL,
-          twofa: authentication
+          twofa: authentication,
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -167,6 +169,9 @@ function UsersProfile() {
             setFullname(data.fullname);
             setEmail(data.email);
             setLogoURL(data.img_url);
+            setPhone(data.phone);
+            setTwoFA(Boolean(data.twofa));
+            setAuthentication(data.twofa);
             setLoaded(true);
           }
         })
@@ -176,6 +181,15 @@ function UsersProfile() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    if (phone.length) {
+      setAuthentications([authentications[0], "PHONE"]);
+    } else {
+      setAuthentication("EMAIL");
+      setAuthentications([authentications[0]]);
+    }
+  }, [phone]);
 
   return (
     <DashboardLayout>
@@ -218,19 +232,37 @@ function UsersProfile() {
                         fullWidth
                       />
                     </MDBox>
-                    <MDBox mb={2}>
-                      <MDInput
-                        type="email"
-                        label="Email"
-                        name="email"
-                        variant="standard"
-                        value={email}
-                        disabled
-                        /* onChange={(e) => {
-                          setEmail(e.target.value);
-                        }} */
-                        fullWidth
-                      />
+                    <MDBox p={0}>
+                      <Grid container spacing={3}>
+                        <Grid item xs={12} md={6}>
+                          <MDBox mb={2}>
+                            <MDInput
+                              type="email"
+                              label="Email"
+                              name="email"
+                              variant="standard"
+                              value={email}
+                              disabled
+                              fullWidth
+                            />
+                          </MDBox>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <MDBox mb={2}>
+                            <MDInput
+                              type="phone"
+                              label="Celular"
+                              name="phone"
+                              variant="standard"
+                              value={phone}
+                              onChange={(e) => {
+                                setPhone(e.target.value);
+                              }}
+                              fullWidth
+                            />
+                          </MDBox>
+                        </Grid>
+                      </Grid>
                     </MDBox>
                     <Grid container>
                       <Grid item xs={12} md={8}>

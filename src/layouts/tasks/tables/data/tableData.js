@@ -22,16 +22,9 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
 
-// Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
-
-import Action from "./Action";
 import { tzToString } from "util/date";
+import Action from "./Action";
 
 export default function data(data, user) {
   const Author = ({ name }) => (
@@ -63,13 +56,13 @@ export default function data(data, user) {
     project: r.project_id.name,
     registrado: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {tzToString(r.created_at,-5)}
+        {tzToString(r.created_at, -5)}
       </MDTypography>
     ),
     action: <Action row={r} />,
   }));
 
-  if (user.profile === "MASTER") {
+  if (user.profile !== "MASTER") {
     columns = columns.filter((c) => c.accessor != "project");
   }
   return {

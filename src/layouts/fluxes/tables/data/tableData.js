@@ -25,8 +25,8 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-import Action from "./Action";
 import { tzToString } from "util/date";
+import Action from "./Action";
 
 export default function data(data, user) {
   const Author = ({ name }) => (
@@ -48,10 +48,9 @@ export default function data(data, user) {
     </MDBox>
   );
   let columns = [
-    { Header: "Flujo", accessor: "flux", width: "40%", align: "left" },
+    { Header: "Flujo", accessor: "flux", width: "35%", align: "left" },
     { Header: "Proyecto", accessor: "project", align: "left" },
-    { Header: "Modulos", accessor: "modules", align: "center" },
-    { Header: "Tareas", accessor: "tasks", align: "center" },
+    { Header: "Resumen", accessor: "summary", align: "center" },
     { Header: "Registrado", accessor: "registrado", width: "15%", align: "center" },
     { Header: "Acción", accessor: "action", width: "15%", align: "center" },
   ];
@@ -59,17 +58,29 @@ export default function data(data, user) {
   const rows = data.map((r) => ({
     flux: <Author name={r.name} />,
     project: r.project_id.name,
-    modules: r.modules.length,
-    tasks: r.modules.reduce((c, m) => c + m.tasks.length, 0),
+    summary: (
+      <>
+        <MDBox>
+          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+            Módulos: {r.modules.length}
+          </MDTypography>
+        </MDBox>
+        <MDBox>
+          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+            Tareas: {r.modules.reduce((c, m) => c + m.tasks.length, 0)}
+          </MDTypography>
+        </MDBox>
+      </>
+    ),
     registrado: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {tzToString(r.created_at,-5)}
+        {tzToString(r.created_at, -5)}
       </MDTypography>
     ),
     action: <Action row={r} />,
   }));
 
-  if (user.profile === "MASTER") {
+  if (user.profile !== "MASTER") {
     columns = columns.filter((c) => c.accessor != "project");
   }
 

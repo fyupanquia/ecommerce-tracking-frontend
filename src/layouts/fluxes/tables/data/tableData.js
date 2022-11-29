@@ -57,7 +57,7 @@ export default function data(data, user) {
 
   const rows = data.map((r) => ({
     flux: <Author name={r.name} />,
-    project: r.project_id.name,
+    project: r.project.name,
     summary: (
       <>
         <MDBox>

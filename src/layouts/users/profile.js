@@ -168,10 +168,10 @@ function UsersProfile() {
             const { data } = response;
             setFullname(data.fullname);
             setEmail(data.email);
-            setLogoURL(data.img_url);
-            setPhone(data.phone);
+            setLogoURL(data.img_url || "");
+            setPhone(data.phone || "");
             setTwoFA(Boolean(data.twofa));
-            setAuthentication(data.twofa);
+            setAuthentication(data.twofa || "");
             setLoaded(true);
           }
         })
@@ -183,7 +183,7 @@ function UsersProfile() {
   }, []);
 
   useEffect(() => {
-    if (phone.length) {
+    if (phone && phone.length) {
       setAuthentications([authentications[0], "PHONE"]);
     } else {
       setAuthentication("EMAIL");

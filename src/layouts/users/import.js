@@ -34,7 +34,6 @@ import Loading from "components/Loading";
 import "components/MDSelect/select.css";
 import credentials from "credentials.json";
 import FileUpload from "react-material-file-upload";
-import MDAvatar from "components/MDAvatar";
 
 function UsersNew() {
   const formEl = useRef();
@@ -46,54 +45,58 @@ function UsersNew() {
   const [project, setProject] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [profile, setProfile] = useState("CLIENTE");
-  const [fullname, setFullname] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSetIsActive = () => setIsActive(!isActive);
   const [loaded, setLoaded] = useState(false);
-  const [logoURL, setLogoURL] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [files, setFiles] = useState([]);
 
   const onGoBack = () => {
-    navigate("/usuarios");
-  };
-
-  const onGoToImport = () => {
-    navigate("/usuarios/importar");
+    navigate("/usuarios/agregar");
   };
 
   const onSave = () => {
-    let baseURL = `${credentials.SERVER_URL}/users`;
+    if (!files.length) {
+      setAlert(
+        <Grid item xs={12}>
+          <MDAlert color="error" dismissible>
+            <MDTypography variant="body2" color="white">
+              Seleccione un archivo xslx para importar
+            </MDTypography>
+          </MDAlert>
+        </Grid>
+      );
+      return;
+    }
+
+    const baseURL = `${credentials.SERVER_URL}/users/import`;
     const body = {
-      fullname,
-      email,
       password,
       is_active: isActive,
-      img_url: logoURL,
       profile,
+      filename: files[0].filename,
     };
     if (user && user.profile === "MASTER" && params && !params.id) {
-      baseURL += "/register";
       body.project_id = project;
     }
 
+    setIsSaving(true);
     axios
       .post(baseURL, body, {
         headers: { Authorization: `Bearer ${user.access_token}` },
       })
       .then((response) => {
+        setIsSaving(false);
+        console.log(response);
         if (response.status == 201) {
-          setFullname("");
-          setEmail("");
           setPassword("");
-          setLogoURL("");
-          setFiles([])
+          setFiles([]);
 
           setAlert(
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡Usuario {email} fue registrado{" "}
+                  ¡Usuarios registrados {" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -111,6 +114,7 @@ function UsersNew() {
         }
       })
       .catch((e) => {
+        setIsSaving(false);
         if (e.response && e.response.data) {
           setAlert(
             <Grid item xs={12}>
@@ -125,59 +129,9 @@ function UsersNew() {
       });
   };
 
-  const onEdit = ({ id }) => {
-    axios
-      .patch(
-        `${credentials.SERVER_URL}/users/${id}`,
-        {
-          fullname,
-          email,
-          password: password || undefined,
-          is_active: isActive,
-          img_url: logoURL,
-          profile,
-        },
-        {
-          headers: { Authorization: `Bearer ${user.access_token}` },
-        }
-      )
-      .then((response) => {
-        if (response.status == 200) {
-          setAlert(
-            <Grid item xs={12}>
-              <MDAlert color="success" dismissible>
-                <MDTypography variant="body2" color="white">
-                  ¡Usuario {email} fue actualizado{" "}
-                  <MDTypography
-                    component="a"
-                    href="#"
-                    variant="body2"
-                    fontWeight="medium"
-                    color="white"
-                  >
-                    correctamente
-                  </MDTypography>
-                  !
-                </MDTypography>
-              </MDAlert>
-            </Grid>
-          );
-        }
-      });
-  };
-
-  const onSubmit = () => {
-    if (params && params.id) {
-      onEdit({ id: params.id });
-    } else {
-      onSave();
-    }
-  };
-
   const uploadFile = (files) => {
     if (!files.length) {
       setFiles([]);
-      setLogoURL("");
       return;
     }
     const myFile = files[0];
@@ -190,8 +144,7 @@ function UsersNew() {
         },
       })
       .then((response) => {
-        setFiles([myFile]);
-        setLogoURL(`${credentials.SERVER_URL}/${response.data.filename}`);
+        setFiles([response.data]);
       })
       .catch((e) => {
         if (e.response && e.response.status === 400) {
@@ -207,7 +160,7 @@ function UsersNew() {
                     fontWeight="medium"
                     color="white"
                   >
-                    imagen
+                    xlsx
                   </MDTypography>
                   !
                 </MDTypography>
@@ -228,30 +181,7 @@ function UsersNew() {
   }, [alert]);
 
   useEffect(() => {
-    if (params && params.id) {
-      axios
-        .get(`${credentials.SERVER_URL}/users/${params.id}`, {
-          headers: { Authorization: `Bearer ${user.access_token}` },
-        })
-        .then((response) => {
-          if (response.status === 200) {
-            const { data } = response;
-            setFullname(data.fullname);
-            setEmail(data.email);
-            setIsActive(data.is_active);
-            setProfile(data.profile);
-            setLoaded(true);
-            setLogoURL(data.img_url);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-          onGoBack();
-        });
-    } else {
-      setLoaded(true);
-    }
-
+    setLoaded(true);
     if (user && user.profile === "MASTER") {
       axios
         .get(`${credentials.SERVER_URL}/projects`, {
@@ -292,48 +222,17 @@ function UsersNew() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  {params && params.id ? "Editar" : "Registrar"} usuario
+                  Importar usuarios
                 </MDTypography>
                 <MDBox p={0}>
                   <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
                     <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
-                  </MDButton>{" "}
-                  {params && params.id ? null : (
-                    <MDButton variant="gradient" color="secondary" onClick={onGoToImport}>
-                      <Icon sx={{ fontWeight: "bold" }}>publish</Icon>
-                    </MDButton>
-                  )}
+                  </MDButton>
                 </MDBox>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 {loaded ? (
                   <MDBox component="form" role="form">
-                    <MDBox mb={2}>
-                      <MDInput
-                        type="text"
-                        label="Nombres Completos"
-                        name="fullname"
-                        variant="standard"
-                        value={fullname}
-                        onChange={(e) => {
-                          setFullname(e.target.value);
-                        }}
-                        fullWidth
-                      />
-                    </MDBox>
-                    <MDBox mb={2}>
-                      <MDInput
-                        type="email"
-                        label="Email"
-                        name="email"
-                        variant="standard"
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                        }}
-                        fullWidth
-                      />
-                    </MDBox>
                     <MDBox p={0}>
                       <Grid container spacing={3}>
                         <Grid item xs={12} md={6}>
@@ -423,23 +322,14 @@ function UsersNew() {
                       </MDBox>
                     ) : null}
                     <Grid container>
-                      <Grid item xs={12} md={8}>
+                      <Grid item xs={12} md={12}>
                         <MDBox mb={4} textAlign="center">
                           <FileUpload
                             value={files}
                             onChange={uploadFile}
                             buttonText="Seleccionar"
-                            title="Selecciona una imagen de perfil"
+                            title="Seleccione la plantilla en formato xslx"
                           />
-                        </MDBox>
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <MDBox textAlign="center" alignItems="center">
-                          {logoURL ? (
-                            <Grid container justifyContent="center" sx={{ mt: 1, mb: 1 }}>
-                              <MDAvatar src={logoURL} alt="profile-image" size="xxl" shadow="xxl" />
-                            </Grid>
-                          ) : null}
                         </MDBox>
                       </Grid>
                     </Grid>
@@ -457,9 +347,13 @@ function UsersNew() {
                       />
                     </MDBox>
                     <MDBox mt={2} mb={1}>
-                      <MDButton variant="gradient" color="primary" fullWidth onClick={onSubmit}>
-                        Guardar
-                      </MDButton>
+                      {isSaving ? (
+                        <Loading />
+                      ) : (
+                        <MDButton variant="gradient" color="primary" fullWidth onClick={onSave}>
+                          Guardar
+                        </MDButton>
+                      )}
                     </MDBox>
                   </MDBox>
                 ) : (

@@ -53,6 +53,7 @@ import ModulesNew from "layouts/modules/new";
 import ModuleDelete from "layouts/modules/delete";
 
 import UsersNew from "layouts/users/new";
+import UsersImport from "layouts/users/import";
 import UsersProfile from "layouts/users/profile";
 import Tracking from "layouts/tracking/new";
 import UserDelete from "layouts/users/delete";
@@ -186,6 +187,14 @@ const routes = {
             icon: <Icon fontSize="small">people</Icon>,
             route: "/usuarios/agregar",
             component: <UsersNew />,
+          },
+          {
+            type: "collapse",
+            name: "Importar",
+            key: "users-import",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/usuarios/importar",
+            component: <UsersImport />,
           },
           {
             type: "collapse",
@@ -407,6 +416,14 @@ const routes = {
             icon: <Icon fontSize="small">people</Icon>,
             route: "/usuarios/agregar",
             component: <UsersNew />,
+          },
+          {
+            type: "collapse",
+            name: "Importar",
+            key: "users-import",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/usuarios/importar",
+            component: <UsersImport />,
           },
           {
             type: "collapse",

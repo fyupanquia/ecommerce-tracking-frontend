@@ -134,6 +134,7 @@ export default function App() {
         const defaultPath = "systrack";
         const rspProject = await getProjectByPath(isRoute ? defaultPath : pathname, defaultPath);
         if (rspProject) {
+          rspProject.id = rspProject.project_id
           patchThemeWithProvider(theme, rspProject);
           setProject(rspProject);
           setCustomTheme(theme);

@@ -78,7 +78,7 @@ export default function data(users, user) {
         email_confirmed={u.email_confirmed}
       />
     ),
-    project: u.project_id.name,
+    project: u.project.name,
     estado: (
       <MDBox ml={-1}>
         <MDBadge

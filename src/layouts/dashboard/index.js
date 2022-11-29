@@ -214,7 +214,7 @@ function Dashboard() {
   const getPercentageData = (dataset) => {
     const today = dataset[dataset.length - 1];
     const yesterday = dataset[dataset.length - 2];
-    const increase = getPercentageIncrease(today, yesterday);
+    const increase = getPercentageIncrease(today, yesterday).toFixed(2);
     return {
       color: increase <= 0 ? "error" : "success",
       amount: `${increase > 0 ? `+${increase}` : increase}%`,
@@ -574,7 +574,7 @@ function Dashboard() {
                           <MDButton
                             variant="gradient"
                             color="warning"
-                            onClick={() => goToDashboard("proyectos")}
+                            onClick={() => goToDashboard("tareas")}
                           >
                             <Icon sx={{ fontWeight: "bold" }}>visibility</Icon>
                             &nbsp;Tareas

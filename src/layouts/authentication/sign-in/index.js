@@ -66,7 +66,7 @@ function Basic() {
       .post(baseURL, {
         email: iEmail.value,
         password: iPassword.value,
-        project_id: project.id,
+        project_id: project.project_id,
       })
       .then((response) => {
         if (response.status == 200) {
@@ -80,14 +80,14 @@ function Basic() {
           if (e.response.data.message === "EMAIL_NOT_CONFIRMED") {
             setPenddingUser({
               email: iEmail.value,
-              project_id: project.id,
+              project_id: project.project_id,
               type: "EMAIL"
             });
             window.location = "/confirm";
           } else if (e.response.data.message === "2FA_ENABLED") {
             setPenddingUser({
               email: iEmail.value,
-              project_id: project.id,
+              project_id: project.project_id,
               type: "2FA"
             });
             window.location = "/confirm";

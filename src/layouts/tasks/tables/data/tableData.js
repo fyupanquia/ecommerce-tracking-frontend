@@ -53,7 +53,7 @@ export default function data(data, user) {
   ];
   const rows = data.map((r) => ({
     module: <Author name={r.name} />,
-    project: r.project_id.name,
+    project: r.project.name,
     registrado: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {tzToString(r.created_at, -5)}

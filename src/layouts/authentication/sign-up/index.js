@@ -66,7 +66,7 @@ function Basic() {
         email: iEmail.value,
         password: iPassword.value,
         fullname: iFullname.value,
-        project_id: project.id,
+        project_id: project.project_id,
       })
       .then((response) => {
         if (response.status == 201) {
@@ -82,7 +82,7 @@ function Basic() {
           );
           setPenddingUser({
             email: iEmail.value,
-            project_id: project.id,
+            project_id: project.project_id,
             type: "EMAIL",
           });
           window.setTimeout(() => {

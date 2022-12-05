@@ -5,11 +5,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
-import MuiLink from "@mui/material/Link";
-import Checkbox from "@mui/material/Checkbox";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -47,6 +44,9 @@ function ModulesNew() {
 
   const onGoBack = () => {
     navigate("/modulos");
+  };
+  const onGoToImport = () => {
+    navigate("/modulos/importar");
   };
 
   const onSave = ({ iName }) => {
@@ -190,10 +190,21 @@ function ModulesNew() {
                 <MDTypography variant="h6" color="white">
                   {params && params.id ? "Editar" : "Registrar"} módulo
                 </MDTypography>
-                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
-                  <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
-                  &nbsp;Volver
-                </MDButton>
+                <MDBox p={0}>
+                  <MDButton variant="gradient" color="secondary" onClick={onGoBack} title="Atrás">
+                    <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
+                  </MDButton>{" "}
+                  {params && params.id ? null : (
+                    <MDButton
+                      variant="gradient"
+                      color="secondary"
+                      onClick={onGoToImport}
+                      title="Importar"
+                    >
+                      <Icon sx={{ fontWeight: "bold" }}>attach_file</Icon>
+                    </MDButton>
+                  )}
+                </MDBox>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>

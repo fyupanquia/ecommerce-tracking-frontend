@@ -87,7 +87,7 @@ function UsersNew() {
           setEmail("");
           setPassword("");
           setLogoURL("");
-          setFiles([])
+          setFiles([]);
 
           setAlert(
             <Grid item xs={12}>
@@ -260,7 +260,7 @@ function UsersNew() {
         .then((response) => {
           if (response.status === 200) {
             setProjects(response.data);
-            setProject(response.data[0].id);
+            setProject(response.data[0].project_id);
           }
         })
         .catch((e) => {
@@ -295,12 +295,17 @@ function UsersNew() {
                   {params && params.id ? "Editar" : "Registrar"} usuario
                 </MDTypography>
                 <MDBox p={0}>
-                  <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
+                  <MDButton variant="gradient" color="secondary" onClick={onGoBack} title="Atrás">
                     <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
                   </MDButton>{" "}
                   {params && params.id ? null : (
-                    <MDButton variant="gradient" color="secondary" onClick={onGoToImport}>
-                      <Icon sx={{ fontWeight: "bold" }}>publish</Icon>
+                    <MDButton
+                      variant="gradient"
+                      color="secondary"
+                      onClick={onGoToImport}
+                      title="Importar"
+                    >
+                      <Icon sx={{ fontWeight: "bold" }}>attach_file</Icon>
                     </MDButton>
                   )}
                 </MDBox>
@@ -396,7 +401,12 @@ function UsersNew() {
                         </Grid>
                       </Grid>
                     </MDBox>
-                    {user && user.profile === "MASTER" && params && !params.id && projects ? (
+                    {user &&
+                    user.profile === "MASTER" &&
+                    params &&
+                    !params.id &&
+                    projects &&
+                    project ? (
                       <MDBox mb={2}>
                         <FormControl fullWidth name="select-project">
                           <InputLabel id="project">Proyecto</InputLabel>
@@ -405,7 +415,7 @@ function UsersNew() {
                             id="project"
                             label="Proyecto"
                             name="project"
-                            defaultValue="CLIENTE"
+                            defaultValue={project}
                             value={project}
                             onChange={(event) => {
                               setProject(event.target.value);
@@ -413,7 +423,7 @@ function UsersNew() {
                           >
                             {projects
                               ? projects.map((p) => (
-                                  <MenuItem key={p.id} value={p.id}>
+                                  <MenuItem key={p.id} value={p.project_id}>
                                     {p.name}
                                   </MenuItem>
                                 ))

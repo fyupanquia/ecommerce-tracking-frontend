@@ -42,6 +42,7 @@ import DashboardDetail from "layouts/dashboard/detail";
 import Users from "layouts/users";
 import Tasks from "layouts/tasks";
 import TasksNew from "layouts/tasks/new";
+import TasksImport from "layouts/tasks/import";
 import TaskDelete from "layouts/tasks/delete";
 
 import Projects from "layouts/projects";
@@ -50,6 +51,7 @@ import ProjectsDelete from "layouts/projects/delete";
 
 import Modules from "layouts/modules";
 import ModulesNew from "layouts/modules/new";
+import ModulesImport from "layouts/modules/import";
 import ModuleDelete from "layouts/modules/delete";
 
 import UsersNew from "layouts/users/new";
@@ -62,6 +64,7 @@ import OrdersView from "layouts/orders/new";
 
 import Fluxes from "layouts/fluxes";
 import FluxesNew from "layouts/fluxes/new";
+import FluxCode from "layouts/fluxes/code";
 import FluxDelete from "layouts/fluxes/delete";
 
 import SignIn from "layouts/authentication/sign-in";
@@ -240,6 +243,14 @@ const routes = {
           },
           {
             type: "collapse",
+            name: "Código",
+            key: "flujos-code",
+            icon: <Icon fontSize="small">polyline</Icon>,
+            route: "/flujos/:id/codigo",
+            component: <FluxCode />,
+          },
+          {
+            type: "collapse",
             name: "Editar",
             key: "flujos-edit",
             icon: <Icon fontSize="small">polyline</Icon>,
@@ -282,6 +293,14 @@ const routes = {
           },
           {
             type: "collapse",
+            name: "Importar",
+            key: "modules-import",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/modulos/importar",
+            component: <ModulesImport />,
+          },
+          {
+            type: "collapse",
             name: "Editar",
             key: "modulos-edit",
             icon: <Icon fontSize="small">all_inbox_icon</Icon>,
@@ -321,6 +340,14 @@ const routes = {
             icon: <Icon fontSize="small">inventory</Icon>,
             route: "/tareas/agregar",
             component: <TasksNew />,
+          },
+          {
+            type: "collapse",
+            name: "Importar",
+            key: "task-import",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/tareas/importar",
+            component: <TasksImport />,
           },
           {
             type: "collapse",
@@ -511,6 +538,14 @@ const routes = {
           },
           {
             type: "collapse",
+            name: "Código",
+            key: "flujos-code",
+            icon: <Icon fontSize="small">polyline</Icon>,
+            route: "/flujos/:id/codigo",
+            component: <FluxCode />,
+          },
+          {
+            type: "collapse",
             name: "Editar",
             key: "flujos-edit",
             icon: <Icon fontSize="small">polyline</Icon>,
@@ -553,6 +588,14 @@ const routes = {
           },
           {
             type: "collapse",
+            name: "Importar",
+            key: "modules-import",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/modulos/importar",
+            component: <ModulesImport />,
+          },
+          {
+            type: "collapse",
             name: "Editar",
             key: "modulos-edit",
             icon: <Icon fontSize="small">all_inbox_icon</Icon>,
@@ -592,6 +635,14 @@ const routes = {
             icon: <Icon fontSize="small">inventory</Icon>,
             route: "/tareas/agregar",
             component: <TasksNew />,
+          },
+          {
+            type: "collapse",
+            name: "Importar",
+            key: "task-import",
+            icon: <Icon fontSize="small">people</Icon>,
+            route: "/tareas/importar",
+            component: <TasksImport />,
           },
           {
             type: "collapse",

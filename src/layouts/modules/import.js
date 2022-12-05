@@ -25,6 +25,8 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
+import Tooltip from "@mui/material/Tooltip";
+
 import axios from "axios";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Loading from "components/Loading";
@@ -36,23 +38,21 @@ import FileUpload from "react-material-file-upload";
 import Link from "@mui/material/Link";
 
 function UsersNew() {
-  const formEl = useRef();
   const params = useParams();
   const [user, setUser] = useLocalStorage("user", null);
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
   const [projects, setProjects] = useState(null);
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [profile, setProfile] = useState("CLIENTE");
   const [password, setPassword] = useState("");
-  const handleSetIsActive = () => setIsActive(!isActive);
   const [loaded, setLoaded] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [files, setFiles] = useState([]);
 
   const onGoBack = () => {
-    navigate("/usuarios/agregar");
+    navigate("/modulos/agregar");
   };
 
   const onSave = () => {
@@ -69,7 +69,7 @@ function UsersNew() {
       return;
     }
 
-    const baseURL = `${credentials.SERVER_URL}/users/import`;
+    const baseURL = `${credentials.SERVER_URL}/modules/import`;
     const body = {
       password,
       is_active: isActive,
@@ -96,7 +96,7 @@ function UsersNew() {
             <Grid item xs={12}>
               <MDAlert color="success" dismissible>
                 <MDTypography variant="body2" color="white">
-                  ¡Usuarios registrados{" "}
+                  ¡Módulos registrados{" "}
                   <MDTypography
                     component="a"
                     href="#"
@@ -222,14 +222,14 @@ function UsersNew() {
                 alignItems="center"
               >
                 <MDTypography variant="h6" color="white">
-                  Importar usuarios
+                  Importar módulos
                 </MDTypography>
                 <MDBox p={0}>
                   <MDButton variant="gradient" color="secondary" onClick={onGoBack} title="Atrás">
                     <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
                   </MDButton>{" "}
                   <MDButton variant="gradient" color="secondary" title="Descargar plantilla">
-                    <Link href={`${credentials.SERVER_URL}/users-template.xlsx`} target="_blank">
+                    <Link href={`${credentials.SERVER_URL}/modules-template.xlsx`} target="_blank">
                       <Icon sx={{ fontWeight: "bold" }}>download</Icon>
                     </Link>
                   </MDButton>
@@ -238,74 +238,7 @@ function UsersNew() {
               <MDBox pt={4} pb={3} px={3}>
                 {loaded ? (
                   <MDBox component="form" role="form">
-                    <MDBox p={0}>
-                      <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
-                          <MDBox mb={2}>
-                            <FormControl fullWidth name="select-profile">
-                              <InputLabel id="profile">Perfil</InputLabel>
-
-                              {user.profile === "MASTER" ? (
-                                <Select
-                                  labelId="profile"
-                                  id="profile"
-                                  label="Perfil"
-                                  name="profile"
-                                  defaultValue="CLIENTE"
-                                  value={profile}
-                                  onChange={(event) => {
-                                    setProfile(event.target.value);
-                                  }}
-                                >
-                                  <MenuItem value="CLIENTE">CLIENTE</MenuItem>
-                                  <MenuItem value="ADMIN">ADMIN</MenuItem>
-                                  <MenuItem value="MASTER">MASTER</MenuItem>
-                                </Select>
-                              ) : (
-                                <Select
-                                  labelId="profile"
-                                  id="profile"
-                                  label="Perfil"
-                                  name="profile"
-                                  defaultValue="CLIENTE"
-                                  value={profile}
-                                  onChange={(event) => {
-                                    setProfile(event.target.value);
-                                  }}
-                                >
-                                  <MenuItem value="CLIENTE">CLIENTE</MenuItem>
-                                  <MenuItem value="ADMIN">ADMIN</MenuItem>
-                                </Select>
-                              )}
-                            </FormControl>
-                          </MDBox>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                          <MDBox display="flex" alignItems="center" ml={-1}>
-                            <Switch
-                              checked={isActive}
-                              onChange={handleSetIsActive}
-                              name="is_active"
-                            />
-                            <MDTypography
-                              variant="button"
-                              fontWeight="regular"
-                              color="text"
-                              onClick={handleSetIsActive}
-                              sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
-                            >
-                              &nbsp;&nbsp;Activo
-                            </MDTypography>
-                          </MDBox>
-                        </Grid>
-                      </Grid>
-                    </MDBox>
-                    {user &&
-                    user.profile === "MASTER" &&
-                    params &&
-                    !params.id &&
-                    projects &&
-                    project ? (
+                    {user && user.profile === "MASTER" && params && !params.id && projects ? (
                       <MDBox mb={2}>
                         <FormControl fullWidth name="select-project">
                           <InputLabel id="project">Proyecto</InputLabel>
@@ -314,16 +247,15 @@ function UsersNew() {
                             id="project"
                             label="Proyecto"
                             name="project"
-                            value={project}
                             defaultValue={project}
+                            value={project}
                             onChange={(event) => {
-                              console.log(event.target.value);
                               setProject(event.target.value);
                             }}
                           >
                             {projects
                               ? projects.map((p) => (
-                                  <MenuItem key={p.id} value={p.project_id}>
+                                  <MenuItem key={p.id} value={p.id}>
                                     {p.name}
                                   </MenuItem>
                                 ))
@@ -344,19 +276,6 @@ function UsersNew() {
                         </MDBox>
                       </Grid>
                     </Grid>
-                    <MDBox mb={2}>
-                      <MDInput
-                        type="password"
-                        label="Contraseña"
-                        name="password"
-                        variant="standard"
-                        value={password}
-                        onChange={(e) => {
-                          setPassword(e.target.value);
-                        }}
-                        fullWidth
-                      />
-                    </MDBox>
                     <MDBox mt={2} mb={1}>
                       {isSaving ? (
                         <Loading />

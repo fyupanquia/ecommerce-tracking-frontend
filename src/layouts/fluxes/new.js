@@ -38,13 +38,12 @@ import {
   Select,
 } from "@mui/material";
 import DataTable from "examples/Tables/DataTable";
-import RadioGroupContext from "@mui/material/RadioGroup/RadioGroupContext";
-import DeleteCard from "./cards/deleteCard";
+import credentials from "credentials.json";
 import MultipleSelectChip from "./select/chip";
 import ModuleTable from "./tables/data/moduleTable";
 import ModuleData from "./tables/data/moduleData";
 import TaskData from "./tables/data/taskData";
-import credentials from "credentials.json"
+
 const getTasks = ({ token }) => {
   const baseURL = `${credentials.SERVER_URL}/tasks`;
   return axios
@@ -120,6 +119,10 @@ function FluxesNew() {
 
   const onGoBack = () => {
     navigate("/flujos");
+  };
+
+  const onGoToCode = () => {
+    navigate(`/flujos/${params.id}/codigo`);
   };
 
   const onSave = (bodyRequest) => {
@@ -220,7 +223,7 @@ function FluxesNew() {
           if (response.status === 200) {
             const { data: rsp } = response;
             setName(rsp.name);
-            setIsPublic(rsp.public)
+            setIsPublic(rsp.public);
             const editBody = rsp.modules.map((m, i) => ({
               id: m.module_id.id,
               name: m.module_id.name,
@@ -365,10 +368,21 @@ function FluxesNew() {
                 <MDTypography variant="h6" color="white">
                   {params && params.id ? "Editar" : "Registrar"} flujo
                 </MDTypography>
-                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
-                  <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
-                  &nbsp;Volver
-                </MDButton>
+                <MDBox p={0}>
+                  <MDButton variant="gradient" color="secondary" onClick={onGoBack} title="Atrás">
+                    <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
+                  </MDButton>{" "}
+                  {params && params.id ? (
+                    <MDButton
+                      variant="gradient"
+                      color="secondary"
+                      onClick={onGoToCode}
+                      title="Importar"
+                    >
+                      <Icon sx={{ fontWeight: "bold" }}>code</Icon>
+                    </MDButton>
+                  ) : null}
+                </MDBox>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>

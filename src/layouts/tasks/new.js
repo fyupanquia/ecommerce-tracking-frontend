@@ -28,8 +28,8 @@ import Footer from "examples/Footer";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import axios from "axios";
+import credentials from "credentials.json";
 import DeleteCard from "./cards/deleteCard";
-import credentials from "credentials.json"
 
 function TasksNew() {
   const formEl = useRef();
@@ -38,7 +38,7 @@ function TasksNew() {
   const navigate = useNavigate();
   const [alert, setAlert] = useState(null);
   const [name, setName] = useState("");
-   const [output, setOutput] = useState("text");
+  const [output, setOutput] = useState("text");
 
   const getInputs = () => {
     const iName = [...formEl.current.elements].find((e) => e.name === "name");
@@ -48,6 +48,9 @@ function TasksNew() {
   const onGoBack = () => {
     navigate("/tareas");
   };
+  const onGoToImport = () => {
+    navigate("/tareas/importar");
+  };
 
   const onSave = ({ iName }) => {
     const baseURL = `${credentials.SERVER_URL}/tasks`;
@@ -56,7 +59,7 @@ function TasksNew() {
         baseURL,
         {
           name: iName.value,
-          output
+          output,
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -96,7 +99,7 @@ function TasksNew() {
         baseURL,
         {
           name: iName.value,
-          output
+          output,
         },
         {
           headers: { Authorization: `Bearer ${user.access_token}` },
@@ -156,7 +159,7 @@ function TasksNew() {
             const { iName } = getInputs();
             const { data } = response;
             setName(data.name);
-            setOutput(data.output)
+            setOutput(data.output);
           }
         })
         .catch((e) => {
@@ -190,10 +193,21 @@ function TasksNew() {
                 <MDTypography variant="h6" color="white">
                   {params && params.id ? "Editar" : "Registrar"} tarea
                 </MDTypography>
-                <MDButton variant="gradient" color="secondary" onClick={onGoBack}>
-                  <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
-                  &nbsp;Volver
-                </MDButton>
+                <MDBox p={0}>
+                  <MDButton variant="gradient" color="secondary" onClick={onGoBack} title="Atrás">
+                    <Icon sx={{ fontWeight: "bold" }}>arrow_back_ios</Icon>
+                  </MDButton>{" "}
+                  {params && params.id ? null : (
+                    <MDButton
+                      variant="gradient"
+                      color="secondary"
+                      onClick={onGoToImport}
+                      title="Importar"
+                    >
+                      <Icon sx={{ fontWeight: "bold" }}>attach_file</Icon>
+                    </MDButton>
+                  )}
+                </MDBox>
               </MDBox>
               <MDBox pt={4} pb={3} px={3}>
                 <MDBox component="form" role="form" ref={formEl}>

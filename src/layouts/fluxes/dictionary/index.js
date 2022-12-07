@@ -60,14 +60,13 @@ export default {
     ),
   ));
   curl_exec($curl);
-  curl_close($curl);`,
+  curl_close($curl); ?>`,
   java: (task, email, code, status, output) => `//TAREA: '${task.task_id.name}'
   Unirest.setTimeouts(0, 0);
   HttpResponse<String> response = Unirest.post(${credentials.SERVER_URL}/tracking/trace")
     .header("Content-Type", "application/json")
     .body("{\r\n    \"module_task_detail_id\": ${task.id},\r\n    \"email\": ${email},\r\n    \"code\": ${code},\r\n    \"status\": \"${status}\",\r\n    \"outputValue\": \"${output}\"\r\n}")
-    .asString();
-  `,
+    .asString();`,
   csharp: (task, email, code, status, output) => `//TAREA: '${task.task_id.name}'
   var client = new RestClient("${credentials.SERVER_URL}/tracking/trace");
   client.Timeout = -1;
@@ -144,14 +143,5 @@ export default {
   }
   `,
   shell: (task, email, code, status, output) => `#TAREA: '${task.task_id.name}'
-    curl --location --request POST '${credentials.SERVER_URL}/tracking/trace' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{
-        "module_task_detail_id": ${task.id},
-        "email": "${email}",
-        "code": "${code}",
-        "status": "${status}",
-        "outputValue": "${output}"
-    }'
-  `,
+  curl -i -X POST ${credentials.SERVER_URL}/tracking/trace --header 'Content-Type:application/json' --data {\\"module_task_detail_id\\":${task.id},\\"email\\":\\"${email}\\",\\"code\\":\\"${code}\\",\\"status\\":\\"${status}\\",\\"outputValue\\":\\"${output}\\"}`,
 };

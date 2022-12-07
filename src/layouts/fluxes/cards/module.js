@@ -69,7 +69,7 @@ function ComplexStatisticsCard({ language, color, title, count, icon, tasks, ema
               email,
               code,
               status,
-              "<<INSERT VALUE HERE>>"
+              "OUTPUT"
             )}
             language={language}
             showLineNumbers

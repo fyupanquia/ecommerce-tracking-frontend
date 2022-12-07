@@ -157,6 +157,7 @@ function Tracking() {
       const elistener = `${flux}:${email}:${code}`;
       setEventListener(elistener);
       socket.on(elistener, (message) => {
+        console.log({ message })
         setBody(message);
       });
     }

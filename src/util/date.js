@@ -1,7 +1,10 @@
 export const padTwo0 = (arg) => `${arg}`.padStart(2, "0");
 
 export const tzToString = (date, addHours) => {
-  //if (typeof date !== "string") return "";
+  if (typeof date !== "string") {
+    console.log({ date })
+    return "";
+  }
 
   const tzString = "America/Lima";
   let d = new Date(
